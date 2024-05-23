@@ -1,0 +1,8 @@
+1. pendahuluan
+2. rumusan masalah
+3. studi literatur/Pustaka terkait desain system dan aplikasi yang terkait
+4. metodologi pembuatan aplikasi (desain flowchart, dfd, ui dsb)
+5. implementasi dan analisis (hasil implementasi dari desain, analisis kinerja aplikasi, grafik kinerja dsb)
+6. kesimpulan
+7. referensi
+8. lampiran (cara melakukan compile dan informasi lain yang perlu dtambakan)
