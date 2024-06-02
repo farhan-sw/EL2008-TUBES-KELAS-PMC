@@ -19,6 +19,7 @@ tersebut. Sehingga jika pasien melakukan konsul, akan menambah node di historis 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtk.h>
 
 
 // Define the structure for the patient node
