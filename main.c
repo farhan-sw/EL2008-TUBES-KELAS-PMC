@@ -90,8 +90,17 @@ void printLinkedList(Patient *head) {
     }
 }
 
+// GTK4 Functions
+static void activate(GtkApplication *app, gpointer user_data) {
+    GtkWidget *window;
+    window = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window), "Health Admin Medika Karya");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 400);
+    gtk_window_present(GTK_WINDOW(window));
+}
 
-int main() {
+
+int main(int argc, char **argv) {
     // Create the parent nodes
     Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
     Patient *nodeB = createPatient("B", 25, 'F', "2021-09-15");
@@ -117,6 +126,15 @@ int main() {
 
     // Print the linked list
     printLinkedList(nodeA);
+
+    // GTK4
+    GtkApplication *app;
+    int status;
+    app = gtk_application_new("org.health.admin", G_APPLICATION_DEFAULT_FLAGS);
+    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+    status = g_application_run(G_APPLICATION(app), argc, argv);
+    g_object_unref(app);
+    
 
     return 0;
 }
