@@ -20,6 +20,7 @@ tersebut. Sehingga jika pasien melakukan konsul, akan menambah node di historis 
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include "./functions/GTK/gtk-ui.c"
 
 
 // Define the structure for the patient node
@@ -90,15 +91,6 @@ void printLinkedList(Patient *head) {
     }
 }
 
-// GTK4 Functions
-static void activate(GtkApplication *app, gpointer user_data) {
-    GtkWidget *window;
-    window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Health Admin Medika Karya");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 400);
-    gtk_window_present(GTK_WINDOW(window));
-}
-
 
 int main(int argc, char **argv) {
     // Create the parent nodes
@@ -132,6 +124,7 @@ int main(int argc, char **argv) {
     int status;
     app = gtk_application_new("org.health.admin", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+
     status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);
     
