@@ -1,30 +1,45 @@
 cmake_minimum_required(VERSION 3.29.3)
 project(GTKTutorial)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_C_STANDARD 11)
+# set(CMAKE_CXX_STANDARD 17)
 
-set(GTK3_INCLUDE_DIRS "C:/msys64/mingw64/include/")
-set(GTK3_LIBRARY_DIRS "C:/msys64/mingw64/lib")
-set(ENV{PKG_CONFIG_PATH} "C:/msys64/mingw64/lib/pkgconfig")
+# set(GTK3_INCLUDE_DIRS "C:/msys64/mingw64/include/")
+# set(GTK3_LIBRARY_DIRS "C:/msys64/mingw64/lib")
+# set(ENV{PKG_CONFIG_PATH} "C:/msys64/mingw64/lib/pkgconfig")
 
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(GTK4 REQUIRED gtk4)
+
+# include_directories(${GTK4_INCLUDE_DIRS})
+# link_directories(${GTK4_BIN_DIRS})
+# link_directories(${GTK4_LIBRARY_DIRS})
+# add_definitions(${GTK4_CFLAGS_OTHER})
+
+# add_executable(HealthAdmin main.c)
+# # set_target_properties(HealthAdmin PROPERTIES WIN32_EXECUTABLE true)  # If you dont want console to run with your .exe
+# target_link_libraries(HealthAdmin ${GTK4_LIBRARIES})
+
+# Find dependencies
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK4 REQUIRED gtk4)
+pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+include_directories(${GTK3_INCLUDE_DIRS})
+link_directories(${GTK3_LIBRARY_DIRS})
+add_definitions(${GTK3_CFLAGS_OTHER})
+set(LIBRARIES ${LIBRARIES} ${GTK3_LIBRARIES})
 
-include_directories(${GTK4_INCLUDE_DIRS})
-link_directories(${GTK4_BIN_DIRS})
-link_directories(${GTK4_LIBRARY_DIRS})
-add_definitions(${GTK4_CFLAGS_OTHER})
+# Compile
+add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/main.c)
+target_link_libraries(HealthAdmin ${LIBRARIES})
 
-add_executable(HealthAdmin main.c)
-# set_target_properties(HealthAdmin PROPERTIES WIN32_EXECUTABLE true)  # If you dont want console to run with your .exe
-target_link_libraries(HealthAdmin ${GTK4_LIBRARIES})
+# Messages
+message(STATUS "GTK include directories: ${GTK3_INCLUDE_DIRS}")
 
 # CPack
-install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK4_LIBRARIES_DIRS}/gtk-4.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
-install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK4_LIBRARIES_DIRS}/glib-2.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
-install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK4_LIBRARIES_DIRS}/pango-1.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
-install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK4_LIBRARIES_DIRS}/atk-1.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK3_LIBRARIES_DIRS}/gtk-3.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK3_LIBRARIES_DIRS}/glib-2.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK3_LIBRARIES_DIRS}/pango-1.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ${GTK3_LIBRARIES_DIRS}/atk-1.0.0.tar.gz WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)")
 
 # CPack configuration
 include(InstallRequiredSystemLibraries)
