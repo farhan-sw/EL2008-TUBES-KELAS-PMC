@@ -63,6 +63,12 @@ const char* patients[][8] = {
   // Add more dummy data here
 };
 
+const char* medRec[][7] = {
+    {"1 Januari", "KX 12345", "Dehidrasi", "Pemasangan Infus", "4 Januari 2022", "Rp 265.000,00" },
+    {"1 Januari", "KX 12345", "Dehidrasi", "Pemasangan Infus", "4 Januari 2022", "Rp 265.000,00" },
+    {"1 Januari", "KX 12345", "Dehidrasi", "Pemasangan Infus", "4 Januari 2022", "Rp 265.000,00" },
+};
+
 // Callback function for toolbar buttons
 void on_toolbar_button_clicked(GtkWidget* button, gpointer data)
 {
@@ -117,112 +123,77 @@ void printLinkedList(Patient *head) {
     }
 }
 
+// GTK 3 Functions
 
-// GTK3 Functions
-// static void activate(GtkApplication *app, gpointer user_data) {
-//     GtkWidget *window;
-//     window = gtk_application_window_new(app);
-//     gtk_window_set_title(GTK_WINDOW(window), "Health Admin Medika Karya");
-//     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 800);
-//     gtk_window_present(GTK_WINDOW(window));
+void addDataPatientToTable(GtkWidget* table) {
+    for (int i = 0; i < sizeof(patients) / sizeof(patients[0]); i++) {
+        char label1_text[10];
+        sprintf(label1_text, "%d", i+1);
+        GtkWidget* label1 = gtk_label_new(label1_text);
+        GtkWidget* label2 = gtk_label_new(patients[i][0]);
+        GtkWidget* label3 = gtk_label_new(patients[i][1]);
+        GtkWidget* label4 = gtk_label_new(patients[i][2]);
+        GtkWidget* label5 = gtk_label_new(patients[i][3]);
+        GtkWidget* label6 = gtk_label_new(patients[i][4]);
+        GtkWidget* label7 = gtk_label_new(patients[i][5]);
+        GtkWidget* label8 = gtk_label_new(patients[i][6]);
+        GtkWidget* label9 = gtk_label_new(patients[i][7]);
+        GtkWidget* checkbox = gtk_check_button_new();
+        gtk_grid_attach(GTK_GRID(table), label1, 0, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label2, 1, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label3, 2, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label4, 3, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label5, 4, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label6, 5, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label7, 6, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label8, 7, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label9, 8, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), checkbox, 9, i+1, 1, 1);
+    }
+}
 
-//     // create menu tabs
-//     GtkWidget *notebook = gtk_notebook_new();
-//     gtk_window_set_child(GTK_WINDOW(window), notebook);
+void addMedicalRecordToTable(GtkWidget* table) {
+    for (int i = 0; i < sizeof(medRec) / sizeof(medRec[0]); i++) {
+        char label1_text[10];
+        sprintf(label1_text, "%d", i+1);
+        GtkWidget* label1 = gtk_label_new(label1_text);
+        GtkWidget* label2 = gtk_label_new(medRec[i][0]);
+        GtkWidget* label3 = gtk_label_new(medRec[i][1]);
+        GtkWidget* label4 = gtk_label_new(medRec[i][2]);
+        GtkWidget* label5 = gtk_label_new(medRec[i][3]);
+        GtkWidget* label6 = gtk_label_new(medRec[i][4]);
+        GtkWidget* label7 = gtk_label_new(medRec[i][5]);
+        GtkWidget* checkbox = gtk_check_button_new();
+        gtk_grid_attach(GTK_GRID(table), label1, 0, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label2, 1, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label3, 2, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label4, 3, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label5, 4, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label6, 5, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), label7, 6, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(table), checkbox, 7, i+1, 1, 1);
+    }
+}
 
-//     // Membuat box vertikal untuk PatientTab
-//     GtkWidget *PatientTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+static void activate(){
 
-//     // Membuat toolbar horizontal
-//     GtkWidget *toolbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-//     gtk_widget_set_margin_top(toolbar, 10);    // tambahkan jeda 10 pixel di sisi atas
+    // ==================================================================================================
 
-//     // Membuat tombol "Tambah Data"
-//     GtkWidget *add_icon = gtk_image_new_from_icon_name("list-add-symbolic");
-//     GtkWidget *add_button = gtk_button_new();
-//     gtk_button_set_child(GTK_BUTTON(add_button), add_icon);
-//     gtk_widget_set_margin_start(add_button, 10);  // tambahkan jeda 10 pixel di sisi kiri
-//     gtk_widget_set_margin_end(add_button, 3);    // tambahkan jeda 10 pixel di sisi kanan
-//     gtk_box_append(GTK_BOX(toolbar), add_button);
-
-//     // Membuat tombol "Edit Data"
-//     GtkWidget *edit_icon = gtk_image_new_from_icon_name("document-edit-symbolic");
-//     GtkWidget *edit_button = gtk_button_new();
-//     gtk_button_set_child(GTK_BUTTON(edit_button), edit_icon);
-//     gtk_widget_set_margin_start(edit_button, 3);  // tambahkan jeda 10 pixel di sisi kiri
-//     gtk_widget_set_margin_end(edit_button, 3);    // tambahkan jeda 10 pixel di sisi kanan
-//     gtk_box_append(GTK_BOX(toolbar), edit_button);
-
-//     // Membuat tombol "Hapus Data"
-//     GtkWidget *delete_icon = gtk_image_new_from_icon_name("edit-delete-symbolic");
-//     GtkWidget *delete_button = gtk_button_new();
-//     gtk_button_set_child(GTK_BUTTON(delete_button), delete_icon);
-//     gtk_widget_set_margin_start(delete_button, 3);  // tambahkan jeda 10 pixel di sisi kiri
-//     gtk_widget_set_margin_end(delete_button, 3);    // tambahkan jeda 10 pixel di sisi kanan
-//     gtk_box_append(GTK_BOX(toolbar), delete_button);
-
-//     // Membuat kotak pencarian dan menambahkannya ke toolbar
-//     GtkWidget *search_entry = gtk_search_entry_new();
-//     gtk_widget_set_margin_start(search_entry, 10);  // tambahkan jeda 10 pixel di sisi kiri
-//     gtk_widget_set_margin_end(search_entry, 10);    // tambahkan jeda 10 pixel di sisi kanan
-//     gtk_box_append(GTK_BOX(toolbar), search_entry);
-
-//     gtk_box_append(GTK_BOX(PatientTab), toolbar);
-
-//     GtkWidget *HistoryTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-//     GtkWidget *PriceTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-//     GtkWidget *AboutTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-
-//     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), PatientTab, gtk_label_new("Patient Data"));
-//     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), HistoryTab, gtk_label_new("Medical Record"));
-//     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), PriceTab, gtk_label_new("Fee Management"));
-//     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), AboutTab, gtk_label_new("About"));
-
-//     gtk_widget_set_visible(window, TRUE);
-// }
-
-
-
-int main(int argc, char **argv) {
-    // Create the parent nodes
-    Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
-    Patient *nodeB = createPatient("B", 25, 'F', "2021-09-15");
-
-    // Create the child nodes for node A
-    History *nodeA1 = createHistory("Flu", "Paracetamol", "2021-10-05", 10.0, 50.0);
-    History *nodeA2 = createHistory("Headache", "Aspirin", "2021-11-02", 8.0, 40.0);
-
-    // Create the child nodes for node B
-    History *nodeB1 = createHistory("Cough", "Cough Syrup", "2021-09-20", 15.0, 60.0);
-    History *nodeB2 = createHistory("Fever", "Ibuprofen", "2021-10-10", 12.0, 55.0);
-
-    // Connect the child nodes to the parent nodes
-    nodeA->history = nodeA1;
-    nodeA1->next = nodeA2;
-
-    nodeB->history = nodeB1;
-    nodeB1->next = nodeB2;
-
-    // Connect the parent nodes
-    nodeA->next = nodeB;
-    nodeB->next = NULL;
-
-    // Print the linked list
-    printLinkedList(nodeA);
-
-
-    // GTK3
-
-    // Initialize GTK
-    gtk_init(&argc, &argv);
-
+    // MAIN WINDOW INITIALIZATION
     // Create the main window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Healthcare Management System");
-    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 300);
+    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 600);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-    // Create the notebook
+    // set app icon
+    GdkPixbuf *icon = gdk_pixbuf_new_from_file("../icon/icon.png", NULL);
+    gtk_window_set_icon(GTK_WINDOW(window), icon);
+
+    // ==================================================================================================
+
+    // TABS INITIALIZATION
+    // Create Section Tab With Notebook
     GtkWidget* notebook = gtk_notebook_new();
     gtk_container_add(GTK_CONTAINER(window), notebook);
 
@@ -238,19 +209,22 @@ int main(int argc, char **argv) {
     GtkWidget* pricingManagementTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), pricingManagementTab, gtk_label_new("Pricing Management"));
 
-    // Create the pricing tab
+    // Create the About Tab
     GtkWidget* aboutTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), aboutTab, gtk_label_new("About"));
 
+    // ==================================================================================================
+    
+    // ######## PATIENT DATA TAB ########
+    // TOOLBAR
     // Create the toolbar
-    GtkWidget* toolbar = gtk_toolbar_new();
-    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
-    gtk_box_pack_start(GTK_BOX(userDataTab), toolbar, FALSE, FALSE, 0);
+    GtkWidget* patientDataToolbar = gtk_toolbar_new();
+    gtk_toolbar_set_style(GTK_TOOLBAR(patientDataToolbar), GTK_TOOLBAR_ICONS);
+    gtk_box_pack_start(GTK_BOX(userDataTab), patientDataToolbar, FALSE, FALSE, 0);
 
-    // Create toolbar buttons
     // Create the "Add Data" button
     GtkToolItem* addButton = gtk_tool_button_new(NULL, "Add Data");
-    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), addButton, -1);
+    gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), addButton, -1);
     g_signal_connect(addButton, "clicked", G_CALLBACK(on_toolbar_button_clicked), NULL);
 
     // Set the button border
@@ -260,6 +234,9 @@ int main(int argc, char **argv) {
     GtkWidget* searchBox = gtk_search_entry_new();
     gtk_box_pack_start(GTK_BOX(userDataTab), searchBox, FALSE, FALSE, 0);
 
+    // ==================================================================================================
+
+    // PATIENT DATA DISPLAY
     // Create the scrollable table
     GtkWidget* scrollable = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollable), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -298,32 +275,7 @@ int main(int argc, char **argv) {
     gtk_widget_set_margin_start(header1, 10);
 
     // Add dummy data to the table
-    int row = 1;
-    for (int i = 0; i < sizeof(patients) / sizeof(patients[0]); i++) {
-        char label1_text[10];
-        sprintf(label1_text, "%d", i+1);
-        GtkWidget* label1 = gtk_label_new(label1_text);
-        GtkWidget* label2 = gtk_label_new(patients[i][0]);
-        GtkWidget* label3 = gtk_label_new(patients[i][1]);
-        GtkWidget* label4 = gtk_label_new(patients[i][2]);
-        GtkWidget* label5 = gtk_label_new(patients[i][3]);
-        GtkWidget* label6 = gtk_label_new(patients[i][4]);
-        GtkWidget* label7 = gtk_label_new(patients[i][5]);
-        GtkWidget* label8 = gtk_label_new(patients[i][6]);
-        GtkWidget* label9 = gtk_label_new(patients[i][7]);
-        GtkWidget* checkbox = gtk_check_button_new();
-        gtk_grid_attach(GTK_GRID(table), label1, 0, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label2, 1, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label3, 2, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label4, 3, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label5, 4, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label6, 5, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label7, 6, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label8, 7, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), label9, 8, row, 1, 1);
-        gtk_grid_attach(GTK_GRID(table), checkbox, 9, row, 1, 1);
-        row++;
-    }
+    addDataPatientToTable(table);
 
     // Set table properties
     gtk_widget_set_hexpand(table, TRUE);
@@ -331,10 +283,114 @@ int main(int argc, char **argv) {
     gtk_grid_set_row_spacing(GTK_GRID(table), 7);
     gtk_grid_set_column_spacing(GTK_GRID(table), 15); 
 
+    // ==================================================================================================
+
+    // Creating Tabs for Medical Records
+    // TOOLBAR
+    // Create the toolbar
+    GtkWidget* medicalRecordToolbar = gtk_toolbar_new();
+    gtk_toolbar_set_style(GTK_TOOLBAR(medicalRecordToolbar), GTK_TOOLBAR_ICONS);
+    gtk_box_pack_start(GTK_BOX(medicalRecordsTab), medicalRecordToolbar, FALSE, FALSE, 0);
+
+    // Create the "Add Data" button
+    GtkToolItem* addMedRecordButton = gtk_tool_button_new(NULL, "Add Data");
+    gtk_toolbar_insert(GTK_TOOLBAR(medicalRecordToolbar), addMedRecordButton, -1);
+    g_signal_connect(addMedRecordButton, "clicked", G_CALLBACK(on_toolbar_button_clicked), NULL);
+
+    // Set the button border
+    gtk_container_set_border_width(GTK_CONTAINER(addMedRecordButton), 5);
+
+    // Create the search box
+    GtkWidget* searchMedRecordBox = gtk_search_entry_new();
+    gtk_box_pack_start(GTK_BOX(medicalRecordsTab), searchMedRecordBox, FALSE, FALSE, 0);
+
+    // ==================================================================================================
+
+    // MEDICAL RECORDS DATA DISPLAY
+    // Create the scrollable table
+    GtkWidget* scrollableMedRec = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollableMedRec), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_box_pack_start(GTK_BOX(medicalRecordsTab), scrollableMedRec, TRUE, TRUE, 0);
+
+    // Create the table
+    GtkWidget* tableMedRec = gtk_grid_new();
+    gtk_container_add(GTK_CONTAINER(scrollableMedRec), tableMedRec);
+
+    // Add table headers
+    GtkWidget* header1MedRec = gtk_label_new("No");
+    GtkWidget* header2MedRec = gtk_label_new("Tanggal");
+    GtkWidget* header3MedRec = gtk_label_new("ID Pasien");
+    GtkWidget* header4MedRec = gtk_label_new("Diagnosis");
+    GtkWidget* header5MedRec = gtk_label_new("Tindakan");
+    GtkWidget* header6MedRec = gtk_label_new("Kontrol");
+    GtkWidget* header7MedRec = gtk_label_new("Biaya");
+    
+    gtk_grid_attach(GTK_GRID(tableMedRec), header1MedRec, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(tableMedRec), header2MedRec, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(tableMedRec), header3MedRec, 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(tableMedRec), header4MedRec, 3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(tableMedRec), header5MedRec, 4, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(tableMedRec), header6MedRec, 5, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(tableMedRec), header7MedRec, 6, 0, 1, 1);
+
+    // Set the width of header
+    gtk_widget_set_size_request(header4MedRec, 100, -1);
+    gtk_widget_set_size_request(header5MedRec, 250, -1);
+
+    // tambahkan margin kiri pada tabel
+    gtk_widget_set_margin_start(header1MedRec, 10);
+
+    // Add dummy data to the table
+    addMedicalRecordToTable(tableMedRec);
+
+    // Set table properties
+    gtk_widget_set_hexpand(tableMedRec, TRUE);
+    gtk_widget_set_halign(tableMedRec, GTK_ALIGN_FILL);
+    gtk_grid_set_row_spacing(GTK_GRID(tableMedRec), 7);
+    gtk_grid_set_column_spacing(GTK_GRID(tableMedRec), 15); 
+    
+
 
     // Show all widgets
     gtk_widget_show_all(window);
+}
 
+
+
+int main(int argc, char **argv) {
+    // Create the parent nodes
+    Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
+    Patient *nodeB = createPatient("B", 25, 'F', "2021-09-15");
+
+    // Create the child nodes for node A
+    History *nodeA1 = createHistory("Flu", "Paracetamol", "2021-10-05", 10.0, 50.0);
+    History *nodeA2 = createHistory("Headache", "Aspirin", "2021-11-02", 8.0, 40.0);
+
+    // Create the child nodes for node B
+    History *nodeB1 = createHistory("Cough", "Cough Syrup", "2021-09-20", 15.0, 60.0);
+    History *nodeB2 = createHistory("Fever", "Ibuprofen", "2021-10-10", 12.0, 55.0);
+
+    // Connect the child nodes to the parent nodes
+    nodeA->history = nodeA1;
+    nodeA1->next = nodeA2;
+
+    nodeB->history = nodeB1;
+    nodeB1->next = nodeB2;
+
+    // Connect the parent nodes
+    nodeA->next = nodeB;
+    nodeB->next = NULL;
+
+    // Print the linked list
+    printLinkedList(nodeA);
+
+
+    // GTK3 RUNNER
+
+    // Initialize GTK
+    gtk_init(&argc, &argv);
+    // Initialize main window
+    activate();
     // Start the GTK main loop
     gtk_main();
     
