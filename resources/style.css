@@ -1,0 +1,30 @@
+/* CSS STYLE */
+
+/* Styling tombol add data pada jendela input data pasien */
+.add-data-button-dialog {
+    background: rgb(3, 187, 3);
+    color: white;
+    font-weight: bold;
+}
+
+.add-data-button-dialog:hover {
+    background: darkgreen;
+}
+
+.add-data-button-dialog:active {
+    background: limegreen;
+}
+
+/* Styling toolbar add patient data */
+.add-data-patient-button {
+    background-color: rgb(3, 187, 3);
+    color: white;
+    font-weight: bold;
+}
+.add-data-patient-button:hover {
+    color: black;
+}
+
+.add-data-patient-button:active {
+    background-color: limegreen;
+}

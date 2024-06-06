@@ -14,8 +14,17 @@ link_directories(${GTK3_LIBRARY_DIRS})
 add_definitions(${GTK3_CFLAGS_OTHER})
 set(LIBRARIES ${LIBRARIES} ${GTK3_LIBRARIES})
 
+# Set the output directory for executables
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+# Set the output directory for shared libraries
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+
+# Set the output directory for static libraries
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+
 # Compile
-add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/main.c)
+add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/src/main.c)
 target_link_libraries(HealthAdmin ${LIBRARIES})
 
 # Messages
