@@ -23,8 +23,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 # Set the output directory for static libraries
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
+# include functions
+include_directories(${CMAKE_SOURCE_DIR}/src/functions/standalone ${CMAKE_SOURCE_DIR}/src/functions/struct)
+
 # Compile
-add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/src/main.c)
+file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/functions/standalone/*.c ${PROJECT_SOURCE_DIR}/src/functions/standalone/*.h ${PROJECT_SOURCE_DIR}/src/functions/struct/*.c ${PROJECT_SOURCE_DIR}/src/functions/struct/*.h)
+add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/src/main.c ${SOURCES})
 target_link_libraries(HealthAdmin ${LIBRARIES})
 
 # Messages
