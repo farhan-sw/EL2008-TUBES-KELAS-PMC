@@ -18,6 +18,8 @@ Dependencies :
     - MSYS2 (installed MinGW)
     - GTK 3
 
+Tested on :
+    - Microsoft Windows 11 - 23H2 (Build OS 22631,2861)
 
 =======================================================================================
 
