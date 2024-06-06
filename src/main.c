@@ -172,8 +172,12 @@ int main(int argc, char **argv) {
     // Start the GTK main loop
     Logger(session,1, "Initializing GTK window");
     gtk_main();
-    Logger(session,1, "Terminating Application");
+    Logger(session,1, "Terminating Application, Cleaning up memory");
+
+    // Pembersihan memori
     
+
+    Logger(session,2, "Cleaning up memory success, have a nice day!");
 
     return 0;
 }

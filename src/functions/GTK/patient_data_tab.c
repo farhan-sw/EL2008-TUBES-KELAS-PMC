@@ -23,17 +23,27 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
     gtk_container_add(GTK_CONTAINER(window), mainBox);
 
     // Create the input fields
-    GtkWidget* nameLabel = gtk_label_new("Nama Lengkap:");
-    GtkWidget* nameEntry = gtk_entry_new();
-    GtkWidget* addressLabel = gtk_label_new("Alamat:");
-    GtkWidget* addressEntry = gtk_entry_new();
-    GtkWidget* genderLabel = gtk_label_new("");
-    GtkWidget* genderEntry = gtk_entry_new();
-    GtkWidget* lastControlDateLabel = gtk_label_new("Last Control Date:");
-    GtkWidget* lastControlDateEntry = gtk_entry_new();
+    GtkWidget* namaLabel = gtk_label_new("Nama Lengkap:");
+    GtkWidget* namaEntry = gtk_entry_new();
+    GtkWidget* alamatLabel = gtk_label_new("Alamat:");
+    GtkWidget* alamatEntry = gtk_entry_new();
+    GtkWidget* kotaLabel = gtk_label_new("Kota:");
+    GtkWidget* kotaEntry = gtk_entry_new();
+    GtkWidget* kotaKelahiranLabel = gtk_label_new("Tempat Lahir:");
+    GtkWidget* kotaKelahiranEntry = gtk_entry_new();
+    GtkWidget* umurLabel = gtk_label_new("Umur:");
+    GtkWidget* umurEntry = gtk_entry_new();
+    GtkWidget* noBPJSLabel = gtk_label_new("Nomor BPJS:");
+    GtkWidget* noBPJSEntry = gtk_entry_new();
+    GtkWidget* idPasienLabel = gtk_label_new("ID Pasien:");
+    GtkWidget* idPasienEntry = gtk_entry_new();
+
+    // Styling label
+    gtk_widget_set_margin_top(namaLabel, 20);
 
     // Create the add button
     GtkWidget* addButton = gtk_button_new_with_label("Add Data");
+    gtk_widget_set_margin_bottom(addButton, 20);
 
     GtkStyleContext *context = gtk_widget_get_style_context(addButton);
     gtk_style_context_add_class(context, "add-data-button-dialog");
@@ -45,14 +55,21 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
 
 
     // Add the input fields and button to the main container
-    gtk_box_pack_start(GTK_BOX(mainBox), nameLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), nameEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), addressLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), addressEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), genderLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), genderEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), lastControlDateLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), lastControlDateEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), namaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), namaEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), alamatLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), alamatEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), umurLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), umurEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), idPasienLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), idPasienEntry, FALSE, FALSE, 0);
+
     gtk_box_pack_start(GTK_BOX(mainBox), addButton, FALSE, FALSE, 0);
 
     // Show all the widgets
