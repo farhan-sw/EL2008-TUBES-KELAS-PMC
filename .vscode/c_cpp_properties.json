@@ -4,7 +4,7 @@
             "name": "windows-gcc-x64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/msys64/mingw64/include/gtk-4.0",
+                "C:/msys64/mingw64/include/gtk-3.0",
                 "C:\\msys64\\mingw64\\include\\**",
                 "C:\\msys64\\mingw64\\lib\\**"
             ],
