@@ -20,6 +20,10 @@ tersebut. Sehingga jika pasien melakukan konsul, akan menambah node di historis 
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <time.h>
+#include "./functions/logger.c"
+
+char session[50];
 
 // Define the structure for the patient node
 typedef struct Patient {
@@ -179,8 +183,19 @@ static void activate(){
 }
 
 
-
 int main(int argc, char **argv) {
+
+    // Assign session berdasarkan waktu hingga milisecond
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    sprintf(session, "HealthAdminSessionStart_%d-%d-%d_%d-%d-%d-%ld", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
+    printf("Session: %s\n", session);
+
+    Logger(session,1, "Application started");
+    
+
     // Create the parent nodes
     Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
     Patient *nodeB = createPatient("B", 25, 'F', "2021-09-15");

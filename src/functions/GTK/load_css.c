@@ -1,3 +1,4 @@
+
 static void load_css(void) {
     GtkCssProvider *provider;
     GdkDisplay *display;
@@ -15,9 +16,9 @@ static void load_css(void) {
     if (error) {
         g_warning("Error loading CSS file: %s", error->message);
         g_clear_error(&error);
+    } else {
+        Logger(session,2, "CSS Loaded Successfully");
     }
-
-    g_print("CSS file loaded\n");
 
     g_object_unref(provider);
 }
