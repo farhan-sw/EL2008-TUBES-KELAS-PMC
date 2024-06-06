@@ -21,7 +21,7 @@ tersebut. Sehingga jika pasien melakukan konsul, akan menambah node di historis 
 #include <string.h>
 #include <gtk/gtk.h>
 #include <time.h>
-#include "./functions/logger.c"
+#include "logger.h"
 
 char session[50];
 
@@ -134,7 +134,6 @@ int main(int argc, char **argv) {
     printf("Session: %s\n", session);
 
     Logger(session,1, "Application started");
-    
 
     // Create the parent nodes
     Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
