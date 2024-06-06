@@ -35,18 +35,21 @@ const char* medRec[][7] = {
     {"1 Januari", "KX 12345", "Dehidrasi", "Pemasangan Infus", "4 Januari 2022", "Rp 265.000,00" },
 };
 
-// GTK 3 Functions
-#include "./functions/GTK/activate.c"
-
-int main(int argc, char **argv) {
-
-    // Assign session berdasarkan waktu hingga milisecond
+void initializeSession(){
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     sprintf(session, "HealthAdminSessionStart_%d-%d-%d_%d-%d-%d-%ld", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
     printf("Session: %s\n", session);
+}
+
+// GTK 3 Functions
+#include "./functions/GTK/activate.c"
+
+int main(int argc, char **argv) {
+
+    initializeSession();
 
     Logger(1, "Application started");
 
