@@ -6,14 +6,14 @@
 #include "./about_tab.c"
 
 static void activate(){
-    Logger(session,1, "Building Main Window");
+    Logger(1, "Building Main Window");
     // MAIN WINDOW INITIALIZATION
     // Create the main window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Healthcare Management System");
     gtk_window_set_default_size(GTK_WINDOW(window), 1000, 600);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    Logger(session,1, "Setting up Main Window");
+    Logger(1, "Setting up Main Window");
 
     // set app icon
     GdkPixbuf *icon = gdk_pixbuf_new_from_file("../resources/icons/icon.png", NULL);
@@ -28,7 +28,7 @@ static void activate(){
     gtk_container_add(GTK_CONTAINER(window), notebook);
 
     // Create the User Data tab
-    Logger(session,1, "Initializing Tabs");
+    Logger(1, "Initializing Tabs");
     GtkWidget* userDataTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), userDataTab, gtk_label_new("Patient Data"));
 
@@ -48,9 +48,9 @@ static void activate(){
     GtkWidget* aboutTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), aboutTab, gtk_label_new("About"));
     if(userDataTab == NULL || medicalCheckUpTab == NULL || medicalRecordsTab == NULL || financeTab == NULL || aboutTab == NULL){
-        Logger(session,3, "Failed to initialize tabs");
+        Logger(3, "Failed to initialize tabs");
     } else {
-        Logger(session,2, "Tabs initialized successfully");
+        Logger(2, "Tabs initialized successfully");
     }
 
     // Build the Patient Data tab, implemented in patient_data_tab.c

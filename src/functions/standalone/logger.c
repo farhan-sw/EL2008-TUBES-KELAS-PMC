@@ -4,8 +4,9 @@
 #include <time.h>
 #include <glib.h>
 #include <sys/stat.h>
+#include "logger.h"
 
-void Logger(char* session,int actionCode, char* message) {
+void Logger(int actionCode, char* message) {
 
     // deteksi apakah direktori ../logs sudah ada, jika belum maka buat direktori ../logs. Handling untuk semua jenis OS
     #ifdef _WIN32

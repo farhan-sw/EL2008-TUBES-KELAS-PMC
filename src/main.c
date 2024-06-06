@@ -5,6 +5,7 @@
 #include <time.h>
 #include "logger.h"
 #include "dataStructure.h"
+#include "test.h"
 
 char session[50];
 
@@ -47,7 +48,7 @@ int main(int argc, char **argv) {
     sprintf(session, "HealthAdminSessionStart_%d-%d-%d_%d-%d-%d-%ld", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
     printf("Session: %s\n", session);
 
-    Logger(session,1, "Application started");
+    Logger(1, "Application started");
 
     // Create the parent nodes
     Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
@@ -82,14 +83,14 @@ int main(int argc, char **argv) {
     // Initialize main window
     activate();
     // Start the GTK main loop
-    Logger(session,1, "Initializing GTK window");
+    Logger(1, "Initializing GTK window");
     gtk_main();
-    Logger(session,1, "Terminating Application, Cleaning up memory");
+    Logger(1, "Terminating Application, Cleaning up memory");
 
     // Pembersihan memori
     
 
-    Logger(session,2, "Cleaning up memory success, have a nice day!");
+    Logger(2, "Cleaning up memory success, have a nice day!");
 
     return 0;
 }

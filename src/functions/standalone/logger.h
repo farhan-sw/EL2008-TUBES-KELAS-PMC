@@ -8,6 +8,9 @@
 #include <glib.h>
 #include <sys/stat.h>
 
-void Logger(char* session, int actionCode, char* message);
+// declarasikan bahwa ada variable bernama session
+extern char session[50];
+
+void Logger(int actionCode, char* message);
 
 #endif // LOGGER_H
