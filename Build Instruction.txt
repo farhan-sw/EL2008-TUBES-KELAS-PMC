@@ -5,20 +5,26 @@ INSTRUKSI BUILD SOURCE CODE / SOURCE CODE BUILD INSTRUCTION
 Health Care Management Software v1.0.0
 
 Problem Solving with C Project - EL2008
-Lecturer : Dr. Beni Rio Hermanto, S.T, MM.
-Team :
+Lecturer    : Dr. Beni Rio Hermanto, S.T, MM.
+Team        :
     1. Anas Fathurrahman (13222033)
     2. 
     3.
     4.
 
+Dependencies :
+    - CMake
+    - Make
+    - MSYS2 (installed MinGW)
+    - GTK 3
 
-Language : Bahasa Indonesia
-Dependencies yang digunakan pada project:
-- CMake
-- Make
-- MSYS2 (installed MinGW)
-- GTK 3
+Tested on :
+    - Microsoft Windows 11 - 23H2 (Build OS 22631,2861)
+
+=======================================================================================
+
+OS          : Windows
+Language    : Bahasa Indonesia
 
 Set perintah command line untuk windows
 1. Pastikan terminal berada pada root project
@@ -30,3 +36,17 @@ Set perintah command line untuk windows
 3. Jalankan software yang berada pada ./bin dengan kembali ke root folder terlebih dahulu
     cd ../ 
     ./bin/HealthAdmin.exe
+
+=======================================================================================
+
+OS          : Linux
+Language    : Bahasa Indonesia
+
+Soon Available
+
+=======================================================================================
+
+OS          : MacOS
+Language    : Bahasa Indonesia
+
+Soon Available
