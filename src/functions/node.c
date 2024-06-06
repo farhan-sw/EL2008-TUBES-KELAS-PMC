@@ -2,14 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Define the structure for the date
+/**
+ * @brief Date struct
+ */
 typedef struct Date {
     int day;
     int month;
     int year;
 } Date;
 
-// Define the structure for the patient node
+/**
+ * @brief Patient struct
+ */
 typedef struct Patient {
     char namaLengkap[50];
     char alamat[100];
@@ -22,18 +26,25 @@ typedef struct Patient {
     struct Patient *next;
 } Patient;
 
-// Define the structure for the history node
+/**
+ * @brief History struct
+ */
 typedef struct History {
     Date tanggal;
     char idPasien[20];
     char diagnosis[50];
     int tindakanID;
-    char kontrol[20];
+    Date kontrol;
     int biaya;
     struct History *next;
 } History;
 
-// Function to create a new date
+/**
+ * @brief Create a Date function
+ * @param day: int hari
+ * @param month: int bulan
+ * @param year: int tahun
+ */
 Date createDate(int day, int month, int year) {
     Date newDate;
     newDate.day = day;
@@ -42,7 +53,16 @@ Date createDate(int day, int month, int year) {
     return newDate;
 }
 
-// Function to create a new patient node
+/**
+ * @brief Create a Patient function
+ * @param namaLengkap: char nama lengkap
+ * @param alamat: char alamat
+ * @param kota: char kota
+ * @param tempatLahir: char tempat lahir
+ * @param umur: int umur
+ * @param noBPJS: int no BPJS
+ * @param idPasien: char ID pasien
+ */
 Patient* createPatient(char namaLengkap[], char alamat[], char kota[], char tempatLahir[], int umur, int noBPJS, char idPasien[]) {
     Patient *newPatient = (Patient*) malloc(sizeof(Patient));
     strcpy(newPatient->namaLengkap, namaLengkap);
@@ -57,25 +77,39 @@ Patient* createPatient(char namaLengkap[], char alamat[], char kota[], char temp
     return newPatient;
 }
 
-// Function to create a new history node
-History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, char kontrol[], int biaya) {
+/**
+ * @brief Create a History function
+ * @param tanggal: Date tanggal
+ * @param idPasien: char ID pasien
+ * @param diagnosis: char diagnosis
+ * @param tindakanID: int tindakan ID
+ * @param kontrol: Date kontrol
+ * @param biaya: int biaya
+ */
+History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya) {
     History *newHistory = (History*) malloc(sizeof(History));
     newHistory->tanggal = tanggal;
     strcpy(newHistory->idPasien, idPasien);
     strcpy(newHistory->diagnosis, diagnosis);
     newHistory->tindakanID = tindakanID;
-    strcpy(newHistory->kontrol, kontrol);
+    newHistory->kontrol = kontrol;
     newHistory->biaya = biaya;
     newHistory->next = NULL;
     return newHistory;
 }
 
-// Function to print the date
+/**
+ * @brief Print a Date function
+ * @param date: Date tanggal
+ */
 void printDate(Date date) {
     printf("%02d-%02d-%04d", date.day, date.month, date.year);
 }
 
-// Function to print the linked list
+/**
+ * @brief Print a linked list function
+ * @param head: Patient head
+ */
 void printLinkedList(Patient *head) {
     Patient *currentPatient = head;
     while (currentPatient != NULL) {
@@ -95,7 +129,9 @@ void printLinkedList(Patient *head) {
             printf("  ID Pasien: %s\n", currentHistory->idPasien);
             printf("  Diagnosis: %s\n", currentHistory->diagnosis);
             printf("  Tindakan (ID): %d\n", currentHistory->tindakanID);
-            printf("  Kontrol: %s\n", currentHistory->kontrol);
+            printf("  Kontrol: ");
+            printDate(currentHistory->kontrol);
+            printf("\n");
             printf("  Biaya: %d\n", currentHistory->biaya);
             currentHistory = currentHistory->next;
         }
@@ -104,7 +140,10 @@ void printLinkedList(Patient *head) {
     }
 }
 
-// Buatkan Sort history berdasarkan tanggal
+/**
+ * @brief Sort the history function
+ * @param head: Patient head
+ */
 void sortHistory(Patient *head) {
     Patient *currentPatient = head;
     while (currentPatient != NULL) {
@@ -137,25 +176,64 @@ void sortHistory(Patient *head) {
     }
 }
 
+/**
+ * @brief Delete Pasien berdasarkan ID (char)
+ * @param head: Patient head
+ * @param idPasien: char ID pasien
+ */
+void deletePatient(Patient **head, char idPasien[]) {
+    Patient *currentPatient = *head;
+    Patient *prevPatient = NULL;
 
-int main() {
+    // Jika pasien yang ingin dihapus adalah head
+    if (currentPatient != NULL && strcmp(currentPatient->idPasien, idPasien) == 0) {
+        *head = currentPatient->next;
+        free(currentPatient);
+        return;
+    }
+
+    // Mencari pasien yang ingin dihapus
+    while (currentPatient != NULL && strcmp(currentPatient->idPasien, idPasien) != 0) {
+        prevPatient = currentPatient;
+        currentPatient = currentPatient->next;
+    }
+
+    // Jika pasien tidak ditemukan
+    if (currentPatient == NULL) {
+        printf("Pasien dengan ID %s tidak ditemukan\n", idPasien);
+        return;
+    }
+
+    // Menghapus pasien
+    prevPatient->next = currentPatient->next;
+    free(currentPatient);
+}
+
+/**
+ * @brief Main function buat uji coba
+ */
+int debugging() {
     // Create the parent nodes
     Patient *nodeA = createPatient("A", "Alamat A", "Kota A", "Tempat Lahir A", 30, 12345, "ID_A");
     Patient *nodeB = createPatient("B", "Alamat B", "Kota B", "Tempat Lahir B", 25, 67890, "ID_B");
 
     // Create the child nodes for node B
     Date dateB1 = createDate(15, 9, 2021);
-    History *nodeB1 = createHistory(dateB1, "ID_B", "Diagnosis B1", 2, "2021-09-20", 100000);
+    Date kontrolB1 = createDate(20, 9, 2021);
+    History *nodeB1 = createHistory(dateB1, "ID_B", "Diagnosis B1", 2, kontrolB1, 100000);
+    
     Date dateB2 = createDate(10, 10, 2020);
-    History *nodeB2 = createHistory(dateB2, "ID_B", "Diagnosis B2", 3, "2021-10-15", 25000);
+    Date kontrolB2 = createDate(15, 10, 2020);
+    History *nodeB2 = createHistory(dateB2, "ID_B", "Diagnosis B2", 3, kontrolB2, 25000);
 
     // Create the child nodes for node A
     Date dateA1 = createDate(1, 10, 2020);
-    History *nodeA1 = createHistory(dateA1, "ID_A", "Diagnosis A1", 0, "2021-10-05", 15000);
+    Date kontrolA1 = createDate(5, 10, 2020);
+    History *nodeA1 = createHistory(dateA1, "ID_A", "Diagnosis A1", 0, kontrolA1, 15000);
+    
     Date dateA2 = createDate(1, 11, 2018);
-    History *nodeA2 = createHistory(dateA2, "ID_A", "Diagnosis A2", 1, "2021-11-05", 125000);
-
-
+    Date kontrolA2 = createDate(5, 11, 2018);
+    History *nodeA2 = createHistory(dateA2, "ID_A", "Diagnosis A2", 1, kontrolA2, 125000);
 
     // Connect the child nodes to the parent nodes
     nodeA->history = nodeA1;
@@ -169,13 +247,20 @@ int main() {
     nodeB->next = NULL;
 
     // Print the linked list
+    printf("Before sorting:\n");
     printLinkedList(nodeA);
 
     // Sort the history
     sortHistory(nodeA);
 
     // Print the linked list
+    printf("After sorting:\n");
     printLinkedList(nodeA);
 
     return 0;
 }
+
+// int main() {
+//     debugging();
+//     return 0;
+// }
