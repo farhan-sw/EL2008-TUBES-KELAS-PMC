@@ -5,31 +5,44 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @brief Date struct
+ */
+typedef struct Date {
+    int day;
+    int month;
+    int year;
+} Date;
+
 // Define the structure for the patient node
+
+/**
+ * @brief Patient struct
+ */
 typedef struct Patient {
-    char name[50];
-    int age;
-    char gender;
-    char lastControlDate[20];
+    char namaLengkap[50];
+    char alamat[100];
+    char kota[50];
+    char tempatLahir[50];
+    int umur;
+    int noBPJS;
+    char idPasien[20];
     struct History *history;
     struct Patient *next;
 } Patient;
 
-// Define the structure for the history node
+/**
+ * @brief History struct
+ */
 typedef struct History {
-    char disease[50];
-    char medicine[50];
-    char nextControlDate[20];
-    float medicinePrice;
-    float visitCost;
+    Date tanggal;
+    char idPasien[20];
+    char diagnosis[50];
+    int tindakanID;
+    Date kontrol;
+    int biaya;
     struct History *next;
 } History;
-
-// Function prototypes
-void printPatient(Patient *patient);
-Patient* createPatient(char name[], int age, char gender, char lastControlDate[]);
-History* createHistory(char disease[], char medicine[], char nextControlDate[], float medicinePrice, float visitCost);
-void printLinkedList(Patient *head);
 
 
 #endif /* DATASTRUCTURE_H */
