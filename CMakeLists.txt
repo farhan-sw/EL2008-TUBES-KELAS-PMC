@@ -7,7 +7,7 @@ project(HealthAdmin)
 set(VERSION "1.0.0")
 
 # Find dependencies
-set(PKG_CONFIG_EXECUTABLE "C:/msys64/usr/bin/pkg-config.exe")
+# set(PKG_CONFIG_EXECUTABLE "C:/msys64/usr/bin/pkg-config.exe")
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 include_directories(${GTK3_INCLUDE_DIRS})
