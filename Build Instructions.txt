@@ -15,7 +15,8 @@ Team        :
 Dependencies :
     - CMake
     - Make
-    - MSYS2 (installed MinGW)
+    - MinGW (Basic Instalation)
+    - MSYS2
     - GTK 3
 
 Tested on :

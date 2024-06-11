@@ -19,7 +19,10 @@ Date createDate(int day, int month, int year) {
     return newDate;
 }
 
+// Membuat ID pasien baru yang unik
 
+
+// Fungsi untuk membuat node patient baru
 /**
  * @brief Create a Patient function
  * @param namaLengkap: char nama lengkap
@@ -42,6 +45,19 @@ Patient* createPatient(char namaLengkap[], char alamat[], char kota[], char temp
     newPatient->history = NULL;
     newPatient->next = NULL;
     return newPatient;
+}
+
+// Fungsi untuk menambahkan patient baru ke dalam linkedlist
+void addPatient(Patient **head, Patient *newPatient) {
+    if (*head == NULL) {
+        *head = newPatient;
+    } else {
+        Patient *currentPatient = *head;
+        while (currentPatient->next != NULL) {
+            currentPatient = currentPatient->next;
+        }
+        currentPatient->next = newPatient;
+    }
 }
 
 
