@@ -61,7 +61,8 @@
     "xls.h": "c",
     "glib.h": "c",
     "stat.h": "c",
-    "logger.h": "c"
+    "logger.h": "c",
+    "string.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
