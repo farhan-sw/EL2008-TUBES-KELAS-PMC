@@ -15,6 +15,12 @@ link_directories(${GTK3_LIBRARY_DIRS})
 add_definitions(${GTK3_CFLAGS_OTHER})
 set(LIBRARIES ${LIBRARIES} ${GTK3_LIBRARIES})
 
+# input library tambahan xlxsio
+link_directories(/mingw64/lib)
+include_directories(/mingw64/include)
+find_package(xlsxio REQUIRED)
+include_directories(${XLSXIO_INCLUDE_DIRS})
+
 # Set the output directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
@@ -24,13 +30,16 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 # Set the output directory for static libraries
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
+
 # include functions
 include_directories(${CMAKE_SOURCE_DIR}/src/functions/standalone ${CMAKE_SOURCE_DIR}/src/functions/struct)
 
 # Compile
 file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/functions/standalone/*.c ${PROJECT_SOURCE_DIR}/src/functions/standalone/*.h ${PROJECT_SOURCE_DIR}/src/functions/struct/*.c ${PROJECT_SOURCE_DIR}/src/functions/struct/*.h)
 add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/src/main.c ${SOURCES})
-target_link_libraries(HealthAdmin ${LIBRARIES})
+target_link_libraries(HealthAdmin ${LIBRARIES} ${XLSXIO_LIBRARIES})
+target_link_libraries(HealthAdmin xlsxio_read)
+target_link_libraries(HealthAdmin xlsxio_write)
 
 # Messages
 message(STATUS "GTK include directories: ${GTK3_INCLUDE_DIRS}")

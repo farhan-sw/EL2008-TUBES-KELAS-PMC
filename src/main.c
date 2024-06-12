@@ -6,6 +6,8 @@
 #include "logger.h"
 #include "dataStructure.h"
 #include "test.h"
+#include "dataOperator.h"
+#include "loader.h"
 
 char session[50];
 
@@ -50,34 +52,12 @@ void initializeSession(){
 int main(int argc, char **argv) {
 
     initializeSession();
-
     Logger(1, "Application started");
 
-    // // Create the parent nodes
-    // Patient *nodeA = createPatient("A", 30, 'M', "2021-10-01");
-    // Patient *nodeB = createPatient("B", 25, 'F', "2021-09-15");
-
-    // // Create the child nodes for node A
-    // History *nodeA1 = createHistory("Flu", "Paracetamol", "2021-10-05", 10.0, 50.0);
-    // History *nodeA2 = createHistory("Headache", "Aspirin", "2021-11-02", 8.0, 40.0);
-
-    // // Create the child nodes for node B
-    // History *nodeB1 = createHistory("Cough", "Cough Syrup", "2021-09-20", 15.0, 60.0);
-    // History *nodeB2 = createHistory("Fever", "Ibuprofen", "2021-10-10", 12.0, 55.0);
-
-    // // Connect the child nodes to the parent nodes
-    // nodeA->history = nodeA1;
-    // nodeA1->next = nodeA2;
-
-    // nodeB->history = nodeB1;
-    // nodeB1->next = nodeB2;
-
-    // // Connect the parent nodes
-    // nodeA->next = nodeB;
-    // nodeB->next = NULL;
-
-    // // Print the linked list
-    // // printLinkedList(nodeA);
+    // LOAD DATA
+    // Inisiasi data pasien
+    Patient* patientList = NULL;
+    readExcelFile();
 
     // GTK3 RUNNER
 

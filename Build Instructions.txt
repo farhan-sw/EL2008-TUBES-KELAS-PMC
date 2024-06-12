@@ -15,8 +15,11 @@ Team        :
 Dependencies :
     - CMake
     - Make
-    - MinGW (Basic Instalation)
-    - MSYS2
+    - MSYS2 MINGW64
+        - pacman -S mingw-w64-x86_64-libzip         // for libzip
+        - pacman -S mingw-w64-x86_64-minizip-ng     // for minizip
+        - pacman -S mingw-w64-x86_64-expat          // for expat
+        - pacman -S mingw-w64-x86_64-xlsxio         // for xlsxio
     - GTK 3
 
 Tested on :
