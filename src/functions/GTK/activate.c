@@ -5,7 +5,7 @@
 #include "./finance_tab.c"
 #include "./about_tab.c"
 
-static void activate(){
+static void activate(Patient* patientList){
     Logger(1, "Building Main Window");
     // MAIN WINDOW INITIALIZATION
     // Create the main window
@@ -54,7 +54,7 @@ static void activate(){
     }
 
     // Build the Patient Data tab, implemented in patient_data_tab.c
-    buildPatientDataTab(userDataTab);
+    buildPatientDataTab(userDataTab, patientList);
 
     // Build the Medical Records tab, implemented in medical_records_tab.c
     buildMedicalRecordTab(medicalRecordsTab);

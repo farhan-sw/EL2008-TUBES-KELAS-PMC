@@ -10,6 +10,6 @@
 #include <xlsxio_read.h>
 
 //fungsi yang membaca file xlxs
-void readExcelFile();
+void loadData(Patient** patientList, char* filename);
 
 #endif // LOADER_H

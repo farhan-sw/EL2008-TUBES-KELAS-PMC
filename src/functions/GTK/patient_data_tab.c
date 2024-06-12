@@ -76,19 +76,35 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
     gtk_widget_show_all(window);
 }
 
-void addDataPatientToTable(GtkWidget* table) {
-    for (int i = 0; i < sizeof(patients) / sizeof(patients[0]); i++) {
+void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
+    // cari panjang linkedlist
+    Patient* patientstemp = patientsList;
+    int count = 0;
+    while (patientstemp != NULL) {
+        count++;
+        patientstemp = patientstemp->next;
+    }
+
+    patientstemp = patientsList;
+    char umur_text[10];
+    char noBPJS_text[20];
+    // cetak data ke dalam tabel
+    for (int i = 0; i < count; i++) {
         char label1_text[10];
         sprintf(label1_text, "%d", i+1);
         GtkWidget* label1 = gtk_label_new(label1_text);
-        GtkWidget* label2 = gtk_label_new(patients[i][0]);
-        GtkWidget* label3 = gtk_label_new(patients[i][1]);
-        GtkWidget* label4 = gtk_label_new(patients[i][2]);
-        GtkWidget* label5 = gtk_label_new(patients[i][3]);
-        GtkWidget* label6 = gtk_label_new(patients[i][4]);
-        GtkWidget* label7 = gtk_label_new(patients[i][5]);
-        GtkWidget* label8 = gtk_label_new(patients[i][6]);
-        GtkWidget* label9 = gtk_label_new(patients[i][7]);
+        GtkWidget* label2 = gtk_label_new(patientstemp->namaLengkap);
+        GtkWidget* label3 = gtk_label_new(patientstemp->alamat);
+        GtkWidget* label4 = gtk_label_new(patientstemp->kota);
+        GtkWidget* label5 = gtk_label_new(patientstemp->tempatLahir);
+        GtkWidget* label6 = gtk_label_new("test");
+        
+        sprintf(umur_text, "%d", patientstemp->umur);
+        GtkWidget* label7 = gtk_label_new(umur_text);
+
+        sprintf(noBPJS_text, "%d", patientstemp->noBPJS);
+        GtkWidget* label8 = gtk_label_new(noBPJS_text);
+        GtkWidget* label9 = gtk_label_new(patientstemp->idPasien);
         GtkWidget* checkbox = gtk_check_button_new();
         gtk_grid_attach(GTK_GRID(table), label1, 0, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label2, 1, i+1, 1, 1);
@@ -100,11 +116,12 @@ void addDataPatientToTable(GtkWidget* table) {
         gtk_grid_attach(GTK_GRID(table), label8, 7, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label9, 8, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), checkbox, 9, i+1, 1, 1);
+        patientstemp = patientstemp->next;
     }
 }
 
 // Function to input patient data table
-void inputPatientDataTable(GtkWidget* userDataTab){
+void inputPatientDataTable(GtkWidget* userDataTab, Patient* patientList){
     // PATIENT DATA DISPLAY
     // Create the scrollable table
     GtkWidget* scrollable = gtk_scrolled_window_new(NULL, NULL);
@@ -144,7 +161,7 @@ void inputPatientDataTable(GtkWidget* userDataTab){
     gtk_widget_set_margin_start(header1, 10);
 
     // Add dummy data to the table
-    addDataPatientToTable(table);
+    addDataPatientToTable(table, patientList);
 
     // Set table properties
     gtk_widget_set_hexpand(table, TRUE);
@@ -154,7 +171,7 @@ void inputPatientDataTable(GtkWidget* userDataTab){
 }
 
 // Function to build the patient data tab (Callable from main.c)
-void buildPatientDataTab(GtkWidget* userDataTab){
+void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
     // TOOLBAR
     // Create the toolbar
     GtkWidget* patientDataToolbar = gtk_toolbar_new();
@@ -179,5 +196,5 @@ void buildPatientDataTab(GtkWidget* userDataTab){
     g_signal_connect(searchBox, "changed", G_CALLBACK(on_search_entry_changed), NULL);
 
     // PATIENT DATA DISPLAY
-    inputPatientDataTable(userDataTab);
+    inputPatientDataTable(userDataTab, patientList);
 }

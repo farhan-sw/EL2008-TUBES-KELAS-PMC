@@ -47,24 +47,31 @@ void initializeSession(){
 }
 
 // GTK 3 Functions
+
 #include "./functions/GTK/activate.c"
 
 int main(int argc, char **argv) {
+    char* filename = "../data/DataPMC20232024.xlsx";
 
     initializeSession();
     Logger(1, "Application started");
 
     // LOAD DATA
     // Inisiasi data pasien
-    Patient* patientList = NULL;
-    readExcelFile();
+    Patient* allPatientList = NULL;
+    loadData(&allPatientList, filename);
+    printf("Pointer allPatientList: %p\n", allPatientList);
+
+    // printLinkedList(allPatientList);
 
     // GTK3 RUNNER
 
     // Initialize GTK
     gtk_init(&argc, &argv);
     // Initialize main window
-    activate();
+    // print pointer allPatientList
+    
+    activate(allPatientList);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();
