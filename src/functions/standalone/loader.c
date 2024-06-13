@@ -52,6 +52,9 @@ void loadData(Patient** patientList, char* filename) {
     int noBPJS;
     char idPasien[20];
     int row_count = 0;
+
+    Date tanggalLahirTemp;
+    
     while (xlsxioread_sheet_next_row(sheet_data_pasien)) {
         if (row_count == 0) {
             row_count++;
@@ -79,6 +82,10 @@ void loadData(Patient** patientList, char* filename) {
                 // salin tempat lahir
                 strcpy(tempatLahir, cell_data);
                 break;
+            case 5:
+                // salin tanggal lahir
+                tanggalLahirTemp = convertStringToDate(cell_data);
+                break;
             case 6:
                 // salin umur
                 umur = atoi(cell_data);
@@ -99,7 +106,7 @@ void loadData(Patient** patientList, char* filename) {
         }
         // printf("\n");
         // buat node pasien
-        Patient* newPatient = createPatient(namaLengkap, alamat, kota, tempatLahir, umur, noBPJS, idPasien);
+        Patient* newPatient = createPatient(namaLengkap, alamat, kota, tempatLahir, tanggalLahirTemp, umur, noBPJS, idPasien);
         // tambahkan node pasien ke dalam linked list
         addPatient(patientList, newPatient);
         row_count++;

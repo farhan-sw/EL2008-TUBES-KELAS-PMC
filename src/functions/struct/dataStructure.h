@@ -24,6 +24,7 @@ typedef struct Patient {
     char alamat[100];
     char kota[50];
     char tempatLahir[50];
+    Date tanggalLahir;
     int umur;
     int noBPJS;
     char idPasien[20];
