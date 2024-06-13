@@ -88,6 +88,7 @@ void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
     patientstemp = patientsList;
     char umur_text[10];
     char noBPJS_text[20];
+    char tanggalLahir_text[20];
     // cetak data ke dalam tabel
     for (int i = 0; i < count; i++) {
         char label1_text[10];
@@ -97,7 +98,8 @@ void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
         GtkWidget* label3 = gtk_label_new(patientstemp->alamat);
         GtkWidget* label4 = gtk_label_new(patientstemp->kota);
         GtkWidget* label5 = gtk_label_new(patientstemp->tempatLahir);
-        GtkWidget* label6 = gtk_label_new("test");
+        convertDateToString(patientstemp->tanggalLahir, tanggalLahir_text);
+        GtkWidget* label6 = gtk_label_new(tanggalLahir_text);
         
         sprintf(umur_text, "%d", patientstemp->umur);
         GtkWidget* label7 = gtk_label_new(umur_text);

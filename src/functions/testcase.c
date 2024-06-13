@@ -146,32 +146,30 @@ Date convertStringToDate(const char tanggal[]) {
     return newDate;
 }
 
+// Konversi Date ke string dengan format DD-MM-YYYY
+void convertDateToString(Date date, char *dateStr) {
+    sprintf(dateStr, "%02d-%02d-%04d", date.day, date.month, date.year);
+}
+
 int main() {
     Date date;
+    char dateStr[11];
 
     date = convertStringToDate("29857");
-    printf("Day: %d\n", date.day);
-    printf("Month: %d\n", date.month);
-    printf("Year: %d\n", date.year);
-    printf("\n");
+    convertDateToString(date, dateStr);
+    printf("Date: %s\n", dateStr);
 
     date = convertStringToDate("28/09/1981");
-    printf("Day: %d\n", date.day);
-    printf("Month: %d\n", date.month);
-    printf("Year: %d\n", date.year);
-    printf("\n");
+    convertDateToString(date, dateStr);
+    printf("Date: %s\n", dateStr);
 
     date = convertStringToDate("1-April-2021");
-    printf("Day: %d\n", date.day);
-    printf("Month: %d\n", date.month);
-    printf("Year: %d\n", date.year);
-    printf("\n");
+    convertDateToString(date, dateStr);
+    printf("Date: %s\n", dateStr);
 
     date = convertStringToDate("1-Apr-2021");
-    printf("Day: %d\n", date.day);
-    printf("Month: %d\n", date.month);
-    printf("Year: %d\n", date.year);
-    printf("\n");
+    convertDateToString(date, dateStr);
+    printf("Date: %s\n", dateStr);
 
     return 0;
 }

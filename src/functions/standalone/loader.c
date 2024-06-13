@@ -54,6 +54,12 @@ void loadData(Patient** patientList, char* filename) {
     int row_count = 0;
 
     Date tanggalLahirTemp;
+
+    time_t now = time(NULL);
+    struct tm *local_time = localtime(&now);
+    int current_year = local_time->tm_year + 1900;
+    int age;
+    
     
     while (xlsxioread_sheet_next_row(sheet_data_pasien)) {
         if (row_count == 0) {
@@ -106,7 +112,19 @@ void loadData(Patient** patientList, char* filename) {
         }
         // printf("\n");
         // buat node pasien
-        Patient* newPatient = createPatient(namaLengkap, alamat, kota, tempatLahir, tanggalLahirTemp, umur, noBPJS, idPasien);
+
+        // Hitung umur berdasarkan tanggal lahir dan waktu sekarang
+        
+        age = current_year - tanggalLahirTemp.year;
+        if (local_time->tm_mon < tanggalLahirTemp.month) {
+            age--;
+        } else if (local_time->tm_mon == tanggalLahirTemp.month) {
+            if (local_time->tm_mday < tanggalLahirTemp.day) {
+                age--;
+            }
+        }
+
+        Patient* newPatient = createPatient(namaLengkap, alamat, kota, tempatLahir, tanggalLahirTemp, age, noBPJS, idPasien);
         // tambahkan node pasien ke dalam linked list
         addPatient(patientList, newPatient);
         row_count++;
