@@ -19,6 +19,70 @@ Date createDate(int day, int month, int year) {
     return newDate;
 }
 
+// Konversi tanggal dari string ke Date
+Date convertStringToDate(char tanggal[]) {
+    printf("Tanggal: %s\n", tanggal);
+    Date newDate;
+
+    // deteksi apakah ada "-" di tanggal
+    int count = 0;
+    char *splitter;
+    for (int i = 0; i < strlen(tanggal); i++) {
+        if (tanggal[i] == '-') {
+            count++;
+        }
+    }
+
+    if(count == 0) {
+        printf("Format tanggal menggunakan spasi\n");
+        splitter = " ";
+    } else if(count == 2) {
+        printf("Format tanggal menggunakan strip\n");
+        splitter = "-";
+    }
+
+    char *token = strtok(tanggal, splitter);
+    newDate.day = atoi(token);
+    printf("Day: %d\n", newDate.day);
+
+    token = strtok(NULL, splitter);
+
+    // Membandingkan 3 huruf pertama dari bulan
+    char month[4];
+    strncpy(month, token, 3);
+    month[3] = '\0';
+    if (strcmp(month, "Jan") == 0) {
+        newDate.month = 1;
+    } else if (strcmp(month, "Feb") == 0) {
+        newDate.month = 2;
+    } else if (strcmp(month, "Mar") == 0) {
+        newDate.month = 3;
+    } else if (strcmp(month, "Apr") == 0) {
+        newDate.month = 4;
+    } else if (strcmp(month, "May") == 0) {
+        newDate.month = 5;
+    } else if (strcmp(month, "Jun") == 0) {
+        newDate.month = 6;
+    } else if (strcmp(month, "Jul") == 0) {
+        newDate.month = 7;
+    } else if (strcmp(month, "Aug") == 0) {
+        newDate.month = 8;
+    } else if (strcmp(month, "Sep") == 0) {
+        newDate.month = 9;
+    } else if (strcmp(month, "Oct") == 0) {
+        newDate.month = 10;
+    } else if (strcmp(month, "Nov") == 0) {
+        newDate.month = 11;
+    } else if (strcmp(month, "Dec") == 0) {
+        newDate.month = 12;
+    }
+
+    token = strtok(NULL, splitter);
+    newDate.year = atoi(token);
+    
+    return newDate;
+}
+
 // Membuat ID pasien baru yang unik
 
 

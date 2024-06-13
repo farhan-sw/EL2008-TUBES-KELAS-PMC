@@ -64,6 +64,11 @@ int main(int argc, char **argv) {
 
     // printLinkedList(allPatientList);
 
+    // printf("Test mengubah tanggal\n");
+    // // Test mengubah tanggal
+    // Date testDate = convertStringToDate("1 Januari 2022");
+    // printDate(testDate);
+
     // GTK3 RUNNER
 
     // Initialize GTK
