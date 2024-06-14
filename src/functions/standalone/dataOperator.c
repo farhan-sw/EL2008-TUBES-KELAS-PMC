@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dataStructure.h"
+#include "logger.h"
 
 
 
@@ -466,7 +467,33 @@ void printPatientHistory(Patient *head){
     }
 }
 
+// ====================== SEARCH ENGINE =========================
+void searchPatient(Patient *head, Patient **result, char keyword[]){
+    // cek apakah keyword kosong, bila kosong result diisi head
+    // kosongkan result
 
+    if (strcmp(keyword, "") == 0){
+        copyPatient(head, result);
+        return;
+    } else {
+        // jika tidak kosong maka lakukan pencarian berdasar keyword taboa mengecek history
+        Patient *currentPatient = head;
+        while (currentPatient != NULL) {
+            
+            currentPatient = currentPatient->next;
+        }
+    }
+
+    Logger(1, ("Searching patient with keyword %s\n", keyword));
+}
+
+void searchMedicalRecord(Patient *head, Patient **result, char keyword[]){
+    printf("Search Engine\n");
+}
+
+void searchService(Tindakan *head, Tindakan **result, char keyword[]){
+    printf("Search Engine\n");
+}
 
 
 /* ==================== UNTUK TINDAKAN =========================== */
