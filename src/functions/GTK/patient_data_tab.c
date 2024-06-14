@@ -181,7 +181,6 @@ void searchPatientDataOnChanged(GtkSearchEntry *entry, gpointer user_data) {
     const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
     char *mutableText = g_strdup(text);
     searchPatientParams* params = (searchPatientParams*) user_data;
-    g_print("Search entry changed: %s\n", text);
     // Handle the search event here
     // Implementasikan logika pencarian di sini
     
@@ -189,6 +188,10 @@ void searchPatientDataOnChanged(GtkSearchEntry *entry, gpointer user_data) {
     // printPatientList(*params->operatedData);
     // Implementasikan logika lain di sini
     addDataPatientToTable(params->table, params->operatedData);
+    gtk_widget_show_all(params->table);
+    char logMessage[100];
+    sprintf(logMessage, "Search query: %s", mutableText);
+    Logger(1, logMessage);
     g_free(mutableText);
 }
 
