@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     Tindakan* allTindakanList = NULL;
     loadData(allPatientData, &allTindakanList, filename);
     copyPatient(*allPatientData, displayData);
-    printf("Pointer allPatientList: %p\n", allPatientList);
+    printf("Pointer allPatientList: %p\n", allPatientData);
 
     // printLinkedList(allPatientData);
 

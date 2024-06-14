@@ -250,18 +250,6 @@ History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tind
     return newHistory;
 }
 
-void addHistory(History **head, History *newHistory) {
-    if (*head == NULL) {
-        *head = newHistory;
-    } else {
-        History *currentHistory = *head;
-        while (currentHistory->next != NULL) {
-            currentHistory = currentHistory->next;
-        }
-        currentHistory->next = newHistory;
-    }
-}
-
 
 /**
  * @brief Print a Date function
