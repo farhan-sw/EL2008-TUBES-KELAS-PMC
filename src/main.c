@@ -62,12 +62,17 @@ int main(int argc, char **argv) {
     loadData(&allPatientList, filename);
     printf("Pointer allPatientList: %p\n", allPatientList);
 
-    // printLinkedList(allPatientList);
+    // printPatient(allPatientList);
+    // printPatientHistory(allPatientList);
 
     // printf("Test mengubah tanggal\n");
     // // Test mengubah tanggal
     // Date testDate = convertStringToDate("1 Januari 2022");
     // printDate(testDate);
+
+    // // Testing print history pasien KX 1230123
+    // Patient* testPatient = findPatient(allPatientList, "KX 1230123");
+    // printPatientHistory(testPatient);
 
     // GTK3 RUNNER
 

@@ -45,5 +45,13 @@ typedef struct History {
     struct History *next;
 } History;
 
+typedef struct Tindakan {
+    int id;
+    char Tindakan[50];
+    int biaya;
+    struct Tindakan *next;
+} Tindakan;
+
+
 
 #endif /* DATASTRUCTURE_H */
