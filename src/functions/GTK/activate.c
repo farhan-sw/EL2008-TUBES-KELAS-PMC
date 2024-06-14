@@ -57,7 +57,7 @@ static void activate(Patient* patientList){
     buildPatientDataTab(userDataTab, patientList);
 
     // Build the Medical Records tab, implemented in medical_records_tab.c
-    buildMedicalRecordTab(medicalRecordsTab);
+    buildMedicalRecordTab(medicalRecordsTab, patientList);
 
     // Show all widgets
     gtk_widget_show_all(window);

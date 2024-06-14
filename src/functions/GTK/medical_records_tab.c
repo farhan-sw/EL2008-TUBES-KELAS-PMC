@@ -27,8 +27,53 @@ void addMedicalRecordToTable(GtkWidget* table) {
     }
 }
 
+// Function to add history data to the table
+void addHistoryToTable(GtkWidget* table, Patient* patientList) {
+    int i = 1;
+
+    // Penampung Sementara
+    char tanggal_text[20];
+    char kontrol_text[20];
+    char biaya_text[20];
+
+    while (patientList != NULL) {
+        History* history = patientList->history;
+        while (history != NULL) {
+            char label1_text[10];
+            sprintf(label1_text, "%d", i);
+            GtkWidget* label1 = gtk_label_new(label1_text);
+
+            convertDateToString(history->tanggal, tanggal_text);
+            GtkWidget* label2 = gtk_label_new(tanggal_text);
+
+            GtkWidget* label3 = gtk_label_new(history->idPasien);
+            GtkWidget* label4 = gtk_label_new(history->diagnosis);
+            GtkWidget* label5 = gtk_label_new("YEAH");
+
+            convertDateToString(history->kontrol, kontrol_text);
+            GtkWidget* label6 = gtk_label_new(kontrol_text);
+
+            sprintf(biaya_text, "Rp %d", history->biaya);
+            GtkWidget* label7 = gtk_label_new(biaya_text);
+            
+            GtkWidget* checkbox = gtk_check_button_new();
+            gtk_grid_attach(GTK_GRID(table), label1, 0, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), label2, 1, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), label3, 2, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), label4, 3, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), label5, 4, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), label6, 5, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), label7, 6, i, 1, 1);
+            gtk_grid_attach(GTK_GRID(table), checkbox, 7, i, 1, 1);
+            history = history->next;
+            i++;
+        }
+        patientList = patientList->next;
+    }
+}
+
 // Function to build the medical record tab (Callable from main.c)
-void buildMedicalRecordTab(GtkWidget* medicalRecordsTab){
+void buildMedicalRecordTab(GtkWidget* medicalRecordsTab, Patient* patientList) {
     // Creating Tabs for Medical Records
     // TOOLBAR
     // Create the toolbar
@@ -84,8 +129,11 @@ void buildMedicalRecordTab(GtkWidget* medicalRecordsTab){
     // tambahkan margin kiri pada tabel
     gtk_widget_set_margin_start(header1MedRec, 10);
 
-    // Add dummy data to the table
-    addMedicalRecordToTable(tableMedRec);
+    // // Add dummy data to the table
+    // addMedicalRecordToTable(tableMedRec);
+
+    // Input data rekam medis dari patientList
+    addHistoryToTable(tableMedRec, patientList);
 
     // Set table properties
     gtk_widget_set_hexpand(tableMedRec, TRUE);
@@ -93,3 +141,4 @@ void buildMedicalRecordTab(GtkWidget* medicalRecordsTab){
     gtk_grid_set_row_spacing(GTK_GRID(tableMedRec), 7);
     gtk_grid_set_column_spacing(GTK_GRID(tableMedRec), 15); 
 }
+
