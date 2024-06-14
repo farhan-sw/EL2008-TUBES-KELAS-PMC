@@ -149,8 +149,8 @@ void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
         patientstemp = patientstemp->next;
     }
 
-    //tampilkan data pasien pertama
-    printf("Nama Pasien Pertama 2: %s\n", patientsList->namaLengkap);
+    // //tampilkan data pasien pertama
+    // printf("Nama Pasien Pertama 2: %s\n", patientsList->namaLengkap);
 }
 
 // Function to build the patient data tab (Callable from activate.c)
@@ -225,6 +225,6 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
     gtk_grid_set_row_spacing(GTK_GRID(table), 7);
     gtk_grid_set_column_spacing(GTK_GRID(table), 15); 
 
-    // print data pasien pertama
-    printf("Nama Pasien Pertama 1: %s\n", patientList->namaLengkap);
+    // // print data pasien pertama
+    // printf("Nama Pasien Pertama 1: %s\n", patientList->namaLengkap);
 }

@@ -60,6 +60,9 @@ static void activate(Patient* patientList, Patient** allPatientData, Tindakan* t
     // Build the Medical Records tab, implemented in medical_records_tab.c
     buildMedicalRecordTab(medicalRecordsTab, patientList, tindakanList);
 
+    // Build Finance Tab
+    buildFinanceTab(financeTab, tindakanList);  
+
     // Show all widgets
     gtk_widget_show_all(window);
 }
