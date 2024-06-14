@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtk.h>
 
 /**
  * @brief Date struct
@@ -52,6 +53,11 @@ typedef struct Tindakan {
     struct Tindakan *next;
 } Tindakan;
 
+typedef struct searchPatientParams{
+    GtkWidget *table;
+    Patient** operatedData;
+    Patient** allPatientData;
+} searchPatientParams;
 
 
 #endif /* DATASTRUCTURE_H */

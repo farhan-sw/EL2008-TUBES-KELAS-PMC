@@ -37,8 +37,11 @@ int TindakanToID(Tindakan *head, char tindakan[]);
 void printPatientHistory(Patient *head);
 
 void deletePatient(Patient *head, char idPasien[]);
+void freePatientList(Patient *head);
+
 int debugging();
 void printDate(Date date);
+void printPatientList(Patient *head);
 
 
 #endif /* DATAOPERATOR_H */

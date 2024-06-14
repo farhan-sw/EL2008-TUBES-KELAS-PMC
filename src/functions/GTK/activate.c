@@ -6,7 +6,9 @@
 #include "./about_tab.c"
 
 
-static void activate(Patient* patientList, Patient** allPatientData, Tindakan* tindakanList){
+static void activate(Patient** operatedData, Patient** allPatientData, Tindakan* tindakanList){
+
+    Patient* patientList = *operatedData;
     Logger(1, "Building Main Window");
     // MAIN WINDOW INITIALIZATION
     // Create the main window
@@ -55,7 +57,7 @@ static void activate(Patient* patientList, Patient** allPatientData, Tindakan* t
     }
 
     // Build the Patient Data tab, implemented in patient_data_tab.c
-    buildPatientDataTab(userDataTab, patientList);
+    buildPatientDataTab(userDataTab, operatedData, allPatientData);
 
     // Build the Medical Records tab, implemented in medical_records_tab.c
     buildMedicalRecordTab(medicalRecordsTab, patientList, tindakanList);

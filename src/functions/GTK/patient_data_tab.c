@@ -4,13 +4,11 @@
 #include   <string.h>
 #include   <time.h>
 #include   "dataStructure.h"
+#include   "search.h"
+#include   "logger.h"
+#include   "dataOperator.h"
 
-void on_search_entry_changed(GtkSearchEntry *entry, gpointer user_data) {
-    const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
-    g_print("Search entry changed: %s\n", text);
 
-    // Implementasikan logika lain di sini
-}
 
 // Callback function for toolbar buttons add patient data
 void addPatientData(GtkWidget* button, gpointer data) {
@@ -21,9 +19,10 @@ void addPatientData(GtkWidget* button, gpointer data) {
 void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
 {   
     // Get the patient list
-    Patient* patientList = (Patient*)data;
+    Patient** operatedData = (Patient**)data;
+
     //uji tampilkan nama pertama pada data pasien
-    printf("Nama Pasien Pertama: %s\n", patientList->namaLengkap);
+    // printf("Nama Pasien Pertama: %s\n", (*operatedData)->namaLengkap);
     // Create the new window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Add Patient Data");
@@ -88,32 +87,56 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
 }
 
 void clearPatientDataTable(GtkWidget* table) {
-    GList* children, *iter;
+    GList *children, *iter;
+
     children = gtk_container_get_children(GTK_CONTAINER(table));
-    iter = children;
-    for (int i = 0; i < 8 && iter != NULL; i++){
-        iter = g_list_next(iter); // Benar-benar melewati baris pertama
-    }
-    //baca isi data itter
-    while (iter != NULL) {
+    for(iter = children; iter != NULL; iter = g_list_next(iter)) {
         gtk_widget_destroy(GTK_WIDGET(iter->data));
-        iter = g_list_next(iter);
     }
     g_list_free(children);
 }
 
-void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
+void addDataPatientToTable(GtkWidget* table, Patient** operatedData) {
     // Clear the table first
     clearPatientDataTable(table);
+    
+    // Add table headers
+    GtkWidget* header1 = gtk_label_new("No");
+    GtkWidget* header2 = gtk_label_new("Nama Lengkap");
+    GtkWidget* header3 = gtk_label_new("Alamat");
+    GtkWidget* header4 = gtk_label_new("Kota");
+    GtkWidget* header5 = gtk_label_new("Tempat Lahir");
+    GtkWidget* header6 = gtk_label_new("Tanggal Lahir");
+    GtkWidget* header7 = gtk_label_new("Umur");
+    GtkWidget* header8 = gtk_label_new("No BPJS");
+    GtkWidget* header9 = gtk_label_new("ID Pasien");
+    
+    gtk_grid_attach(GTK_GRID(table), header1, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header2, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header3, 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header4, 3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header5, 4, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header6, 5, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header7, 6, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header8, 7, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header9, 8, 0, 1, 1);
+
+    // Set the width of header
+    gtk_widget_set_size_request(header2, 150, -1);
+    gtk_widget_set_size_request(header3, 200, -1);
+
+    // tambahkan margin kiri pada tabel
+    gtk_widget_set_margin_start(header1, 10);
+
     // cari panjang linkedlist
-    Patient* patientstemp = patientsList;
+    Patient* patientstemp = *operatedData;
     int count = 0;
     while (patientstemp != NULL) {
         count++;
         patientstemp = patientstemp->next;
     }
 
-    patientstemp = patientsList;
+    patientstemp = *operatedData;
     char umur_text[10];
     char noBPJS_text[20];
     char tanggalLahir_text[20];
@@ -150,11 +173,28 @@ void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
     }
 
     // //tampilkan data pasien pertama
-    // printf("Nama Pasien Pertama 2: %s\n", patientsList->namaLengkap);
+    // printf("Nama Pasien Pertama 2: %s\n", *operatedData->namaLengkap);
+}
+
+// callback function for search entry
+void searchPatientDataOnChanged(GtkSearchEntry *entry, gpointer user_data) {
+    const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
+    char *mutableText = g_strdup(text);
+    searchPatientParams* params = (searchPatientParams*) user_data;
+    g_print("Search entry changed: %s\n", text);
+    // Handle the search event here
+    // Implementasikan logika pencarian di sini
+    
+    searchPatient(*params->allPatientData, params->operatedData, mutableText);
+    // printPatientList(*params->operatedData);
+    // Implementasikan logika lain di sini
+    addDataPatientToTable(params->table, params->operatedData);
+    g_free(mutableText);
 }
 
 // Function to build the patient data tab (Callable from activate.c)
-void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
+void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient** allPatientData) {
+    Patient* patientList = *operatedData;
     // TOOLBAR
     // Create the toolbar
     GtkWidget* patientDataToolbar = gtk_toolbar_new();
@@ -167,7 +207,7 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
     GtkStyleContext *context = gtk_widget_get_style_context(addPatientDataButtonWidget);
     gtk_style_context_add_class(context, "add-data-patient-button");
     gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), addPatientDataButton, -1);
-    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), patientList);
+    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), operatedData);
 
     // Set the button border
     gtk_container_set_border_width(GTK_CONTAINER(addPatientDataButton), 5);
@@ -175,8 +215,6 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
     // Create the search box
     GtkWidget* searchBox = gtk_search_entry_new();
     gtk_box_pack_start(GTK_BOX(userDataTab), searchBox, FALSE, FALSE, 0);
-    // Hubungkan sinyal 'changed' ke fungsi callback
-    g_signal_connect(searchBox, "changed", G_CALLBACK(on_search_entry_changed), NULL);
 
     // PATIENT DATA DISPLAY
     // Create the scrollable table
@@ -188,36 +226,8 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
     GtkWidget* table = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(scrollable), table);
 
-    // Add table headers
-    GtkWidget* header1 = gtk_label_new("No");
-    GtkWidget* header2 = gtk_label_new("Nama Lengkap");
-    GtkWidget* header3 = gtk_label_new("Alamat");
-    GtkWidget* header4 = gtk_label_new("Kota");
-    GtkWidget* header5 = gtk_label_new("Tempat Lahir");
-    GtkWidget* header6 = gtk_label_new("Tanggal Lahir");
-    GtkWidget* header7 = gtk_label_new("Umur");
-    GtkWidget* header8 = gtk_label_new("No BPJS");
-    GtkWidget* header9 = gtk_label_new("ID Pasien");
-    
-    gtk_grid_attach(GTK_GRID(table), header1, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header2, 1, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header3, 2, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header4, 3, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header5, 4, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header6, 5, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header7, 6, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header8, 7, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(table), header9, 8, 0, 1, 1);
-
-    // Set the width of header
-    gtk_widget_set_size_request(header2, 150, -1);
-    gtk_widget_set_size_request(header3, 200, -1);
-
-    // tambahkan margin kiri pada tabel
-    gtk_widget_set_margin_start(header1, 10);
-
-    // Add dummy data to the table
-    addDataPatientToTable(table, patientList);
+    // Adddata to the table
+    addDataPatientToTable(table, operatedData);
 
     // Set table properties
     gtk_widget_set_hexpand(table, TRUE);
@@ -225,6 +235,14 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
     gtk_grid_set_row_spacing(GTK_GRID(table), 7);
     gtk_grid_set_column_spacing(GTK_GRID(table), 15); 
 
+    // Hubungkan sinyal 'changed' ke fungsi callback
+    // buat parameter searchPatientParams
+    searchPatientParams* searchPatientParameter = malloc(sizeof(searchPatientParams));
+    searchPatientParameter->table = table;
+    searchPatientParameter->operatedData = operatedData;
+    searchPatientParameter->allPatientData = allPatientData;
+    g_signal_connect(searchBox, "changed", G_CALLBACK(searchPatientDataOnChanged), searchPatientParameter);
+
     // // print data pasien pertama
-    // printf("Nama Pasien Pertama 1: %s\n", patientList->namaLengkap);
+    // printf("Nama Pasien Pertama 1: %s\n", *operatedData->namaLengkap);
 }

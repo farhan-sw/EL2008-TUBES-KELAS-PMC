@@ -199,7 +199,7 @@ void addPatient(Patient **head, Patient *newPatient) {
         *head = newPatient;
     } else {
         Patient *currentPatient = *head;
-        while (currentPatient->next != NULL) {
+        while (currentPatient != NULL && currentPatient->next != NULL) {
             currentPatient = currentPatient->next;
         }
         currentPatient->next = newPatient;
@@ -376,6 +376,37 @@ void deletePatient(Patient **head, char idPasien[]) {
     free(currentPatient);
 }
 
+void freePatientList(Patient *head) {
+    Patient *currentPatient = head;
+    while (currentPatient != NULL) {
+        Patient *temp = currentPatient;
+        currentPatient = currentPatient->next;
+        // bebaskan history
+        History *currentHistory = temp->history;
+        while (currentHistory != NULL) {
+            History *tempHistory = currentHistory;
+            currentHistory = currentHistory->next;
+            free(tempHistory);
+        }
+        free(temp);
+    }
+}
+
+void printPatientList(Patient *head) {
+    Patient *currentPatient = head;
+    while (currentPatient != NULL) {
+        printf("Nama Pasien: %s\n", currentPatient->namaLengkap);
+        printf("Alamat Pasien: %s\n", currentPatient->alamat);
+        printf("Kota Pasien: %s\n", currentPatient->kota);
+        printf("Tempat Lahir Pasien: %s\n", currentPatient->tempatLahir);
+        printf("Tanggal Lahir Pasien: %d-%d-%d\n", currentPatient->tanggalLahir.day, currentPatient->tanggalLahir.month, currentPatient->tanggalLahir.year);
+        printf("Umur Pasien: %d\n", currentPatient->umur);
+        printf("No BPJS Pasien: %d\n", currentPatient->noBPJS);
+        printf("ID Pasien: %s\n\n", currentPatient->idPasien);
+        currentPatient = currentPatient->next;
+    }
+}
+
 
 
 /**
@@ -465,34 +496,6 @@ void printPatientHistory(Patient *head){
         printf("Biaya: %d\n", currentHistory->biaya);
         currentHistory = currentHistory->next;
     }
-}
-
-// ====================== SEARCH ENGINE =========================
-void searchPatient(Patient *head, Patient **result, char keyword[]){
-    // cek apakah keyword kosong, bila kosong result diisi head
-    // kosongkan result
-
-    if (strcmp(keyword, "") == 0){
-        copyPatient(head, result);
-        return;
-    } else {
-        // jika tidak kosong maka lakukan pencarian berdasar keyword taboa mengecek history
-        Patient *currentPatient = head;
-        while (currentPatient != NULL) {
-            
-            currentPatient = currentPatient->next;
-        }
-    }
-
-    Logger(1, ("Searching patient with keyword %s\n", keyword));
-}
-
-void searchMedicalRecord(Patient *head, Patient **result, char keyword[]){
-    printf("Search Engine\n");
-}
-
-void searchService(Tindakan *head, Tindakan **result, char keyword[]){
-    printf("Search Engine\n");
 }
 
 

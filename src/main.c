@@ -8,6 +8,7 @@
 #include "test.h"
 #include "dataOperator.h"
 #include "loader.h"
+#include "search.h"
 
 char session[50];
 
@@ -45,6 +46,12 @@ int main(int argc, char **argv) {
     copyPatient(*allPatientData, operatedData);
     printf("Pointer allPatientList: %p\n", allPatientData);
 
+    // // test search 
+    // Patient* result = NULL;
+    // searchPatient(*allPatientData, &result, "Tulungagung");
+
+    // printf("Hasil pencarian: \n");
+    // printPatientList(result);
 
     // GTK3 RUNNER
 
@@ -53,7 +60,7 @@ int main(int argc, char **argv) {
     // Initialize main window
     // print pointer allPatientData
     
-    activate(*operatedData, allPatientData, *allTindakanList);
+    activate(operatedData, allPatientData, *allTindakanList);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();
