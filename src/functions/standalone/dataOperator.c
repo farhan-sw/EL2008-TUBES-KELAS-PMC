@@ -445,3 +445,79 @@ void printPatientHistory(Patient *head){
         currentHistory = currentHistory->next;
     }
 }
+
+
+
+
+/* ==================== UNTUK TINDAKAN =========================== */
+
+/**
+ * @brief Create a Tindakan function
+ * @param tindakan: char tindakan
+ * @param biaya: int biaya
+ * @param id: int ID
+ */
+Tindakan* createTindakan(char tindakan[], int biaya, int id) {
+    Tindakan *newTindakan = (Tindakan*) malloc(sizeof(Tindakan));
+    newTindakan->id = id;
+    strcpy(newTindakan->Tindakan, tindakan);
+    newTindakan->biaya = biaya;
+    newTindakan->next = NULL;
+    return newTindakan;
+}
+
+void addTindakan(Tindakan **head, Tindakan *newTindakan) {
+    if (*head == NULL) {
+        *head = newTindakan;
+    } else {
+        Tindakan *currentTindakan = *head;
+        while (currentTindakan->next != NULL) {
+            currentTindakan = currentTindakan->next;
+        }
+        currentTindakan->next = newTindakan;
+    }
+}
+
+void printTindakan(Tindakan *head) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        printf("ID: %d\n", currentTindakan->id);
+        printf("Tindakan: %s\n", currentTindakan->Tindakan);
+        printf("Biaya: %d\n", currentTindakan->biaya);
+        currentTindakan = currentTindakan->next;
+    }
+}
+
+void idToTindakan(Tindakan *head, int id, char *tindakan, int *biaya) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (currentTindakan->id == id) {
+            strcpy(tindakan, currentTindakan->Tindakan);
+            *biaya = currentTindakan->biaya;
+            return;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+}
+
+int idToBiaya(Tindakan *head, int id) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (currentTindakan->id == id) {
+            return currentTindakan->biaya;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return 0;
+}
+
+int TindakanToID(Tindakan *head, char tindakan[]) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (strcmp(currentTindakan->Tindakan, tindakan) == 0) {
+            return currentTindakan->id;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return -1;
+}

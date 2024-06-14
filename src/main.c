@@ -59,8 +59,12 @@ int main(int argc, char **argv) {
     // LOAD DATA
     // Inisiasi data pasien
     Patient* allPatientList = NULL;
-    loadData(&allPatientList, filename);
+    Tindakan* allTindakanList = NULL;
+    loadData(&allPatientList, &allTindakanList, filename);
     printf("Pointer allPatientList: %p\n", allPatientList);
+
+    // Print tindaan
+    // printTindakan(allTindakanList);
 
     // printPatient(allPatientList);
     // printPatientHistory(allPatientList);

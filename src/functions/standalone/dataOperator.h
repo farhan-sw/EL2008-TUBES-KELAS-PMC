@@ -24,6 +24,13 @@ void addHistory(History **head, History *newHistory);
 void printHistory(History *history);
 void sortHistory(Patient *head);
 
+Tindakan* createTindakan(char tindakan[], int biaya, int id);
+void addTindakan(Tindakan **head, Tindakan *newTindakan);
+void printTindakan(Tindakan *head);
+void idToTindakan(Tindakan *head, int id, char *tindakan, int *biaya);
+int idToBiaya(Tindakan *head, int id);
+int TindakanToID(Tindakan *head, char tindakan[]);
+
 // Fungsi untuk print data pasien sekaligus rekam medis pada pasien tersebut
 void printPatientHistory(Patient *head);
 

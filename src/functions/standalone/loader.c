@@ -9,7 +9,7 @@
 
 //fungsi yang membaca file xlxs
 
-void loadData(Patient** patientList, char* filename) {
+void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
     xlsxioreader xlsxioread;
     xlsxioreadersheet sheet_data_pasien;
     xlsxioreadersheet sheet_rekam_medis;
@@ -129,16 +129,54 @@ void loadData(Patient** patientList, char* filename) {
         row_count++;
     }
 
+
+    // Masukkan Data Biaya Tindakan
+    row_count = 0;
+    // Variabel penampung sementara
+    char tindakan[50];
+    int biaya;
+    int tindakanID = 0;
+    while (xlsxioread_sheet_next_row(sheet_biaya)) {
+        if (row_count == 0) {
+            row_count++;
+            continue; // Skip the first row
+        }
+        itterasi = 0;
+        while ((cell_data = xlsxioread_sheet_next_cell(sheet_biaya)) != NULL) {
+            // Process the cell data
+            switch (itterasi)
+            {
+            case 1:
+                // Salin data tindakan
+                strcpy(tindakan, cell_data);
+                break;
+            case 2:
+                // Salin data biaya
+                biaya = atoi(cell_data);
+                break;
+            default:
+                break;
+            }
+
+            itterasi++;
+        }
+        // printf("\n");
+        // buat node tindakan
+        Tindakan* newTindakan = createTindakan(tindakan, biaya, tindakanID);
+        // tambahkan node tindakan ke dalam linked list
+        addTindakan(tindakanList, newTindakan);
+        tindakanID++;
+        row_count++;
+    }
+
+
     // Memasukkan data rekam medis
     row_count = 0;
-
     // Variabel penampung sementara
     Date tanggal;
     char diagnosis[50];
-    char tindakan[50];
-    int tindakanID = 0;
     Date kontrol;
-    int biaya;
+    int id_tindakan;
     Patient* currentPatient = *patientList;
 
     while (xlsxioread_sheet_next_row(sheet_rekam_medis)) {
@@ -170,6 +208,7 @@ void loadData(Patient** patientList, char* filename) {
                 // Print Tindakan
                 //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 strcpy(tindakan, cell_data);
+                id_tindakan = TindakanToID(*tindakanList, tindakan);
                 break;
 
             case 5:
@@ -179,13 +218,9 @@ void loadData(Patient** patientList, char* filename) {
                 break;
 
             case 6:
-                // Baca Biaya
+                // Baca Biaya berdsaarakan tindakan
                 //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
-                biaya = atoi(cell_data);
-                break;
-
-            case 7:
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
+                biaya = idToBiaya(*tindakanList, id_tindakan);
                 break;
             
             default:
@@ -196,7 +231,7 @@ void loadData(Patient** patientList, char* filename) {
         }
         // printf("\n");
         // buat node rekam medis
-        History* newHistory = createHistory(tanggal, idPasien, diagnosis, tindakanID, kontrol, biaya);
+        History* newHistory = createHistory(tanggal, idPasien, diagnosis, id_tindakan, kontrol, biaya);
 
         // Cari pasien berdasarkan id
         currentPatient = findPatient(*patientList, idPasien);
