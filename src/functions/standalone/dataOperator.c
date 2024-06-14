@@ -217,6 +217,17 @@ void addHistory(History **head, History *newHistory) {
     }
 }
 
+Patient* findPatient(Patient *head, char idPasien[]) {
+    Patient *currentPatient = head;
+    while (currentPatient != NULL) {
+        if (strcmp(currentPatient->idPasien, idPasien) == 0) {
+            return currentPatient;
+        }
+        currentPatient = currentPatient->next;
+    }
+    return NULL;
+}
+
 
 /**
  * @brief Create a History function
@@ -239,6 +250,18 @@ History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tind
     return newHistory;
 }
 
+void addHistory(History **head, History *newHistory) {
+    if (*head == NULL) {
+        *head = newHistory;
+    } else {
+        History *currentHistory = *head;
+        while (currentHistory->next != NULL) {
+            currentHistory = currentHistory->next;
+        }
+        currentHistory->next = newHistory;
+    }
+}
+
 
 /**
  * @brief Print a Date function
@@ -252,7 +275,7 @@ void printDate(Date date) {
  * @brief Print a linked list function
  * @param head: Patient head
  */
-void printLinkedList(Patient *head) {
+void printPatient(Patient *head) {
     Patient *currentPatient = head;
     while (currentPatient != NULL) {
         printf("Nama Lengkap: %s\n", currentPatient->namaLengkap);
@@ -283,6 +306,16 @@ void printLinkedList(Patient *head) {
     }
 }
 
+void printHistory(History *history) {
+    printf("Tanggal: ");
+    printDate(history->tanggal);
+    printf("ID Pasien: %s\n", history->idPasien);
+    printf("Diagnosis: %s\n", history->diagnosis);
+    printf("Tindakan (ID): %d\n", history->tindakanID);
+    printf("Kontrol: ");
+    printDate(history->kontrol);
+    printf("Biaya: %d\n", history->biaya);
+}
 
 /**
  * @brief Sort the history function
@@ -395,14 +428,14 @@ int debugging() {
 
     // Print the linked list
     printf("Before sorting:\n");
-    printLinkedList(nodeA);
+    printPatient(nodeA);
 
     // Sort the history
     sortHistory(nodeA);
 
     // Print the linked list
     printf("After sorting:\n");
-    printLinkedList(nodeA);
+    printPatient(nodeA);
 
     return 0;
 }
@@ -425,4 +458,98 @@ void copyPatient(Patient *headSource, Patient **product){
         }
         currentPatient = currentPatient->next;
     }
+}
+
+/**
+ * @brief Print the patient history khusus pasien itu saja
+ */
+void printPatientHistory(Patient *head){
+    History *currentHistory = head->history;
+    while (currentHistory != NULL) {
+        printf("Tanggal: ");
+        printDate(currentHistory->tanggal);
+        printf("ID Pasien: %s\n", currentHistory->idPasien);
+        printf("Diagnosis: %s\n", currentHistory->diagnosis);
+        printf("Tindakan (ID): %d\n", currentHistory->tindakanID);
+        printf("Kontrol: ");
+        printDate(currentHistory->kontrol);
+        printf("Biaya: %d\n", currentHistory->biaya);
+        currentHistory = currentHistory->next;
+    }
+}
+
+
+
+
+/* ==================== UNTUK TINDAKAN =========================== */
+
+/**
+ * @brief Create a Tindakan function
+ * @param tindakan: char tindakan
+ * @param biaya: int biaya
+ * @param id: int ID
+ */
+Tindakan* createTindakan(char tindakan[], int biaya, int id) {
+    Tindakan *newTindakan = (Tindakan*) malloc(sizeof(Tindakan));
+    newTindakan->id = id;
+    strcpy(newTindakan->Tindakan, tindakan);
+    newTindakan->biaya = biaya;
+    newTindakan->next = NULL;
+    return newTindakan;
+}
+
+void addTindakan(Tindakan **head, Tindakan *newTindakan) {
+    if (*head == NULL) {
+        *head = newTindakan;
+    } else {
+        Tindakan *currentTindakan = *head;
+        while (currentTindakan->next != NULL) {
+            currentTindakan = currentTindakan->next;
+        }
+        currentTindakan->next = newTindakan;
+    }
+}
+
+void printTindakan(Tindakan *head) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        printf("ID: %d\n", currentTindakan->id);
+        printf("Tindakan: %s\n", currentTindakan->Tindakan);
+        printf("Biaya: %d\n", currentTindakan->biaya);
+        currentTindakan = currentTindakan->next;
+    }
+}
+
+void idToTindakan(Tindakan *head, int id, char *tindakan, int *biaya) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (currentTindakan->id == id) {
+            strcpy(tindakan, currentTindakan->Tindakan);
+            *biaya = currentTindakan->biaya;
+            return;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+}
+
+int idToBiaya(Tindakan *head, int id) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (currentTindakan->id == id) {
+            return currentTindakan->biaya;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return 0;
+}
+
+int TindakanToID(Tindakan *head, char tindakan[]) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (strcmp(currentTindakan->Tindakan, tindakan) == 0) {
+            return currentTindakan->id;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return -1;
 }

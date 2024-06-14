@@ -60,9 +60,10 @@ int main(int argc, char **argv) {
     // Inisiasi data pasien
     Patient** allPatientData = malloc(sizeof(Patient*));
     Patient** displayData = malloc(sizeof(Patient*));
-    loadData(allPatientData, filename);
+    Tindakan* allTindakanList = NULL;
+    loadData(allPatientData, &allTindakanList, filename);
     copyPatient(*allPatientData, displayData);
-    printf("Pointer allPatientData: %p\n", allPatientData);
+    printf("Pointer allPatientList: %p\n", allPatientList);
 
     // printLinkedList(allPatientData);
 
@@ -71,6 +72,10 @@ int main(int argc, char **argv) {
     // Date testDate = convertStringToDate("1 Januari 2022");
     // printDate(testDate);
 
+    // // Testing print history pasien KX 1230123
+    // Patient* testPatient = findPatient(allPatientList, "KX 1230123");
+    // printPatientHistory(testPatient);
+
     // GTK3 RUNNER
 
     // Initialize GTK
@@ -78,14 +83,13 @@ int main(int argc, char **argv) {
     // Initialize main window
     // print pointer allPatientData
     
-    activate(*displayData, allPatientData);
+    activate(*displayData, allPatientData, allTindakanList);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();
     Logger(1, "Terminating Application, Cleaning up memory");
 
     // Pembersihan memori
-    
 
     Logger(2, "Cleaning up memory success, have a nice day!");
 
