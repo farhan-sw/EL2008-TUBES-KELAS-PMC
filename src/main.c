@@ -85,14 +85,13 @@ int main(int argc, char **argv) {
     // Initialize main window
     // print pointer allPatientList
     
-    activate(allPatientList);
+    activate(allPatientList, allTindakanList);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();
     Logger(1, "Terminating Application, Cleaning up memory");
 
     // Pembersihan memori
-    
 
     Logger(2, "Cleaning up memory success, have a nice day!");
 

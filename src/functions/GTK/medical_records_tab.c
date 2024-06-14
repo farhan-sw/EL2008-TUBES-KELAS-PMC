@@ -28,13 +28,15 @@ void addMedicalRecordToTable(GtkWidget* table) {
 }
 
 // Function to add history data to the table
-void addHistoryToTable(GtkWidget* table, Patient* patientList) {
+void addHistoryToTable(GtkWidget* table, Patient* patientList, Tindakan* allTindakanList) {
     int i = 1;
 
     // Penampung Sementara
     char tanggal_text[20];
     char kontrol_text[20];
     char biaya_text[20];
+    char tindakan_text[50];
+    int biaya;
 
     while (patientList != NULL) {
         History* history = patientList->history;
@@ -48,12 +50,14 @@ void addHistoryToTable(GtkWidget* table, Patient* patientList) {
 
             GtkWidget* label3 = gtk_label_new(history->idPasien);
             GtkWidget* label4 = gtk_label_new(history->diagnosis);
-            GtkWidget* label5 = gtk_label_new("YEAH");
+
+            idToTindakan(allTindakanList, history->tindakanID, tindakan_text, &biaya);
+            GtkWidget* label5 = gtk_label_new(tindakan_text);
 
             convertDateToString(history->kontrol, kontrol_text);
             GtkWidget* label6 = gtk_label_new(kontrol_text);
 
-            sprintf(biaya_text, "Rp %d", history->biaya);
+            sprintf(biaya_text, "Rp %d", biaya);
             GtkWidget* label7 = gtk_label_new(biaya_text);
             
             GtkWidget* checkbox = gtk_check_button_new();
@@ -73,7 +77,7 @@ void addHistoryToTable(GtkWidget* table, Patient* patientList) {
 }
 
 // Function to build the medical record tab (Callable from main.c)
-void buildMedicalRecordTab(GtkWidget* medicalRecordsTab, Patient* patientList) {
+void buildMedicalRecordTab(GtkWidget* medicalRecordsTab, Patient* patientList, Tindakan* allTindakanList) {
     // Creating Tabs for Medical Records
     // TOOLBAR
     // Create the toolbar
@@ -133,7 +137,7 @@ void buildMedicalRecordTab(GtkWidget* medicalRecordsTab, Patient* patientList) {
     // addMedicalRecordToTable(tableMedRec);
 
     // Input data rekam medis dari patientList
-    addHistoryToTable(tableMedRec, patientList);
+    addHistoryToTable(tableMedRec, patientList, allTindakanList);
 
     // Set table properties
     gtk_widget_set_hexpand(tableMedRec, TRUE);

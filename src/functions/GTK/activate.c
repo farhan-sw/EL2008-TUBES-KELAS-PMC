@@ -5,7 +5,7 @@
 #include "./finance_tab.c"
 #include "./about_tab.c"
 
-static void activate(Patient* patientList){
+static void activate(Patient* patientList, Tindakan* tindakanList) {
     Logger(1, "Building Main Window");
     // MAIN WINDOW INITIALIZATION
     // Create the main window
@@ -57,7 +57,7 @@ static void activate(Patient* patientList){
     buildPatientDataTab(userDataTab, patientList);
 
     // Build the Medical Records tab, implemented in medical_records_tab.c
-    buildMedicalRecordTab(medicalRecordsTab, patientList);
+    buildMedicalRecordTab(medicalRecordsTab, patientList, tindakanList);
 
     // Show all widgets
     gtk_widget_show_all(window);
