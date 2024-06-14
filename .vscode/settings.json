@@ -65,7 +65,8 @@
     "string.h": "c",
     "loader.h": "c",
     "datastructure.h": "c",
-    "dataoperator.h": "c"
+    "dataoperator.h": "c",
+    "cstdlib": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

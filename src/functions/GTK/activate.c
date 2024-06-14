@@ -5,7 +5,7 @@
 #include "./finance_tab.c"
 #include "./about_tab.c"
 
-static void activate(Patient* patientList){
+static void activate(Patient* patientList, Patient** allPatientData){
     Logger(1, "Building Main Window");
     // MAIN WINDOW INITIALIZATION
     // Create the main window

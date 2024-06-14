@@ -58,11 +58,13 @@ int main(int argc, char **argv) {
 
     // LOAD DATA
     // Inisiasi data pasien
-    Patient* allPatientList = NULL;
-    loadData(&allPatientList, filename);
-    printf("Pointer allPatientList: %p\n", allPatientList);
+    Patient** allPatientData = malloc(sizeof(Patient*));
+    Patient** displayData = malloc(sizeof(Patient*));
+    loadData(allPatientData, filename);
+    copyPatient(*allPatientData, displayData);
+    printf("Pointer allPatientData: %p\n", allPatientData);
 
-    // printLinkedList(allPatientList);
+    // printLinkedList(allPatientData);
 
     // printf("Test mengubah tanggal\n");
     // // Test mengubah tanggal
@@ -74,9 +76,9 @@ int main(int argc, char **argv) {
     // Initialize GTK
     gtk_init(&argc, &argv);
     // Initialize main window
-    // print pointer allPatientList
+    // print pointer allPatientData
     
-    activate(allPatientList);
+    activate(*displayData, allPatientData);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();

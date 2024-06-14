@@ -205,6 +205,18 @@ void addPatient(Patient **head, Patient *newPatient) {
     }
 }
 
+void addHistory(History **head, History *newHistory) {
+    if (*head == NULL) {
+        *head = newHistory;
+    } else {
+        History *currentHistory = *head;
+        while (currentHistory->next != NULL) {
+            currentHistory = currentHistory->next;
+        }
+        currentHistory->next = newHistory;
+    }
+}
+
 
 /**
  * @brief Create a History function
@@ -393,4 +405,24 @@ int debugging() {
     printLinkedList(nodeA);
 
     return 0;
+}
+
+/**
+ * @brief Copy patient data
+ * @param headSoure: pointer of patient source of copy
+ * @param product : pointer of pointer patient product of copy
+ */
+void copyPatient(Patient *headSource, Patient **product){
+    Patient *currentPatient = headSource;
+    while (currentPatient != NULL) {
+        Patient *newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
+        addPatient(product, newPatient);
+        History *currentHistory = currentPatient->history;
+        while (currentHistory != NULL) {
+            History *newHistory = createHistory(currentHistory->tanggal, currentHistory->idPasien, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol, currentHistory->biaya);
+            addHistory(&newPatient->history, newHistory);
+            currentHistory = currentHistory->next;
+        }
+        currentPatient = currentPatient->next;
+    }
 }

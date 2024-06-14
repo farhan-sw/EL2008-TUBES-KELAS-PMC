@@ -1,3 +1,10 @@
+#include   <gtk/gtk.h>
+#include   <stdio.h>
+#include   <stdlib.h>
+#include   <string.h>
+#include   <time.h>
+#include   "dataStructure.h"
+
 void on_search_entry_changed(GtkSearchEntry *entry, gpointer user_data) {
     const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
     g_print("Search entry changed: %s\n", text);
@@ -12,7 +19,11 @@ void addPatientData(GtkWidget* button, gpointer data) {
 }
 
 void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
-{
+{   
+    // Get the patient list
+    Patient* patientList = (Patient*)data;
+    //uji tampilkan nama pertama pada data pasien
+    printf("Nama Pasien Pertama: %s\n", patientList->namaLengkap);
     // Create the new window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Add Patient Data");
@@ -76,7 +87,24 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
     gtk_widget_show_all(window);
 }
 
+void clearPatientDataTable(GtkWidget* table) {
+    GList* children, *iter;
+    children = gtk_container_get_children(GTK_CONTAINER(table));
+    iter = children;
+    for (int i = 0; i < 8 && iter != NULL; i++){
+        iter = g_list_next(iter); // Benar-benar melewati baris pertama
+    }
+    //baca isi data itter
+    while (iter != NULL) {
+        gtk_widget_destroy(GTK_WIDGET(iter->data));
+        iter = g_list_next(iter);
+    }
+    g_list_free(children);
+}
+
 void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
+    // Clear the table first
+    clearPatientDataTable(table);
     // cari panjang linkedlist
     Patient* patientstemp = patientsList;
     int count = 0;
@@ -120,10 +148,36 @@ void addDataPatientToTable(GtkWidget* table, Patient* patientsList) {
         gtk_grid_attach(GTK_GRID(table), checkbox, 9, i+1, 1, 1);
         patientstemp = patientstemp->next;
     }
+
+    //tampilkan data pasien pertama
+    printf("Nama Pasien Pertama 2: %s\n", patientsList->namaLengkap);
 }
 
-// Function to input patient data table
-void inputPatientDataTable(GtkWidget* userDataTab, Patient* patientList){
+// Function to build the patient data tab (Callable from activate.c)
+void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
+    // TOOLBAR
+    // Create the toolbar
+    GtkWidget* patientDataToolbar = gtk_toolbar_new();
+    gtk_toolbar_set_style(GTK_TOOLBAR(patientDataToolbar), GTK_TOOLBAR_ICONS);
+    gtk_box_pack_start(GTK_BOX(userDataTab), patientDataToolbar, FALSE, FALSE, 0);
+
+    // Create the "Add Data" button
+    GtkToolItem *addPatientDataButton = gtk_tool_button_new(NULL, "Add Data");
+    GtkWidget *addPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(addPatientDataButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *context = gtk_widget_get_style_context(addPatientDataButtonWidget);
+    gtk_style_context_add_class(context, "add-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), addPatientDataButton, -1);
+    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), patientList);
+
+    // Set the button border
+    gtk_container_set_border_width(GTK_CONTAINER(addPatientDataButton), 5);
+
+    // Create the search box
+    GtkWidget* searchBox = gtk_search_entry_new();
+    gtk_box_pack_start(GTK_BOX(userDataTab), searchBox, FALSE, FALSE, 0);
+    // Hubungkan sinyal 'changed' ke fungsi callback
+    g_signal_connect(searchBox, "changed", G_CALLBACK(on_search_entry_changed), NULL);
+
     // PATIENT DATA DISPLAY
     // Create the scrollable table
     GtkWidget* scrollable = gtk_scrolled_window_new(NULL, NULL);
@@ -170,33 +224,7 @@ void inputPatientDataTable(GtkWidget* userDataTab, Patient* patientList){
     gtk_widget_set_halign(table, GTK_ALIGN_FILL);
     gtk_grid_set_row_spacing(GTK_GRID(table), 7);
     gtk_grid_set_column_spacing(GTK_GRID(table), 15); 
-}
 
-// Function to build the patient data tab (Callable from main.c)
-void buildPatientDataTab(GtkWidget* userDataTab, Patient* patientList){
-    // TOOLBAR
-    // Create the toolbar
-    GtkWidget* patientDataToolbar = gtk_toolbar_new();
-    gtk_toolbar_set_style(GTK_TOOLBAR(patientDataToolbar), GTK_TOOLBAR_ICONS);
-    gtk_box_pack_start(GTK_BOX(userDataTab), patientDataToolbar, FALSE, FALSE, 0);
-
-    // Create the "Add Data" button
-    GtkToolItem *addPatientDataButton = gtk_tool_button_new(NULL, "Add Data");
-    GtkWidget *addPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(addPatientDataButton)); // Ambil widget internal dari GtkToolButton
-    GtkStyleContext *context = gtk_widget_get_style_context(addPatientDataButtonWidget);
-    gtk_style_context_add_class(context, "add-data-patient-button");
-    gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), addPatientDataButton, -1);
-    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), NULL);
-
-    // Set the button border
-    gtk_container_set_border_width(GTK_CONTAINER(addPatientDataButton), 5);
-
-    // Create the search box
-    GtkWidget* searchBox = gtk_search_entry_new();
-    gtk_box_pack_start(GTK_BOX(userDataTab), searchBox, FALSE, FALSE, 0);
-    // Hubungkan sinyal 'changed' ke fungsi callback
-    g_signal_connect(searchBox, "changed", G_CALLBACK(on_search_entry_changed), NULL);
-
-    // PATIENT DATA DISPLAY
-    inputPatientDataTable(userDataTab, patientList);
+    // print data pasien pertama
+    printf("Nama Pasien Pertama 1: %s\n", patientList->namaLengkap);
 }
