@@ -82,6 +82,17 @@ void addDataPatientToTable(GtkWidget* table, Patient** operatedData) {
         GtkWidget* label8 = gtk_label_new(noBPJS_text);
         GtkWidget* label9 = gtk_label_new(patientstemp->idPasien);
         GtkWidget* checkbox = gtk_check_button_new();
+
+        // atur alignment
+        gtk_widget_set_halign(label2, GTK_ALIGN_START);
+        gtk_widget_set_halign(label3, GTK_ALIGN_START);
+        gtk_widget_set_halign(label4, GTK_ALIGN_START);
+        gtk_widget_set_halign(label5, GTK_ALIGN_START);
+        gtk_widget_set_halign(label6, GTK_ALIGN_START);
+        gtk_widget_set_halign(label7, GTK_ALIGN_START);
+        gtk_widget_set_halign(label8, GTK_ALIGN_START);
+        gtk_widget_set_halign(label9, GTK_ALIGN_START);
+
         gtk_grid_attach(GTK_GRID(table), label1, 0, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label2, 1, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label3, 2, i+1, 1, 1);
@@ -623,7 +634,6 @@ void patientDataEditor(Patient** allPatientData, Patient** operatedData, GtkWidg
 
 void editPatientData(GtkWidget* button, gpointer data) {
 
-    printf("Edit data pasien\n");
     // Get the patient list
     PatientParams* params = (PatientParams*) data;
 
@@ -637,14 +647,10 @@ void editPatientData(GtkWidget* button, gpointer data) {
     int row = 0;
     int found = 0;
     GtkWidget* checkbox;
-    printf("bersiap iterasi\n");
     while (currentPatient != NULL) {
-        // printf("Row: %d\n", row);
         checkbox = gtk_grid_get_child_at(GTK_GRID(params->table), 9, row + 1);
         if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
             if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
-                // printf("Patient at row %d is selected.\n", row + 1);
-                printf("Nama Pasien: %s\n", currentPatient->namaLengkap);
                 patientDataEditor(params->allPatientData, params->operatedData, params->table ,currentPatient->idPasien);
                 found++;
                 // aksi edit data pasien
@@ -711,6 +717,10 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient
     // Create the table
     GtkWidget* table = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(scrollable), table);
+
+    // buat seluruh isi table rata kiri kecuali kolom pertama
+
+
 
     // Adddata to the table
     addDataPatientToTable(table, operatedData);

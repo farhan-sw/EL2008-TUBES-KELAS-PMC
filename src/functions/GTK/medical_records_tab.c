@@ -16,6 +16,7 @@ void addMedicalRecordToTable(GtkWidget* table) {
         GtkWidget* label6 = gtk_label_new(medRec[i][4]);
         GtkWidget* label7 = gtk_label_new(medRec[i][5]);
         GtkWidget* checkbox = gtk_check_button_new();
+
         gtk_grid_attach(GTK_GRID(table), label1, 0, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label2, 1, i+1, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label3, 2, i+1, 1, 1);
@@ -61,6 +62,15 @@ void addHistoryToTable(GtkWidget* table, Patient* patientList, Tindakan* allTind
             GtkWidget* label7 = gtk_label_new(biaya_text);
             
             GtkWidget* checkbox = gtk_check_button_new();
+
+            // set alignment
+            gtk_widget_set_halign(label2, GTK_ALIGN_START);
+            gtk_widget_set_halign(label3, GTK_ALIGN_START);
+            gtk_widget_set_halign(label4, GTK_ALIGN_START);
+            gtk_widget_set_halign(label5, GTK_ALIGN_START);
+            gtk_widget_set_halign(label6, GTK_ALIGN_START);
+            gtk_widget_set_halign(label7, GTK_ALIGN_START);
+
             gtk_grid_attach(GTK_GRID(table), label1, 0, i, 1, 1);
             gtk_grid_attach(GTK_GRID(table), label2, 1, i, 1, 1);
             gtk_grid_attach(GTK_GRID(table), label3, 2, i, 1, 1);

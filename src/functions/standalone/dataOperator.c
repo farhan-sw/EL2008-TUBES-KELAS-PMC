@@ -204,7 +204,9 @@ Date convertStringToDate(const char tanggal[]) {
 
 // Konversi Date ke string dengan format DD-MM-YYYY
 void convertDateToString(Date date, char *dateStr) {
-    sprintf(dateStr, "%02d-%02d-%04d", date.day, date.month, date.year);
+    char *months[] = {"Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                      "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+    sprintf(dateStr, "%02d %s %04d", date.day, months[date.month - 1], date.year);
 }
 
 int hitungUmur(Date tanggalLahir) {
