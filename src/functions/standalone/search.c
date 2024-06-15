@@ -22,7 +22,6 @@ char* toLowercase(const char* input) {
 
 // ====================== SEARCH ENGINE =========================
 void searchPatient(Patient *head, Patient **output, char keyword[]){
-
     // buat list baru
     Patient** result = malloc(sizeof(Patient*));
     *result = NULL; // Initialize the result pointer to NULL
@@ -39,7 +38,6 @@ void searchPatient(Patient *head, Patient **output, char keyword[]){
         char tglLahir[20];
         char umur[5];
         char noBPJS[15];
-        int i = 0;
 
         int copyData = 0;
         while (currentPatient != NULL) {
@@ -92,19 +90,93 @@ void searchPatient(Patient *head, Patient **output, char keyword[]){
             }
 
             currentPatient = currentPatient->next;
-            i++;
         }
     }
     // kosongkan result dengan bebaskan memorinya
     freePatientList(*output);
     // isi result dengan hasil pencarian
     *output = *result;
-
-    // Logger(1, ("Searching patient with keywordLower %s\n", keywordLower));
 }
 
-void searchMedicalRecord(Patient *head, Patient **result, char keyword[]){
-    // printf("Search Engine\n");
+void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
+    // buat list baru
+    Patient** result = malloc(sizeof(Patient*));
+    *result = NULL; // Initialize the result pointer to NULL
+
+    if (strcmp(keyword, "") == 0){
+        // printf("keyword kosong\n");
+        copyPatient(head, result);
+        return;
+    } else {
+        // ubah keyword menjadi lowercase
+        char* keywordLower = toLowercase(keyword);
+        // jika tidak kosong maka lakukan pencarian berdasar keyword taboa mengecek history
+        Patient *currentPatient = head;
+        History *currentHistory = NULL;
+        char tanggal[20];
+        char tindakanID[5];
+        char kontrol[20];
+        char biaya[10];
+
+
+        int copyData = 0;
+        while (currentPatient != NULL) {
+            currentHistory = currentPatient->history;
+            
+            while(currentHistory != NULL){
+                // kosongkan variabel
+                copyData = 0;
+                memset(tanggal, 0, sizeof(tanggal));
+                memset(tindakanID, 0, sizeof(tindakanID));
+                memset(kontrol, 0, sizeof(kontrol));
+                memset(biaya, 0, sizeof(biaya));
+                
+                convertDateToString(currentHistory->tanggal, tanggal);
+                sprintf(tindakanID, "%d", currentHistory->tindakanID);
+                convertDateToString(currentHistory->kontrol, kontrol);
+                sprintf(biaya, "%d", currentHistory->biaya);
+
+                // ubah data menjadi lowercase
+                char* tanggalLower = toLowercase(tanggal);
+                char* kontrolLower = toLowercase(kontrol);
+                char* diagnosisLower = toLowercase(currentHistory->diagnosis);
+
+                // cek apakah keyword ada di history
+                if (strstr(tanggalLower, keywordLower) != NULL) {
+                    copyData = 1;
+                } else if (strstr(diagnosisLower, keywordLower) != NULL) {
+                    copyData = 1;
+                } else if (strstr(tindakanID, keywordLower) != NULL) {
+                    copyData = 1;
+                } else if (strstr(kontrolLower, keywordLower) != NULL) {
+                    copyData = 1;
+                } else if (strstr(biaya, keywordLower) != NULL) {
+                    copyData = 1;
+                }
+
+                if(copyData == 1){
+                    // buat node baru dan tambahkan ke result
+                    Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
+                    // copy historynya
+                    History* currentHistorytemp = currentPatient->history;
+                    while (currentHistorytemp != NULL) {
+                        History* newHistory = createHistory(currentHistorytemp->tanggal, currentHistorytemp->idPasien, currentHistorytemp->diagnosis, currentHistorytemp->tindakanID, currentHistorytemp->kontrol, currentHistorytemp->biaya);
+                        addHistory(&newPatient->history, newHistory);
+                        currentHistorytemp = currentHistorytemp->next;
+                    }
+                    addPatient(result, newPatient);
+                    break;
+                }
+
+            }
+
+            currentPatient = currentPatient->next;
+        }
+    }
+    // kosongkan result dengan bebaskan memorinya
+    freePatientList(*output);
+    // isi result dengan hasil pencarian
+    *output = *result;
 }
 
 void searchService(Tindakan *head, Tindakan **result, char keyword[]){

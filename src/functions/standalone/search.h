@@ -8,8 +8,8 @@
 #include "dataStructure.h"
 
 // FUNCTION PROTOTYPE
-void searchPatient(Patient *head, Patient **result, char keyword[]);
-void searchMedicalRecord(Patient *head, Patient **result, char keyword[]);
+void searchPatient(Patient *head, Patient **output, char keyword[]);
+void searchMedicalRecord(Patient *head, Patient **output, char keyword[]);
 void searchService(Tindakan *head, Tindakan **result, char keyword[]);
 
 #endif 
