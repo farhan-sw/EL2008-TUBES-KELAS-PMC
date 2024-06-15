@@ -67,7 +67,8 @@
     "datastructure.h": "c",
     "dataoperator.h": "c",
     "cstdlib": "c",
-    "functional": "c"
+    "functional": "c",
+    "gtk.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

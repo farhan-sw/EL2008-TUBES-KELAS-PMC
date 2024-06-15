@@ -74,4 +74,18 @@ typedef struct AddPatientParams{
     NewPatientFormPointer* newPatientFormPointer;
 } AddPatientParams;
 
+typedef struct EditPatientFormPointer{
+    GtkWidget *namaLengkap;
+    GtkWidget *alamat;
+    GtkWidget *kota;
+    GtkWidget *tempatLahir;
+    GtkWidget *tanggalLahir;
+    GtkWidget *noBPJS;
+    Patient* patient;
+    GtkWidget *window;
+    GtkWidget *table;
+    Patient** operatedData;
+    Patient** allPatientData;
+} EditPatientFormPointer;
+
 #endif /* DATASTRUCTURE_H */

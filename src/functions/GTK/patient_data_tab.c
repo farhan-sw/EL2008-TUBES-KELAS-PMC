@@ -397,6 +397,270 @@ void deletePatientData(GtkWidget* button, gpointer data) {
 
 }
 
+
+// Function to edit patient data
+
+void saveEditPatientData(GtkWidget* button, gpointer data) {
+    // Get the patient list
+    EditPatientFormPointer* params = (EditPatientFormPointer*) data;
+
+    // ubah tanggal lahir dari parameter ke string biasa
+    char* tanggalLahir = strdup(gtk_entry_get_text(GTK_ENTRY(params->tanggalLahir)));
+    int dateChecking = stringDateFormatVerify(tanggalLahir);
+
+    char* noBPJS = strdup(gtk_entry_get_text(GTK_ENTRY(params->noBPJS)));
+    int isNumber = isOnlyNumber(noBPJS);
+
+    int isError = 0;
+    // cek apakah nama kosong
+    if(strcmp(gtk_entry_get_text(GTK_ENTRY(params->namaLengkap)), "") == 0){
+        isError = 1;
+    } else if(strcmp(gtk_entry_get_text(GTK_ENTRY(params->alamat)), "") == 0){
+        isError = 2;
+    } else if(strcmp(gtk_entry_get_text(GTK_ENTRY(params->kota)), "") == 0){
+        isError = 3;
+    } else if(strcmp(gtk_entry_get_text(GTK_ENTRY(params->tempatLahir)), "") == 0){
+        isError = 4;
+    } else if(strcmp(gtk_entry_get_text(GTK_ENTRY(params->tanggalLahir)), "") == 0){
+        isError = 5;
+    } else if(strcmp(gtk_entry_get_text(GTK_ENTRY(params->noBPJS)), "") == 0){
+        isError = 6;
+    } else if (dateChecking == 0){
+        isError = 7;
+    } else if (dateChecking == -1){
+        isError = 8;
+    } else if (isNumber == 0){
+        isError = 9;
+    }
+
+
+    if (isError == 0){
+        // change the patient data
+        strcpy(params->patient->namaLengkap, gtk_entry_get_text(GTK_ENTRY(params->namaLengkap)));
+        strcpy(params->patient->alamat, gtk_entry_get_text(GTK_ENTRY(params->alamat)));
+        strcpy(params->patient->kota, gtk_entry_get_text(GTK_ENTRY(params->kota)));
+        strcpy(params->patient->tempatLahir, gtk_entry_get_text(GTK_ENTRY(params->tempatLahir)));
+        params->patient->tanggalLahir = convertStringToDate(tanggalLahir);
+        params->patient->umur = hitungUmur(params->patient->tanggalLahir);
+        params->patient->noBPJS = atoi(gtk_entry_get_text(GTK_ENTRY(params->noBPJS)));
+
+        // Update the table
+        // Pastikan copyPatient dan addDataPatientToTable mengelola memori dan pointer dengan benar
+        Patient** tempData = malloc(sizeof(Patient*));
+        *tempData = NULL; // Initialize the result pointer to NULL
+        copyPatient(*params->allPatientData, tempData);
+        freePatientList(*params->operatedData);
+        *params->operatedData = *tempData;
+
+        addDataPatientToTable(params->table, params->operatedData);
+        gtk_widget_show_all(params->table);
+
+        // tuttp window
+        gtk_widget_destroy(params->window);
+    } else {
+        char* pesanError;
+        switch (isError)
+        {
+        case 1:
+            pesanError = "Nama Lengkap tidak boleh kosong";
+            break;
+        case 2:
+            pesanError = "Alamat tidak boleh kosong";
+            break;
+        case 3:
+            pesanError = "Kota tidak boleh kosong";
+            break;
+        case 4:
+            pesanError = "Tempat Lahir tidak boleh kosong";
+            break;
+        case 5:
+            pesanError = "Tanggal Lahir tidak boleh kosong";
+            break;
+        case 6:
+            pesanError = "Nomor BPJS tidak boleh kosong";
+            break;
+        case 7:
+            pesanError = "Format Tanggal Lahir tidak valid, gunakan format 'DD MMM YYYY' (Contoh: 15 Mei 2024)";
+            break;
+        case 8:
+            pesanError = "Tanggal Lahir tidak valid, pastikan memasukkan tanggal yang benar";
+            break;
+        case 9:
+            pesanError = "Nomor BPJS harus berupa angka";
+            break;
+        default:
+            break;
+        }
+
+        // tampilkan pesan error
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, pesanError);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
+    
+
+    
+}
+
+void cancelEditAction(GtkWidget* button, gpointer data) {
+    // Get the patient list
+    GtkWidget* params = (GtkWidget*) data;
+
+    // tutup jendela editor
+    gtk_widget_destroy(params);
+}
+
+void patientDataEditor(Patient** allPatientData, Patient** operatedData, GtkWidget* table , char idPasien[])
+{   
+    // cari data pasien yang akan diedit
+    Patient* currentPatient = *allPatientData;
+    while (currentPatient != NULL) {
+        if (strcmp(currentPatient->idPasien, idPasien) == 0) {
+            break;
+        }
+        currentPatient = currentPatient->next;
+    }
+
+    // Create the new window
+    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Edit Patient Data");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+
+    // Create the main container
+    GtkWidget* mainBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_add(GTK_CONTAINER(window), mainBox);
+
+    // Create the input fields
+    GtkWidget* namaLabel = gtk_label_new("Nama Lengkap:");
+    GtkWidget* namaEntry = gtk_entry_new();
+    GtkWidget* alamatLabel = gtk_label_new("Alamat:");
+    GtkWidget* alamatEntry = gtk_entry_new();
+    GtkWidget* kotaLabel = gtk_label_new("Kota:");
+    GtkWidget* kotaEntry = gtk_entry_new();
+    GtkWidget* kotaKelahiranLabel = gtk_label_new("Tempat Lahir:");
+    GtkWidget* kotaKelahiranEntry = gtk_entry_new();
+    GtkWidget* tanggalLahirLabel = gtk_label_new("Tanggal Lahir: (Contoh : 15 Mei 2024)");
+    GtkWidget* tanggalLahirEntry = gtk_entry_new();
+    GtkWidget* noBPJSLabel = gtk_label_new("Nomor BPJS:");
+    GtkWidget* noBPJSEntry = gtk_entry_new();
+
+    // memasukkan data sementara ke dalam form
+    gtk_entry_set_text(GTK_ENTRY(namaEntry), currentPatient->namaLengkap);
+    gtk_entry_set_text(GTK_ENTRY(alamatEntry), currentPatient->alamat);
+    gtk_entry_set_text(GTK_ENTRY(kotaEntry), currentPatient->kota);
+    gtk_entry_set_text(GTK_ENTRY(kotaKelahiranEntry), currentPatient->tempatLahir);
+    char tanggalLahir_text[20];
+    convertDateToString(currentPatient->tanggalLahir, tanggalLahir_text);
+    gtk_entry_set_text(GTK_ENTRY(tanggalLahirEntry), tanggalLahir_text);
+    char noBPJS_text[20];
+    sprintf(noBPJS_text, "%d", currentPatient->noBPJS);
+    gtk_entry_set_text(GTK_ENTRY(noBPJSEntry), noBPJS_text);
+
+
+    // Styling label
+    gtk_widget_set_margin_top(namaLabel, 20);
+
+    // Create the add button
+    GtkWidget* confirmButton = gtk_button_new_with_label("Save");
+    GtkWidget* cancelButton = gtk_button_new_with_label("Cancel");
+
+
+    // Create the parameter for the add button
+    EditPatientFormPointer* editPatientFormPointer = malloc(sizeof(EditPatientFormPointer));
+    editPatientFormPointer->namaLengkap = namaEntry;
+    editPatientFormPointer->alamat = alamatEntry;
+    editPatientFormPointer->kota = kotaEntry;
+    editPatientFormPointer->tempatLahir = kotaKelahiranEntry;
+    editPatientFormPointer->tanggalLahir = tanggalLahirEntry;
+    editPatientFormPointer->noBPJS = noBPJSEntry;
+    editPatientFormPointer->patient = currentPatient;
+    editPatientFormPointer->window = window;
+    editPatientFormPointer->table = table;
+    editPatientFormPointer->operatedData = operatedData;
+    editPatientFormPointer->allPatientData = allPatientData;
+
+    g_signal_connect(confirmButton, "clicked", G_CALLBACK(saveEditPatientData), editPatientFormPointer);
+
+    // Set button size
+    gtk_widget_set_size_request(confirmButton, 100, 30);
+    gtk_widget_set_size_request(cancelButton, 100, 30);
+
+    // Create a horizontal box to hold the buttons
+    GtkWidget* buttonBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_set_homogeneous(GTK_BOX(buttonBox), TRUE);
+    gtk_box_pack_start(GTK_BOX(buttonBox), confirmButton, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(buttonBox), cancelButton, TRUE, TRUE, 0);
+
+    // menambahkan margin
+    gtk_widget_set_margin_bottom(buttonBox, 20);
+    gtk_widget_set_margin_top(buttonBox, 20);
+    gtk_widget_set_margin_start(buttonBox, 20);
+    gtk_widget_set_margin_end(buttonBox, 20);
+
+
+    // Add the input fields and button to the main container
+    gtk_box_pack_start(GTK_BOX(mainBox), namaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), namaEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), alamatLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), alamatEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), tanggalLahirLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), tanggalLahirEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSEntry, FALSE, FALSE, 0);
+    // Add the button box to the main container
+    gtk_box_pack_start(GTK_BOX(mainBox), buttonBox, FALSE, FALSE, 0);
+
+    // Show all the widgets
+    gtk_widget_show_all(window);
+
+    // tutup jendela editor saat tombol cancel ditekan
+    g_signal_connect(cancelButton, "clicked", G_CALLBACK(cancelEditAction), window);
+}
+
+void editPatientData(GtkWidget* button, gpointer data) {
+
+    printf("Edit data pasien\n");
+    // Get the patient list
+    PatientParams* params = (PatientParams*) data;
+
+    // Pastikan params dan params->operatedData valid
+    if (params == NULL || params->operatedData == NULL || params->allPatientData == NULL) {
+        fprintf(stderr, "Invalid parameters\n");
+        return; // Keluar dari fungsi jika parameter tidak valid
+    }
+    
+    Patient* currentPatient = *params->operatedData;
+    int row = 0;
+    int found = 0;
+    GtkWidget* checkbox;
+    printf("bersiap iterasi\n");
+    while (currentPatient != NULL) {
+        // printf("Row: %d\n", row);
+        checkbox = gtk_grid_get_child_at(GTK_GRID(params->table), 9, row + 1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+            if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                // printf("Patient at row %d is selected.\n", row + 1);
+                printf("Nama Pasien: %s\n", currentPatient->namaLengkap);
+                patientDataEditor(params->allPatientData, params->operatedData, params->table ,currentPatient->idPasien);
+                found++;
+                // aksi edit data pasien
+            }
+        }
+        row++;
+        currentPatient = currentPatient->next;
+    }
+
+    if(found == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk diedit");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    } 
+}
+
 // Function to build the patient data tab (Callable from activate.c)
 void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient** allPatientData) {
     Patient* patientList = *operatedData;
@@ -469,6 +733,7 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient
     g_signal_connect(searchBox, "changed", G_CALLBACK(searchPatientDataOnChanged), PatientParameter);
     g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), PatientParameter);
     g_signal_connect(deletePatientDataButton, "clicked", G_CALLBACK(deletePatientData), PatientParameter);
+    g_signal_connect(editPatientDataButton, "clicked", G_CALLBACK(editPatientData), PatientParameter);
 
     // // print data pasien pertama
     // printf("Nama Pasien Pertama 1: %s\n", *operatedData->namaLengkap);
