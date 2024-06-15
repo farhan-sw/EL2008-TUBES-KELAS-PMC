@@ -23,9 +23,6 @@ char* toLowercase(const char* input) {
 // ====================== SEARCH ENGINE =========================
 void searchPatient(Patient *head, Patient **output, char keyword[]){
 
-    // printf("menerima keyword: %s\n", keyword);
-    // cek apakah keyword kosong, bila kosong result diisi head
-
     // buat list baru
     Patient** result = malloc(sizeof(Patient*));
     *result = NULL; // Initialize the result pointer to NULL
@@ -37,25 +34,17 @@ void searchPatient(Patient *head, Patient **output, char keyword[]){
     } else {
         // ubah keyword menjadi lowercase
         char* keywordLower = toLowercase(keyword);
-        // printf("Data tidak kosong\n");
         // jika tidak kosong maka lakukan pencarian berdasar keyword taboa mengecek history
         Patient *currentPatient = head;
         char tglLahir[20];
         char umur[5];
         char noBPJS[15];
         int i = 0;
-        while (currentPatient != NULL) {
-            // printf("Mengecek data pasien ke : %d\n",i);
-            // printf("Nama Pasien: %s\n", currentPatient->namaLengkap);
-            // printf("Alamat Pasien: %s\n", currentPatient->alamat);
-            // printf("Kota Pasien: %s\n", currentPatient->kota);
-            // printf("Tempat Lahir Pasien: %s\n", currentPatient->tempatLahir);
-            // printf("Tanggal Lahir Pasien: %d-%d-%d\n", currentPatient->tanggalLahir.day, currentPatient->tanggalLahir.month, currentPatient->tanggalLahir.year);
-            // printf("Umur Pasien: %d\n", currentPatient->umur);
-            // printf("No BPJS Pasien: %d\n", currentPatient->noBPJS);
-            // printf("ID Pasien: %s\n\n", currentPatient->idPasien);
 
+        int copyData = 0;
+        while (currentPatient != NULL) {
             // kosongkan variabel
+            copyData = 0;
             memset(tglLahir, 0, sizeof(tglLahir));
             memset(umur, 0, sizeof(umur));
             memset(noBPJS, 0, sizeof(noBPJS));
@@ -72,55 +61,42 @@ void searchPatient(Patient *head, Patient **output, char keyword[]){
 
             // cek apakah keyword ada di namaLengkap
             if (strstr(toLowercase(currentPatient->namaLengkap), keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(toLowercase(currentPatient->alamat), keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(toLowercase(currentPatient->kota), keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(toLowercase(currentPatient->tempatLahir), keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(tglLahir, keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(umur, keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(noBPJS, keywordLower) != NULL) {
-                // buat node baru dan tambahkan ke result
-                Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
-                addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
+                copyData = 1;
             } else if (strstr(toLowercase(currentPatient->idPasien), keywordLower) != NULL) {
+                copyData = 1;
+            }
+
+            if(copyData == 1){
                 // buat node baru dan tambahkan ke result
                 Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
+                // copy historynya
+                History* currentHistory = currentPatient->history;
+                while (currentHistory != NULL) {
+                    History* newHistory = createHistory(currentHistory->tanggal, currentHistory->idPasien, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol, currentHistory->biaya);
+                    addHistory(&newPatient->history, newHistory);
+                    currentHistory = currentHistory->next;
+                }
                 addPatient(result, newPatient);
-                // printf("Data ditemukan\n");
             }
 
             currentPatient = currentPatient->next;
             i++;
-            // printf("\n");
         }
     }
     // kosongkan result dengan bebaskan memorinya
     freePatientList(*output);
-    // printf("result dibersihkan\n");
     // isi result dengan hasil pencarian
     *output = *result;
 
