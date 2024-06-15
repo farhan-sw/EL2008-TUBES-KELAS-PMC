@@ -53,11 +53,11 @@ typedef struct Tindakan {
     struct Tindakan *next;
 } Tindakan;
 
-typedef struct searchPatientParams{
+typedef struct PatientParams{
     GtkWidget *table;
     Patient** operatedData;
     Patient** allPatientData;
-} searchPatientParams;
+} PatientParams;
 
 
 #endif /* DATASTRUCTURE_H */

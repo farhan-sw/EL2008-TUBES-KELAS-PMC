@@ -28,3 +28,31 @@
 .add-data-patient-button:active {
     background-color: limegreen;
 }
+
+/* Styling toolbar edit patient data */
+.edit-data-patient-button {
+    background-color: rgb(130, 168, 130);
+    color: white;
+    font-weight: bold;
+}
+.edit-data-patient-button:hover {
+    color: black;
+}
+
+.edit-data-patient-button:active {
+    background-color: rgb(194, 236, 194);
+}
+
+/* Styling toolbar delete patient data */
+.delete-data-patient-button {
+    background-color: rgb(122, 8, 8);
+    color: white;
+    font-weight: bold;
+}
+.delete-data-patient-button:hover {
+    color: black;
+}
+
+.delete-data-patient-button:active {
+    background-color: rgb(246, 112, 112);
+}

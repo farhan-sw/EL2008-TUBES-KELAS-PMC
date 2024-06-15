@@ -65,6 +65,8 @@ int main(int argc, char **argv) {
     Logger(1, "Initializing GTK window");
     gtk_main();
     Logger(1, "Terminating Application, Cleaning up memory");
+    freePatientList(*allPatientData);
+    freePatientList(*operatedData);
 
     // Pembersihan memori
 

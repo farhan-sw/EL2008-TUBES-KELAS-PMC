@@ -16,76 +16,6 @@ void addPatientData(GtkWidget* button, gpointer data) {
     printf("Adding Data and close the window\n");
 }
 
-void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
-{   
-    // Get the patient list
-    Patient** operatedData = (Patient**)data;
-
-    //uji tampilkan nama pertama pada data pasien
-    // printf("Nama Pasien Pertama: %s\n", (*operatedData)->namaLengkap);
-    // Create the new window
-    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Add Patient Data");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
-
-    // Create the main container
-    GtkWidget* mainBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_container_add(GTK_CONTAINER(window), mainBox);
-
-    // Create the input fields
-    GtkWidget* namaLabel = gtk_label_new("Nama Lengkap:");
-    GtkWidget* namaEntry = gtk_entry_new();
-    GtkWidget* alamatLabel = gtk_label_new("Alamat:");
-    GtkWidget* alamatEntry = gtk_entry_new();
-    GtkWidget* kotaLabel = gtk_label_new("Kota:");
-    GtkWidget* kotaEntry = gtk_entry_new();
-    GtkWidget* kotaKelahiranLabel = gtk_label_new("Tempat Lahir:");
-    GtkWidget* kotaKelahiranEntry = gtk_entry_new();
-    GtkWidget* umurLabel = gtk_label_new("Umur:");
-    GtkWidget* umurEntry = gtk_entry_new();
-    GtkWidget* noBPJSLabel = gtk_label_new("Nomor BPJS:");
-    GtkWidget* noBPJSEntry = gtk_entry_new();
-    GtkWidget* idPasienLabel = gtk_label_new("ID Pasien:");
-    GtkWidget* idPasienEntry = gtk_entry_new();
-
-    // Styling label
-    gtk_widget_set_margin_top(namaLabel, 20);
-
-    // Create the add button
-    GtkWidget* addButton = gtk_button_new_with_label("Add Data");
-    gtk_widget_set_margin_bottom(addButton, 20);
-
-    GtkStyleContext *context = gtk_widget_get_style_context(addButton);
-    gtk_style_context_add_class(context, "add-data-button-dialog");
-
-    g_signal_connect(addButton, "clicked", G_CALLBACK(addPatientData), NULL);
-
-    // Close the window when button clicked
-    g_signal_connect_swapped(addButton, "clicked", G_CALLBACK(gtk_widget_destroy), window);
-
-
-    // Add the input fields and button to the main container
-    gtk_box_pack_start(GTK_BOX(mainBox), namaLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), namaEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), alamatLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), alamatEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), kotaLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), kotaEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), umurLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), umurEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSEntry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), idPasienLabel, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mainBox), idPasienEntry, FALSE, FALSE, 0);
-
-    gtk_box_pack_start(GTK_BOX(mainBox), addButton, FALSE, FALSE, 0);
-
-    // Show all the widgets
-    gtk_widget_show_all(window);
-}
-
 void clearPatientDataTable(GtkWidget* table) {
     GList *children, *iter;
 
@@ -180,7 +110,7 @@ void addDataPatientToTable(GtkWidget* table, Patient** operatedData) {
 void searchPatientDataOnChanged(GtkSearchEntry *entry, gpointer user_data) {
     const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
     char *mutableText = g_strdup(text);
-    searchPatientParams* params = (searchPatientParams*) user_data;
+    PatientParams* params = (PatientParams*) user_data;
     // Handle the search event here
     // Implementasikan logika pencarian di sini
     
@@ -195,6 +125,77 @@ void searchPatientDataOnChanged(GtkSearchEntry *entry, gpointer user_data) {
     g_free(mutableText);
 }
 
+
+void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
+{   
+    // Get the patient list
+     PatientParams* params = (PatientParams*) data;
+
+    //uji tampilkan nama pertama pada data pasien
+    // printf("Nama Pasien Pertama: %s\n", (*operatedData)->namaLengkap);
+    // Create the new window
+    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Add Patient Data");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+
+    // Create the main container
+    GtkWidget* mainBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_add(GTK_CONTAINER(window), mainBox);
+
+    // Create the input fields
+    GtkWidget* namaLabel = gtk_label_new("Nama Lengkap:");
+    GtkWidget* namaEntry = gtk_entry_new();
+    GtkWidget* alamatLabel = gtk_label_new("Alamat:");
+    GtkWidget* alamatEntry = gtk_entry_new();
+    GtkWidget* kotaLabel = gtk_label_new("Kota:");
+    GtkWidget* kotaEntry = gtk_entry_new();
+    GtkWidget* kotaKelahiranLabel = gtk_label_new("Tempat Lahir:");
+    GtkWidget* kotaKelahiranEntry = gtk_entry_new();
+    GtkWidget* umurLabel = gtk_label_new("Umur:");
+    GtkWidget* umurEntry = gtk_entry_new();
+    GtkWidget* noBPJSLabel = gtk_label_new("Nomor BPJS:");
+    GtkWidget* noBPJSEntry = gtk_entry_new();
+    GtkWidget* idPasienLabel = gtk_label_new("ID Pasien:");
+    GtkWidget* idPasienEntry = gtk_entry_new();
+
+    // Styling label
+    gtk_widget_set_margin_top(namaLabel, 20);
+
+    // Create the add button
+    GtkWidget* addButton = gtk_button_new_with_label("Add Data");
+    gtk_widget_set_margin_bottom(addButton, 20);
+
+    GtkStyleContext *context = gtk_widget_get_style_context(addButton);
+    gtk_style_context_add_class(context, "add-data-button-dialog");
+
+    g_signal_connect(addButton, "clicked", G_CALLBACK(addPatientData), NULL);
+
+    // Close the window when button clicked
+    g_signal_connect_swapped(addButton, "clicked", G_CALLBACK(gtk_widget_destroy), window);
+
+
+    // Add the input fields and button to the main container
+    gtk_box_pack_start(GTK_BOX(mainBox), namaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), namaEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), alamatLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), alamatEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), kotaKelahiranEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), umurLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), umurEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), noBPJSEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), idPasienLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), idPasienEntry, FALSE, FALSE, 0);
+
+    gtk_box_pack_start(GTK_BOX(mainBox), addButton, FALSE, FALSE, 0);
+
+    // Show all the widgets
+    gtk_widget_show_all(window);
+}
+
 // Function to build the patient data tab (Callable from activate.c)
 void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient** allPatientData) {
     Patient* patientList = *operatedData;
@@ -207,13 +208,30 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient
     // Create the "Add Data" button
     GtkToolItem *addPatientDataButton = gtk_tool_button_new(NULL, "Add Data");
     GtkWidget *addPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(addPatientDataButton)); // Ambil widget internal dari GtkToolButton
-    GtkStyleContext *context = gtk_widget_get_style_context(addPatientDataButtonWidget);
-    gtk_style_context_add_class(context, "add-data-patient-button");
+    GtkStyleContext *addPatientContext = gtk_widget_get_style_context(addPatientDataButtonWidget);
+    gtk_style_context_add_class(addPatientContext, "add-data-patient-button");
     gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), addPatientDataButton, -1);
-    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), operatedData);
+
+    // Create the "edit Data" button
+    GtkToolItem *editPatientDataButton = gtk_tool_button_new(NULL, "Edit Data");
+    GtkWidget *editPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(editPatientDataButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *editPatientContext = gtk_widget_get_style_context(editPatientDataButtonWidget);
+    gtk_style_context_add_class(editPatientContext, "edit-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), editPatientDataButton, -1);
+    // g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), operatedData);
+
+    // Create the "delete Data" button
+    GtkToolItem *deletePatientDataButton = gtk_tool_button_new(NULL, "Delete Data");
+    GtkWidget *deletePatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(deletePatientDataButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *deletePatientContext = gtk_widget_get_style_context(deletePatientDataButtonWidget);
+    gtk_style_context_add_class(deletePatientContext, "delete-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), deletePatientDataButton, -1);
+    // g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), operatedData);
 
     // Set the button border
     gtk_container_set_border_width(GTK_CONTAINER(addPatientDataButton), 5);
+    gtk_container_set_border_width(GTK_CONTAINER(editPatientDataButton), 5);
+    gtk_container_set_border_width(GTK_CONTAINER(deletePatientDataButton), 5);
 
     // Create the search box
     GtkWidget* searchBox = gtk_search_entry_new();
@@ -239,12 +257,16 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient
     gtk_grid_set_column_spacing(GTK_GRID(table), 15); 
 
     // Hubungkan sinyal 'changed' ke fungsi callback
-    // buat parameter searchPatientParams
-    searchPatientParams* searchPatientParameter = malloc(sizeof(searchPatientParams));
-    searchPatientParameter->table = table;
-    searchPatientParameter->operatedData = operatedData;
-    searchPatientParameter->allPatientData = allPatientData;
-    g_signal_connect(searchBox, "changed", G_CALLBACK(searchPatientDataOnChanged), searchPatientParameter);
+    // buat parameter PatientParams
+    PatientParams* PatientParameter = malloc(sizeof(PatientParams));
+    PatientParameter->table = table;
+    PatientParameter->operatedData = operatedData;
+    PatientParameter->allPatientData = allPatientData;
+
+
+    // linking semua data ke dalam parameter
+    g_signal_connect(searchBox, "changed", G_CALLBACK(searchPatientDataOnChanged), PatientParameter);
+    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), PatientParameter);
 
     // // print data pasien pertama
     // printf("Nama Pasien Pertama 1: %s\n", *operatedData->namaLengkap);
