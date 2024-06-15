@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "dataStructure.h"
 #include "logger.h"
 
@@ -83,6 +84,51 @@ Date excelSerialToDate(int serial) {
     return date;
 }
 
+int stringDateFormatVerify(char tanggal[]) {
+    if (strcmp(tanggal, "") == 0 || strlen(tanggal) == 0) {
+        return 0;
+    }
+
+    char tanggalCopy[100];
+    strncpy(tanggalCopy, tanggal, sizeof(tanggalCopy) - 1);
+    tanggalCopy[sizeof(tanggalCopy) - 1] = '\0';
+
+    char *months[] = {"Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                      "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    char *token = strtok(tanggalCopy, " ");
+    if (token == NULL) return 0;
+    int day = atoi(token);
+
+    token = strtok(NULL, " ");
+    if (token == NULL) return 0;
+    int month = -1;
+    for (int i = 0; i < 12; i++) {
+        if (strcmp(token, months[i]) == 0) {
+            month = i;
+            break;
+        }
+    }
+    if (month == -1) return 0;
+
+    token = strtok(NULL, " ");
+    if (token == NULL) return 0;
+    int year = atoi(token);
+
+    // Check for leap year
+    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+        daysInMonth[1] = 29; // February has 29 days in a leap year
+    }
+
+    // Validate the extracted date components
+    if (day < 1 || day > daysInMonth[month] || month < 0 || month > 11 || year < 0) {
+        return -1; // Date is not possible
+    }
+
+    return 1; // Date is valid
+}
+
 // Konversi tanggal dari string ke Date
 Date convertStringToDate(const char tanggal[]) {
     Date newDate;
@@ -159,6 +205,26 @@ Date convertStringToDate(const char tanggal[]) {
 // Konversi Date ke string dengan format DD-MM-YYYY
 void convertDateToString(Date date, char *dateStr) {
     sprintf(dateStr, "%02d-%02d-%04d", date.day, date.month, date.year);
+}
+
+int hitungUmur(Date tanggalLahir) {
+    time_t t = time(NULL);
+    struct tm *now = localtime(&t);
+    Date tanggalSekarang = createDate(now->tm_mday, now->tm_mon + 1, now->tm_year + 1900);
+    int umur = tanggalSekarang.year - tanggalLahir.year;
+    if (tanggalSekarang.month < tanggalLahir.month || (tanggalSekarang.month == tanggalLahir.month && tanggalSekarang.day < tanggalLahir.day)) {
+        umur--;
+    }
+    return umur;
+}
+
+int isOnlyNumber(char str[]) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] < '0' || str[i] > '9') {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 // // Membuat ID Pasien baru yang unik

@@ -12,6 +12,9 @@ int isLeapYear(int year);
 Date excelSerialToDate(int serial);
 Date convertStringToDate(const char tanggal[]);
 void convertDateToString(Date date, char *dateStr);
+int stringDateFormatVerify(char tanggal[]);
+int hitungUmur(Date tanggalLahir) ;
+int isOnlyNumber(char str[]) ;
 
 
 Patient* createPatient(char namaLengkap[], char alamat[], char kota[], char tempatLahir[], Date tanggalLahir, int umur, int noBPJS, char idPasien[]);
