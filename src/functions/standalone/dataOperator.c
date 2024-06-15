@@ -161,10 +161,14 @@ void convertDateToString(Date date, char *dateStr) {
     sprintf(dateStr, "%02d-%02d-%04d", date.day, date.month, date.year);
 }
 
+// Membuat ID Pasien baru yang unik
+unsigned int patientCounter = 1230123;
 
-// Membuat ID pasien baru yang unik
-
-
+void createIDPatient(char *idPasien) {
+    // Format ID pasien: "KX " diikuti dengan nomor urut pasien
+    sprintf(idPatient, "KX %07u", patientCounter);
+    patientCounter++;  // Increment untuk pasien berikutnya
+}
 
 // Fungsi untuk membuat node patient baru
 
