@@ -176,14 +176,12 @@ void addPatientData(GtkWidget* button, gpointer data) {
 
 
         copyPatient(*params->patientParams->allPatientData, tempData);
-        printf("Patient copied\n");
 
         freePatientList(*params->patientParams->operatedData);
         *params->patientParams->operatedData = *tempData;
 
         // Update the table
         addDataPatientToTable(params->patientParams->table, params->patientParams->operatedData);
-        printf("Table updated\n");
 
         // Show the updated table
         gtk_widget_show_all(params->patientParams->table);
@@ -314,7 +312,7 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
 // Callback function for toolbar delete patient data
 void deletePatientData(GtkWidget* button, gpointer data) {
     PatientParams* params = (PatientParams*) data;
-    printf("Delete data pasien\n");
+    // printf("Delete data pasien\n");
 
     // cari berapa banyak data yang dicentang
     Patient* currentPatient = *params->operatedData;
@@ -332,7 +330,7 @@ void deletePatientData(GtkWidget* button, gpointer data) {
             if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
                 // Checkbox is checked, process the patient data here
                 // For example, you could print the patient's name or ID
-                printf("Patient at row %d is selected.\n", row + 1);
+                // printf("Patient at row %d is selected.\n", row + 1);
                 count++;
             }
         }
@@ -364,12 +362,12 @@ void deletePatientData(GtkWidget* button, gpointer data) {
             row = 0;
             int deleted = 0;
             while (currentPatient != NULL) {
-                printf("Row: %d\n", row);
+                // printf("Row: %d\n", row);
                 checkbox = gtk_grid_get_child_at(GTK_GRID(params->table), 9, row + 1);
                 if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
                     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
-                        printf("Patient at row %d is selected.\n", row + 1);
-                        // deletePatient(params->allPatientData, currentPatient->idPasien);
+                        // printf("Patient at row %d is selected.\n", row + 1);
+                        deletePatient(params->allPatientData, currentPatient->idPasien);
                         deleted++;
                     }
                 }
@@ -378,7 +376,12 @@ void deletePatientData(GtkWidget* button, gpointer data) {
             }
             
             // Pastikan copyPatient dan addDataPatientToTable mengelola memori dan pointer dengan benar
-            copyPatient(*params->allPatientData, params->operatedData);
+            Patient** tempData = malloc(sizeof(Patient*));
+            *tempData = NULL; // Initialize the result pointer to NULL
+            copyPatient(*params->allPatientData, tempData);
+            freePatientList(*params->operatedData);
+            *params->operatedData = *tempData;
+        
             addDataPatientToTable(params->table, params->operatedData);
             gtk_widget_show_all(params->table);
             
