@@ -39,7 +39,7 @@ int TindakanToID(Tindakan *head, char tindakan[]);
 // Fungsi untuk print data pasien sekaligus rekam medis pada pasien tersebut
 void printPatientHistory(Patient *head);
 
-void deletePatient(Patient *head, char idPasien[]);
+void deletePatient(Patient **head, char idPasien[]);
 void freePatientList(Patient *head);
 
 int debugging();

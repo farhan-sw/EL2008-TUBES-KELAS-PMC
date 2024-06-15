@@ -163,14 +163,27 @@ void addPatientData(GtkWidget* button, gpointer data) {
         newPatient->tanggalLahir = convertStringToDate(tanggalLahir);
         newPatient->umur = hitungUmur(newPatient->tanggalLahir);
         newPatient->noBPJS = atoi(gtk_entry_get_text(GTK_ENTRY(params->newPatientFormPointer->noBPJS)));
+        newPatient->history = NULL; 
+        newPatient->next = NULL;
         strcpy(newPatient->idPasien, "0");
 
         // Add the new patient to the list
         addPatient(params->patientParams->allPatientData, newPatient);
-        copyPatient(*params->patientParams->allPatientData, params->patientParams->operatedData);
+
+        Patient** tempData = malloc(sizeof(Patient*));
+        *tempData = NULL; // Initialize the result pointer to NULL
+
+
+
+        copyPatient(*params->patientParams->allPatientData, tempData);
+        printf("Patient copied\n");
+
+        freePatientList(*params->patientParams->operatedData);
+        *params->patientParams->operatedData = *tempData;
 
         // Update the table
         addDataPatientToTable(params->patientParams->table, params->patientParams->operatedData);
+        printf("Table updated\n");
 
         // Show the updated table
         gtk_widget_show_all(params->patientParams->table);
@@ -298,6 +311,89 @@ void addDataPatientButtonHandler(GtkWidget* button, gpointer data)
     gtk_widget_show_all(window);
 }
 
+// Callback function for toolbar delete patient data
+void deletePatientData(GtkWidget* button, gpointer data) {
+    PatientParams* params = (PatientParams*) data;
+    printf("Delete data pasien\n");
+
+    // cari berapa banyak data yang dicentang
+    Patient* currentPatient = *params->operatedData;
+    // Assuming 'params' is a structure that contains the GTK grid 'table'
+    // and 'currentPatient' is the head of a linked list of patients
+    int row = 0; // Initialize row index to 0
+    int count = 0;
+
+    GtkWidget* checkbox;
+    
+    while (currentPatient != NULL) {
+        checkbox = gtk_grid_get_child_at(GTK_GRID(params->table), 9, row + 1);
+        // Check if checkbox is not NULL and is a GtkToggleButton
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+            if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                // Checkbox is checked, process the patient data here
+                // For example, you could print the patient's name or ID
+                printf("Patient at row %d is selected.\n", row + 1);
+                count++;
+            }
+        }
+        row++; // Move to the next row for the next patient
+        currentPatient = currentPatient->next; // Move to the next patient in the list
+    }
+
+    
+    if (count == 0) {
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk dihapus");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+
+    } else {
+        // tampilkan dialog konfirmasi
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Apakah Anda yakin ingin menghapus data pasien yang dipilih?");
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+
+        if (response == GTK_RESPONSE_YES) {
+            // Pastikan params dan params->operatedData valid
+            if (params == NULL || params->operatedData == NULL || params->allPatientData == NULL) {
+                fprintf(stderr, "Invalid parameters\n");
+                return; // Keluar dari fungsi jika parameter tidak valid
+            }
+            
+            currentPatient = *params->operatedData;
+            row = 0;
+            int deleted = 0;
+            while (currentPatient != NULL) {
+                printf("Row: %d\n", row);
+                checkbox = gtk_grid_get_child_at(GTK_GRID(params->table), 9, row + 1);
+                if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+                    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                        printf("Patient at row %d is selected.\n", row + 1);
+                        // deletePatient(params->allPatientData, currentPatient->idPasien);
+                        deleted++;
+                    }
+                }
+                row++;
+                currentPatient = currentPatient->next;
+            }
+            
+            // Pastikan copyPatient dan addDataPatientToTable mengelola memori dan pointer dengan benar
+            copyPatient(*params->allPatientData, params->operatedData);
+            addDataPatientToTable(params->table, params->operatedData);
+            gtk_widget_show_all(params->table);
+            
+            char message[100];
+            sprintf(message, "Berhasil menghapus %d data pasien", deleted);
+            GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, message);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
+
+    }
+
+
+}
+
 // Function to build the patient data tab (Callable from activate.c)
 void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient** allPatientData) {
     Patient* patientList = *operatedData;
@@ -328,7 +424,7 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient
     GtkStyleContext *deletePatientContext = gtk_widget_get_style_context(deletePatientDataButtonWidget);
     gtk_style_context_add_class(deletePatientContext, "delete-data-patient-button");
     gtk_toolbar_insert(GTK_TOOLBAR(patientDataToolbar), deletePatientDataButton, -1);
-    // g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), operatedData);
+    
 
     // Set the button border
     gtk_container_set_border_width(GTK_CONTAINER(addPatientDataButton), 5);
@@ -369,6 +465,7 @@ void buildPatientDataTab(GtkWidget* userDataTab, Patient** operatedData, Patient
     // linking semua data ke dalam parameter
     g_signal_connect(searchBox, "changed", G_CALLBACK(searchPatientDataOnChanged), PatientParameter);
     g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), PatientParameter);
+    g_signal_connect(deletePatientDataButton, "clicked", G_CALLBACK(deletePatientData), PatientParameter);
 
     // // print data pasien pertama
     // printf("Nama Pasien Pertama 1: %s\n", *operatedData->namaLengkap);
