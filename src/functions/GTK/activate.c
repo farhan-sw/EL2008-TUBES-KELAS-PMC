@@ -6,7 +6,7 @@
 #include "./about_tab.c"
 
 
-static void activate(Patient** operatedData, Patient** allPatientData, Tindakan* tindakanList, MedicalCheckup* medicalCheckupList) {
+static void activate(Patient** operatedData, Patient** allPatientData, Tindakan* tindakanList) {
 
     Patient* patientList = *operatedData;
     Logger(1, "Building Main Window");
@@ -66,7 +66,7 @@ static void activate(Patient** operatedData, Patient** allPatientData, Tindakan*
     buildFinanceTab(financeTab, tindakanList);     
 
     // Build Medical Check-Up Tab
-    buildMedicalCheckUpTab(medicalCheckUpTab, operatedData, allPatientData, tindakanList, medicalCheckupList);
+    buildMedicalCheckUpTab(medicalCheckUpTab, operatedData, allPatientData, tindakanList);
 
     // Show all widgets
     gtk_widget_show_all(window);

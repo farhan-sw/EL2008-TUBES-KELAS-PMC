@@ -22,6 +22,7 @@ typedef struct Date {
  * @brief History struct
  */
 typedef struct History {
+    struct Patient *patient;
     Date tanggal;
     char idPasien[20];
     char diagnosis[50];

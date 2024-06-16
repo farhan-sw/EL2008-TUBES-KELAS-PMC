@@ -42,7 +42,6 @@ int main(int argc, char **argv) {
     Patient** allPatientData = malloc(sizeof(Patient*));
     Patient** operatedData = malloc(sizeof(Patient*));
     Tindakan** allTindakanList = malloc(sizeof(Tindakan*));
-    MedicalCheckup** allMedicalCheckupData = malloc(sizeof(MedicalCheckup*));
 
     loadData(allPatientData, allTindakanList, filename);
     copyPatient(*allPatientData, operatedData);
@@ -62,7 +61,7 @@ int main(int argc, char **argv) {
     // Initialize main window
     // print pointer allPatientData
     
-    activate(operatedData, allPatientData, *allTindakanList, *allMedicalCheckupData);
+    activate(operatedData, allPatientData, *allTindakanList);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();

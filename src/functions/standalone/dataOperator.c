@@ -227,6 +227,40 @@ Date getCurrentDate() {
     return currentDate;
 }
 
+void setDate(Date *date, int day, int month, int year) {
+    date->day = day;
+    date->month = month;
+    date->year = year;
+}
+
+/**
+ * @brief Compare two dates
+ * @param date1: Date tanggal 1
+ * @param date2: Date tanggal 2
+ * @return 1 if date1 > date2, -1 if date1 < date2, 0 if date1 == date2
+ */
+int compareDate(Date date1, Date date2) {
+    if (date1.year > date2.year) {
+        return 1;
+    } else if (date1.year < date2.year) {
+        return -1;
+    } else {
+        if (date1.month > date2.month) {
+            return 1;
+        } else if (date1.month < date2.month) {
+            return -1;
+        } else {
+            if (date1.day > date2.day) {
+                return 1;
+            } else if (date1.day < date2.day) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+}
+
 int isOnlyNumber(char str[]) {
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] < '0' || str[i] > '9') {
@@ -310,28 +344,6 @@ Patient* findPatient(Patient *head, char idPasien[]) {
 
 
 /**
- * @brief Create a History function
- * @param tanggal: Date tanggal
- * @param idPasien: char ID pasien
- * @param diagnosis: char diagnosis
- * @param tindakanID: int tindakan ID
- * @param kontrol: Date kontrol
- * @param biaya: int biaya
- */
-History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya) {
-    History *newHistory = (History*) malloc(sizeof(History));
-    newHistory->tanggal = tanggal;
-    strcpy(newHistory->idPasien, idPasien);
-    strcpy(newHistory->diagnosis, diagnosis);
-    newHistory->tindakanID = tindakanID;
-    newHistory->kontrol = kontrol;
-    newHistory->biaya = biaya;
-    newHistory->next = NULL;
-    return newHistory;
-}
-
-
-/**
  * @brief Print a Date function
  * @param date: Date tanggal
  */
@@ -372,6 +384,58 @@ void printPatient(Patient *head) {
         printf("\n");
         currentPatient = currentPatient->next;
     }
+}
+
+/* ======================================= BAGIAN HISTORIS ======================================= */
+
+
+/**
+ * @brief Create a History function
+ * @param tanggal: Date tanggal
+ * @param idPasien: char ID pasien
+ * @param diagnosis: char diagnosis
+ * @param tindakanID: int tindakan ID
+ * @param kontrol: Date kontrol
+ * @param biaya: int biaya
+ */
+History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya) {
+    History *newHistory = (History*) malloc(sizeof(History));
+    newHistory->tanggal = tanggal;
+    strcpy(newHistory->idPasien, idPasien);
+    strcpy(newHistory->diagnosis, diagnosis);
+    newHistory->tindakanID = tindakanID;
+    newHistory->kontrol = kontrol;
+    newHistory->biaya = biaya;
+    newHistory->next = NULL;
+    return newHistory;
+}
+
+void deleteHistory(History **head, Date tanggal) {
+    History *currentHistory = *head;
+    History *prevHistory = NULL;
+
+    // Jika history yang ingin dihapus adalah head
+    if (currentHistory != NULL && compareDate(currentHistory->tanggal, tanggal) == 0) {
+        *head = currentHistory->next;
+        free(currentHistory);
+        return;
+    }
+
+    // Mencari history yang ingin dihapus
+    while (currentHistory != NULL && compareDate(currentHistory->tanggal, tanggal) != 0) {
+        prevHistory = currentHistory;
+        currentHistory = currentHistory->next;
+    }
+
+    // Jika history tidak ditemukan
+    if (currentHistory == NULL) {
+        printf("History dengan tanggal "); printDate(tanggal); printf(" tidak ditemukan\n");
+        return;
+    }
+
+    // Menghapus history
+    prevHistory->next = currentHistory->next;
+    free(currentHistory);
 }
 
 void printHistory(History *history) {
@@ -420,6 +484,8 @@ void sortHistory(Patient *head) {
         currentPatient = currentPatient->next;
     }
 }
+
+// =========================================== END BAGIAN HISTORIS ===========================================
 
 
 /**
@@ -688,6 +754,7 @@ void addMedicalCheckup(MedicalCheckup **head, MedicalCheckup *newMedicalCheckup)
 }
 
 void printMedicalCheckup(MedicalCheckup *head) {
+    printf("Medical Checkup:\n");
     MedicalCheckup *currentMedicalCheckup = head;
     while (currentMedicalCheckup != NULL) {
         printf("ID Pasien: %s\n", currentMedicalCheckup->idPasien);
@@ -729,13 +796,15 @@ void sortMedicalCheckup(MedicalCheckup *head) {
 }
 
 // LOad medical checkup berdasar tanggal diatas Date = getCurrentDate() kemudian sort
-
 void loadMedicalCheckup(MedicalCheckup **head, Patient *patientHead) {
+    Date currentDate = getCurrentDate();
+    setDate(&currentDate, 1, 1, 1900);
     Patient *currentPatient = patientHead;
     while (currentPatient != NULL) {
         History *currentHistory = currentPatient->history;
         while (currentHistory != NULL) {
-            if (currentHistory->kontrol.year == getCurrentDate().year && currentHistory->kontrol.month == getCurrentDate().month && currentHistory->kontrol.day == getCurrentDate().day) {
+            // Print kontrol date
+            if (currentHistory->kontrol.year >= currentDate.year && currentHistory->kontrol.month >= currentDate.month && currentHistory->kontrol.day >= currentDate.day) {
                 MedicalCheckup *newMedicalCheckup = createMedicalCheckup(currentHistory->idPasien, currentPatient->namaLengkap, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol);
                 addMedicalCheckup(head, newMedicalCheckup);
             }
@@ -743,5 +812,6 @@ void loadMedicalCheckup(MedicalCheckup **head, Patient *patientHead) {
         }
         currentPatient = currentPatient->next;
     }
+
     sortMedicalCheckup(*head);
 }
