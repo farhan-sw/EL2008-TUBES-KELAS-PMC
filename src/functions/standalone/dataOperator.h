@@ -41,7 +41,7 @@ MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char d
 void addMedicalCheckup(MedicalCheckup **head, MedicalCheckup *newMedicalCheckup);
 void printMedicalCheckup(MedicalCheckup *head);
 void sortMedicalCheckup(MedicalCheckup *head);
-void loadMedicalCheckup(MedicalCheckup **head, Patient *patientList, Tindakan *tindakanList);
+void loadMedicalCheckup(MedicalCheckup **head, Patient *patientHead);
 
 // Fungsi untuk print data pasien sekaligus rekam medis pada pasien tersebut
 void printPatientHistory(Patient *head);
