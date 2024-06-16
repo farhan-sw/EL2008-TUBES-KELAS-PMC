@@ -16,6 +16,8 @@ int stringDateFormatVerify(char tanggal[]);
 int hitungUmur(Date tanggalLahir) ;
 int isOnlyNumber(char str[]) ;
 Date getCurrentDate();
+void setDate(Date *date, int day, int month, int year);
+int compareDate(Date date1, Date date2);
 
 
 Patient* createPatient(char namaLengkap[], char alamat[], char kota[], char tempatLahir[], Date tanggalLahir, int umur, int noBPJS, char idPasien[]);
@@ -27,6 +29,8 @@ Patient* findPatient(Patient *head, char idPasien[]);
 
 History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya);
 void addHistory(History **head, History *newHistory);
+// Delete Single History
+void deleteHistory(History **head, Date tanggal);
 void printHistory(History *history);
 void sortHistory(Patient *head);
 
