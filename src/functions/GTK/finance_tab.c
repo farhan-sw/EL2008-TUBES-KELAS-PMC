@@ -3,24 +3,6 @@
 #include <string.h>
 #include "dataStructure.h"
 
-// Fungsi Dummy untuk Membuat Linked List Tindakan
-Tindakan* createDummyTindakanList() {
-    Tindakan* head = (Tindakan*) malloc(sizeof(Tindakan));
-    head->id = 1;
-    strcpy(head->Tindakan, "Operasi Jantung");
-    head->biaya = 50000000;
-    head->next = (Tindakan*) malloc(sizeof(Tindakan));
-    head->next->id = 2;
-    strcpy(head->next->Tindakan, "Kemoterapi");
-    head->next->biaya = 20000000;
-    head->next->next = (Tindakan*) malloc(sizeof(Tindakan));
-    head->next->next->id = 3;
-    strcpy(head->next->next->Tindakan, "Cek Darah");
-    head->next->next->biaya = 150000;
-    head->next->next->next = NULL;
-    return head;
-}
-
 // Fungsi untuk Menambahkan Data Tindakan ke Tabel
 void addTindakanToTable(GtkWidget* table, Tindakan* tindakanList) {
     int row = 1;
@@ -38,6 +20,11 @@ void addTindakanToTable(GtkWidget* table, Tindakan* tindakanList) {
         gtk_grid_attach(GTK_GRID(table), label_id, 0, row, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label_tindakan, 1, row, 1, 1);
         gtk_grid_attach(GTK_GRID(table), label_biaya, 2, row, 1, 1);
+
+        // Set header width height and alignment
+        gtk_widget_set_size_request(label_id, 50, 30);
+        gtk_widget_set_size_request(label_tindakan, 200, 30);
+        gtk_widget_set_size_request(label_biaya, 100, 30);
 
         tindakanList = tindakanList->next;
         row++;
