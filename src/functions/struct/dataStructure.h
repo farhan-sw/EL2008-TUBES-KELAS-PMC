@@ -15,8 +15,57 @@ typedef struct Date {
     int year;
 } Date;
 
-// Define the structure for the patient node
 
+
+// =================================== BAGIAN HISTORY =======================================
+/**
+ * @brief History struct
+ */
+typedef struct History {
+    Date tanggal;
+    char idPasien[20];
+    char diagnosis[50];
+    int tindakanID;
+    Date kontrol;
+    int biaya;
+    struct History *next;
+} History;
+// =================================== END BAGIAN HISTORY =======================================
+
+
+
+// =================================== BAGIAN TINDAKAN =======================================
+/**
+ * @brief Tindakan struct
+ */
+typedef struct Tindakan {
+    int id;
+    char Tindakan[50];
+    int biaya;
+    struct Tindakan *next;
+} Tindakan;
+// =================================== END BAGIAN TINDAKAN =======================================
+
+
+
+// =================================== BAGIAN MEDICAL CHECKUP =======================================
+/**
+ * @brief Medical Checkup Struct
+ */
+typedef struct MedicalCheckup {
+    char idPasien[20];
+    char namaLengkap[50];
+    char diagnosis[50];
+    int tindakanID;
+    Date kontrol;
+
+    struct MedicalCheckup *next;
+} MedicalCheckup;
+// =================================== END BAGIAN MEDICAL CHECKUP =======================================
+
+
+
+/* ============================ BAGIAN PATIENT ============================ */
 /**
  * @brief Patient struct
  */
@@ -32,26 +81,6 @@ typedef struct Patient {
     struct History *history;
     struct Patient *next;
 } Patient;
-
-/**
- * @brief History struct
- */
-typedef struct History {
-    Date tanggal;
-    char idPasien[20];
-    char diagnosis[50];
-    int tindakanID;
-    Date kontrol;
-    int biaya;
-    struct History *next;
-} History;
-
-typedef struct Tindakan {
-    int id;
-    char Tindakan[50];
-    int biaya;
-    struct Tindakan *next;
-} Tindakan;
 
 typedef struct PatientParams{
     GtkWidget *table;
@@ -87,5 +116,6 @@ typedef struct EditPatientFormPointer{
     Patient** operatedData;
     Patient** allPatientData;
 } EditPatientFormPointer;
+// =================================== END BAGIAN PATIENT =======================================
 
 #endif /* DATASTRUCTURE_H */
