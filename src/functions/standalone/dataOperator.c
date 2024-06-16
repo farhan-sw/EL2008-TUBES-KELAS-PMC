@@ -220,6 +220,13 @@ int hitungUmur(Date tanggalLahir) {
     return umur;
 }
 
+Date getCurrentDate() {
+    time_t t = time(NULL);
+    struct tm *now = localtime(&t);
+    Date currentDate = createDate(now->tm_mday, now->tm_mon + 1, now->tm_year + 1900);
+    return currentDate;
+}
+
 int isOnlyNumber(char str[]) {
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] < '0' || str[i] > '9') {
@@ -642,4 +649,99 @@ int TindakanToID(Tindakan *head, char tindakan[]) {
         currentTindakan = currentTindakan->next;
     }
     return -1;
+}
+
+
+
+
+// =================================== BAGIAN MEDICAL CHECKUP =======================================
+
+/**
+ * @brief Create a Medical Checkup function
+ * @param idPasien: char ID pasien
+ * @param namaLengkap: char nama lengkap
+ * @param diagnosis: char diagnosis
+ * @param tindakanID: int tindakan ID
+ * @param kontrol: Date kontrol
+ */
+MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], int tindakanID, Date kontrol) {
+    MedicalCheckup *newMedicalCheckup = (MedicalCheckup*) malloc(sizeof(MedicalCheckup));
+    strcpy(newMedicalCheckup->idPasien, idPasien);
+    strcpy(newMedicalCheckup->namaLengkap, namaLengkap);
+    strcpy(newMedicalCheckup->diagnosis, diagnosis);
+    newMedicalCheckup->tindakanID = tindakanID;
+    newMedicalCheckup->kontrol = kontrol;
+    newMedicalCheckup->next = NULL;
+    return newMedicalCheckup;
+}
+
+void addMedicalCheckup(MedicalCheckup **head, MedicalCheckup *newMedicalCheckup) {
+    if (*head == NULL) {
+        *head = newMedicalCheckup;
+    } else {
+        MedicalCheckup *currentMedicalCheckup = *head;
+        while (currentMedicalCheckup->next != NULL) {
+            currentMedicalCheckup = currentMedicalCheckup->next;
+        }
+        currentMedicalCheckup->next = newMedicalCheckup;
+    }
+}
+
+void printMedicalCheckup(MedicalCheckup *head) {
+    MedicalCheckup *currentMedicalCheckup = head;
+    while (currentMedicalCheckup != NULL) {
+        printf("ID Pasien: %s\n", currentMedicalCheckup->idPasien);
+        printf("Nama Lengkap: %s\n", currentMedicalCheckup->namaLengkap);
+        printf("Diagnosis: %s\n", currentMedicalCheckup->diagnosis);
+        printf("Tindakan (ID): %d\n", currentMedicalCheckup->tindakanID);
+        printf("Kontrol: ");
+        printDate(currentMedicalCheckup->kontrol);
+        currentMedicalCheckup = currentMedicalCheckup->next;
+    }
+}
+
+void sortMedicalCheckup(MedicalCheckup *head) {
+    MedicalCheckup *currentMedicalCheckup = head;
+    while (currentMedicalCheckup != NULL) {
+        MedicalCheckup *nextMedicalCheckup = currentMedicalCheckup->next;
+        while (nextMedicalCheckup != NULL) {
+            if (currentMedicalCheckup->kontrol.year > nextMedicalCheckup->kontrol.year) {
+                Date tempDate = currentMedicalCheckup->kontrol;
+                currentMedicalCheckup->kontrol = nextMedicalCheckup->kontrol;
+                nextMedicalCheckup->kontrol = tempDate;
+            } else if (currentMedicalCheckup->kontrol.year == nextMedicalCheckup->kontrol.year) {
+                if (currentMedicalCheckup->kontrol.month > nextMedicalCheckup->kontrol.month) {
+                    Date tempDate = currentMedicalCheckup->kontrol;
+                    currentMedicalCheckup->kontrol = nextMedicalCheckup->kontrol;
+                    nextMedicalCheckup->kontrol = tempDate;
+                } else if (currentMedicalCheckup->kontrol.month == nextMedicalCheckup->kontrol.month) {
+                    if (currentMedicalCheckup->kontrol.day > nextMedicalCheckup->kontrol.day) {
+                        Date tempDate = currentMedicalCheckup->kontrol;
+                        currentMedicalCheckup->kontrol = nextMedicalCheckup->kontrol;
+                        nextMedicalCheckup->kontrol = tempDate;
+                    }
+                }
+            }
+            nextMedicalCheckup = nextMedicalCheckup->next;
+        }
+        currentMedicalCheckup = currentMedicalCheckup->next;
+    }
+}
+
+// LOad medical checkup berdasar tanggal diatas Date = getCurrentDate() kemudian sort
+
+void loadMedicalCheckup(MedicalCheckup **head, Patient *patientHead) {
+    Patient *currentPatient = patientHead;
+    while (currentPatient != NULL) {
+        History *currentHistory = currentPatient->history;
+        while (currentHistory != NULL) {
+            if (currentHistory->kontrol.year == getCurrentDate().year && currentHistory->kontrol.month == getCurrentDate().month && currentHistory->kontrol.day == getCurrentDate().day) {
+                MedicalCheckup *newMedicalCheckup = createMedicalCheckup(currentHistory->idPasien, currentPatient->namaLengkap, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol);
+                addMedicalCheckup(head, newMedicalCheckup);
+            }
+            currentHistory = currentHistory->next;
+        }
+        currentPatient = currentPatient->next;
+    }
+    sortMedicalCheckup(*head);
 }

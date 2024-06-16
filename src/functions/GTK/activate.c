@@ -63,7 +63,10 @@ static void activate(Patient** operatedData, Patient** allPatientData, Tindakan*
     buildMedicalRecordTab(medicalRecordsTab, patientList, tindakanList);
 
     // Build Finance Tab
-    buildFinanceTab(financeTab, tindakanList);  
+    buildFinanceTab(financeTab, tindakanList); 
+
+    // Build Medical Check-Up Tab
+    // buildMedicalCheckUpTab(medicalCheckUpTab, operatedData, allPatientData, tindakanList); 
 
     // Show all widgets
     gtk_widget_show_all(window);

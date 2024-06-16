@@ -15,6 +15,7 @@ void convertDateToString(Date date, char *dateStr);
 int stringDateFormatVerify(char tanggal[]);
 int hitungUmur(Date tanggalLahir) ;
 int isOnlyNumber(char str[]) ;
+Date getCurrentDate();
 
 
 Patient* createPatient(char namaLengkap[], char alamat[], char kota[], char tempatLahir[], Date tanggalLahir, int umur, int noBPJS, char idPasien[]);
@@ -35,6 +36,12 @@ void printTindakan(Tindakan *head);
 void idToTindakan(Tindakan *head, int id, char *tindakan, int *biaya);
 int idToBiaya(Tindakan *head, int id);
 int TindakanToID(Tindakan *head, char tindakan[]);
+
+MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], int tindakanID, Date kontrol);
+void addMedicalCheckup(MedicalCheckup **head, MedicalCheckup *newMedicalCheckup);
+void printMedicalCheckup(MedicalCheckup *head);
+void sortMedicalCheckup(MedicalCheckup *head);
+void loadMedicalCheckup(MedicalCheckup **head, Patient *patientList, Tindakan *tindakanList);
 
 // Fungsi untuk print data pasien sekaligus rekam medis pada pasien tersebut
 void printPatientHistory(Patient *head);
