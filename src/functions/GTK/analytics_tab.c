@@ -60,7 +60,7 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
 
         // Header tahun
         char year_text[10];
-        sprintf(year_text, "Year %d", report->year);
+        sprintf(year_text, "YEAR %d", report->year);
         GtkWidget* label_year = gtk_label_new(year_text);
         gtk_box_pack_start(GTK_BOX(vbox), label_year, FALSE, FALSE, 5);
         gtk_widget_set_halign(label_year, GTK_ALIGN_CENTER);
@@ -123,18 +123,34 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
 
 
         // Tabel analisis pendapatan
+        GtkWidget* income_frame = gtk_frame_new(NULL);
+        gtk_box_pack_start(GTK_BOX(vbox), income_frame, FALSE, FALSE, 20);
+
+        gtk_frame_set_label_align(GTK_FRAME(income_frame), 0.5, 0.5);
+        gtk_frame_set_shadow_type(GTK_FRAME(income_frame), GTK_SHADOW_ETCHED_OUT);
+
         GtkWidget* income_grid = gtk_grid_new();
-        gtk_box_pack_start(GTK_BOX(vbox), income_grid, FALSE, FALSE, 20);
+        gtk_container_add(GTK_CONTAINER(income_frame), income_grid);
 
         double yearlyIncome = 0.0;
         for (int j = 0; j < 12; j++) {
-            char month_income_text[30];
-            sprintf(month_income_text, "Month %d: Rp %.2f", j + 1, report->monthlyIncome[j]);
-            GtkWidget* label_month_income = gtk_label_new(month_income_text);
-            gtk_widget_set_size_request(label_month_income, ANALYSIS_LABEL_WIDTH, -1);
-            gtk_widget_set_halign(label_month_income, GTK_ALIGN_START);
-            gtk_widget_set_margin_start(label_month_income, 5); // Jarak tambahan 5 piksel dari kiri
-            gtk_grid_attach(GTK_GRID(income_grid), label_month_income, 0, j, 1, 1);
+            // Label untuk bulan
+            char month_text[20];
+            sprintf(month_text, "Month %d:", j + 1);
+            GtkWidget* label_month = gtk_label_new(month_text);
+            gtk_widget_set_size_request(label_month, ANALYSIS_LABEL_WIDTH, -1);
+            gtk_widget_set_halign(label_month, GTK_ALIGN_START);
+            gtk_grid_attach(GTK_GRID(income_grid), label_month, 0, j, 1, 1);
+
+            // Nominal pendapatan
+            char income_text[30];
+            sprintf(income_text, "Rp %.2f", report->monthlyIncome[j]);
+            GtkWidget* label_income = gtk_label_new(income_text);
+            gtk_widget_set_size_request(label_income, ANALYSIS_LABEL_WIDTH, -1);
+            gtk_widget_set_halign(label_income, GTK_ALIGN_START);
+            gtk_widget_set_margin_start(label_income, 5); // Jarak tambahan 5 piksel dari kiri
+            gtk_grid_attach(GTK_GRID(income_grid), label_income, 1, j, 1, 1);
+
             yearlyIncome += report->monthlyIncome[j];
         }
 
@@ -142,32 +158,24 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
         sprintf(avg_income_text, "Average Yearly Income: Rp %.2f", yearlyIncome / 12);
         GtkWidget* label_avg_income = gtk_label_new(avg_income_text);
         gtk_widget_set_size_request(label_avg_income, ANALYSIS_LABEL_WIDTH, -1);
-        gtk_widget_set_halign(label_avg_income, GTK_ALIGN_START);
-        gtk_widget_set_margin_start(label_avg_income, 5); // Jarak tambahan 5 piksel dari kiri
-        gtk_grid_attach(GTK_GRID(income_grid), label_avg_income, 0, 12, 1, 1);
+        gtk_widget_set_halign(label_avg_income, GTK_ALIGN_START);  // Set alignment to start (left)
+        gtk_widget_set_margin_start(label_avg_income, 5);  // Margin tambahan dari kiri
+        gtk_grid_attach(GTK_GRID(income_grid), label_avg_income, 0, 12, 2, 1);
 
-        // Tambahkan pemisah antara tahun
         GtkWidget* separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_box_pack_start(GTK_BOX(vbox), separator, FALSE, FALSE, 10);
 
-        // Set grid properties
-        gtk_widget_set_hexpand(grid, TRUE);
-        gtk_widget_set_halign(grid, GTK_ALIGN_FILL);
-        gtk_grid_set_row_spacing(GTK_GRID(grid), 5);
-        gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
-
-        // Set income grid properties
         gtk_widget_set_hexpand(income_grid, TRUE);
         gtk_widget_set_halign(income_grid, GTK_ALIGN_FILL);
         gtk_grid_set_row_spacing(GTK_GRID(income_grid), 5);
 
-        // Set separator properties
         gtk_widget_set_hexpand(separator, TRUE);
         gtk_widget_set_halign(separator, GTK_ALIGN_FILL);
 
-        // Set width height and alignment
-        gtk_widget_set_size_request(label_year, ANALYSIS_LABEL_WIDTH, -1);
-        gtk_widget_set_size_request(analysis_label, ANALYSIS_LABEL_WIDTH, -1);
+        gtk_widget_set_size_request(income_frame, -1, -1);
+
+        GtkStyleContext* context_income = gtk_widget_get_style_context(income_frame);
+        gtk_style_context_add_class(context_income, "income-frame");
 
 
     }

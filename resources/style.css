@@ -57,14 +57,28 @@
     background-color: rgb(246, 112, 112);
 }
 
-.analysis-income-header {
-    background-color: rgb(3, 187, 3);
-    color: white;
-    font-weight: bold;
+/* CSS untuk header tahun */
+.analysis-year-header {
+    background-color: rgb(187, 3, 3); /* Warna latar belakang */
+    color: white; /* Warna teks */
+    font-weight: bold; /* Tebal teks */
+    padding: 5px 20px; /* Padding untuk memberi ruang di sekitar teks */
 }
 
-.analysis-year-header {
-    background-color: rgb(187, 3, 3); 
-    color: white;
-    font-weight: bold;
+/* CSS untuk header analisis pendapatan */
+.analysis-income-header {
+    background-color: rgb(3, 187, 3); /* Warna latar belakang */
+    color: white; /* Warna teks */
+    font-weight: bold; /* Tebal teks */
+    padding: 5px 20px; /* Padding untuk memberi ruang di sekitar teks */
+}
+
+
+/* Example CSS to style the income frame */
+.income-frame {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #ccc;
+    padding: 10px;
+    margin: 10px;
 }
