@@ -22,9 +22,10 @@ Dependencies :
         - pacman -S mingw-w64-x86_64-xlsxio         // for xlsxio
         - pacman -S mingw-w64-x86_64-zlib           // dependency of xlsxwriter
     - Library tambahan xlsxwriter
-        penginstalan library ini sedikit berbeda, sama melalui MSYS2 MINGW64 dengan mengetikkan perintah berikut berurut
-        catatan bahwa terdapat bug di repository aslinya dan perlu di resolve, alasan
-        mengapa source code yg daipakai sedikit berbeda dari yang ada di instruksi dokumentasi (perhatikan link github)
+        penginstalan library ini sedikit berbeda, sama melalui MSYS2 MINGW64 dengan mengetikkan perintah berikut pada 
+        terminal MSYS2 MINGW64 secara berurut.
+        catatan bahwa terdapat bug di repository aslinya dan perlu di resolve, alasan mengapa source code yg dipakai 
+        sedikit berbeda dari yang ada di instruksi dokumentasi (perhatikan link github)
 
         pacman -S git gcc make zlib-devel
         git clone https://github.com/Astha47/libxlsxwriter.git
