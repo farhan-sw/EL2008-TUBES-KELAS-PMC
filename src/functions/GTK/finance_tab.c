@@ -33,6 +33,44 @@ void addTindakanToTable(GtkWidget* table, Tindakan* tindakanList) {
 
 // Fungsi untuk Membangun Tab Finance
 void buildFinanceTab(GtkWidget* financeTab, Tindakan* tindakanList) {
+
+     // TOOLBAR
+    // Create the toolbar
+    GtkWidget* financeToolbar = gtk_toolbar_new();
+    gtk_toolbar_set_style(GTK_TOOLBAR(financeToolbar), GTK_TOOLBAR_ICONS);
+    gtk_box_pack_start(GTK_BOX(financeTab), financeToolbar, FALSE, FALSE, 0);
+
+    // Create the "Add Data" button
+    GtkToolItem *addPriceButton = gtk_tool_button_new(NULL, "Add Data");
+    GtkWidget *addPriceButtonWidget = gtk_bin_get_child(GTK_BIN(addPriceButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *addPriceContext = gtk_widget_get_style_context(addPriceButtonWidget);
+    gtk_style_context_add_class(addPriceContext, "add-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(financeToolbar), addPriceButton, -1);
+
+    // Create the "edit Data" button
+    GtkToolItem *editPriceButton = gtk_tool_button_new(NULL, "Edit Data");
+    GtkWidget *editPriceButtonWidget = gtk_bin_get_child(GTK_BIN(editPriceButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *editPriceContext = gtk_widget_get_style_context(editPriceButtonWidget);
+    gtk_style_context_add_class(editPriceContext, "edit-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(financeToolbar), editPriceButton, -1);
+    // g_signal_connect(addPriceButton, "clicked", G_CALLBACK(addDataPatientButtonHandler), operatedData);
+
+    // Create the "delete Data" button
+    GtkToolItem *deletePriceButton = gtk_tool_button_new(NULL, "Delete Data");
+    GtkWidget *deletePriceButtonWidget = gtk_bin_get_child(GTK_BIN(deletePriceButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *deletePriceContext = gtk_widget_get_style_context(deletePriceButtonWidget);
+    gtk_style_context_add_class(deletePriceContext, "delete-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(financeToolbar), deletePriceButton, -1);
+    
+
+    // Set the button border
+    gtk_container_set_border_width(GTK_CONTAINER(addPriceButton), 5);
+    gtk_container_set_border_width(GTK_CONTAINER(editPriceButton), 5);
+    gtk_container_set_border_width(GTK_CONTAINER(deletePriceButton), 5);
+
+
+
+
     // Create the scrollable table
     GtkWidget* scrollableFinance = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollableFinance), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
