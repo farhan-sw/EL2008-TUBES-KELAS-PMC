@@ -7,7 +7,6 @@
 #include <dataStructure.h>
 
 // declarasikan bahwa ada variable bernama session
-void saveData(Patient* allPatientData, char filename[]);
-void testExcel();
+void saveData(Patient* allPatientData, Tindakan* allTindakanList , char filename[], char session[]);
 
 #endif // SAVEDATA_H

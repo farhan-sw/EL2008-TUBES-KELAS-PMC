@@ -46,10 +46,9 @@ int main(int argc, char **argv) {
 
     loadData(allPatientData, allTindakanList, filename);
     copyPatient(*allPatientData, operatedData);
-    printf("Pointer allPatientList: %p\n", allPatientData);
 
     // test excel
-    testExcel();
+    saveData(*allPatientData, *allTindakanList, "DataPMC20232024", session);
     
 
     // GTK3 RUNNER
@@ -63,11 +62,15 @@ int main(int argc, char **argv) {
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();
+
+    // Seve Data
+    // // test excel
+    // saveData(*allPatientData, *allTindakanList, "DataPMC20232024", session);
+
+    // Pembersihan memori
     Logger(1, "Terminating Application, Cleaning up memory");
     freePatientList(*allPatientData);
     freePatientList(*operatedData);
-
-    // Pembersihan memori
 
     Logger(2, "Cleaning up memory success, have a nice day!");
 
