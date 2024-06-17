@@ -13,16 +13,11 @@ Date emptyDate = {0, 0, 0};
 
 void clearMedCheckDataTable(GtkWidget* table) {
     GList *children, *iter;
-
-    printf("Clearing the table\n");
     children = gtk_container_get_children(GTK_CONTAINER(table));
 
-    printf("Destroying the children\n");
     for(iter = children; iter != NULL; iter = g_list_next(iter)) {
         gtk_widget_destroy(GTK_WIDGET(iter->data));
     }
-
-    printf("Freeing the list\n");
     g_list_free(children);
 }
 
@@ -227,7 +222,7 @@ void RefreshMedCheckButtonHandler(GtkWidget* button, gpointer data)
 {   
     // Get the patient list
     PatientParams* params = (PatientParams*) data;
-    
+
     // Create the new window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Set Date Range");
