@@ -57,6 +57,7 @@ void printTindakan(Tindakan *head);
 void idToTindakan(Tindakan *head, int id, char *tindakan, int *biaya);
 int idToBiaya(Tindakan *head, int id);
 int TindakanToID(Tindakan *head, char tindakan[]);
+int TindakanToBiaya(Tindakan *head, char tindakan[]);
 int isTindakanExist(Tindakan *head, char tindakan[]);
 
 MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], char tindakan[], Date kontrol);

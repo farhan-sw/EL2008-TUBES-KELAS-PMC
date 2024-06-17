@@ -210,7 +210,7 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
 
             case 6:
                 // Baca Biaya berdsaarakan tindakan
-                biaya = idToBiaya(*tindakanList, id_tindakan);
+                biaya = TindakanToBiaya(*tindakanList, tindakan);
                 break;
             
             default:

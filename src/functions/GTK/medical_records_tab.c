@@ -69,12 +69,12 @@ void addHistoryToTable(GtkWidget* table, Patient* patientList, Tindakan* allTind
             GtkWidget* label3 = gtk_label_new(history->idPasien);
             GtkWidget* label4 = gtk_label_new(history->diagnosis);
 
-            idToTindakan(allTindakanList, history->tindakanID, tindakan_text, &biaya);
-            GtkWidget* label5 = gtk_label_new(tindakan_text);
+            GtkWidget* label5 = gtk_label_new(history->tindakan);
 
             convertDateToString(history->kontrol, kontrol_text);
             GtkWidget* label6 = gtk_label_new(kontrol_text);
 
+            biaya = history->biaya;
             sprintf(biaya_text, "Rp %d", biaya);
             GtkWidget* label7 = gtk_label_new(biaya_text);
             
@@ -119,6 +119,7 @@ void addHistoryData(GtkWidget* button, gpointer data)
     char* diagnosis = strdup(gtk_entry_get_text(GTK_ENTRY(addHistoryParams->newHistoryFormPointer->diagnosis)));
     char* idPasien = strdup(gtk_entry_get_text(GTK_ENTRY(addHistoryParams->newHistoryFormPointer->idPasien)));
     char* tindakan = strdup(gtk_entry_get_text(GTK_ENTRY(addHistoryParams->newHistoryFormPointer->tindakan)));
+    
 
     // Validasi Tanggal
     int tanggalValid = stringDateFormatVerify(tanggal);
@@ -128,8 +129,11 @@ void addHistoryData(GtkWidget* button, gpointer data)
     // Cek apakah ID Pasien sudah ada
     int isIDExist = isIdPatientExist(*addHistoryParams->patientParams->operatedData, idPasien);
     
-    // Validasi TIndakan ada
+    // // Validasi TIndakan ada
+    // printf("Tindakan: %s\n", tindakan);
+    // printf("Tindakan Exist: %d\n", isTindakanExist(addHistoryParams->patientParams->allTindakanData, tindakan));
     int istindakanExist = isTindakanExist(addHistoryParams->patientParams->allTindakanData, tindakan);
+    
     
     // Cek Validasi Semua jawaban haru berisi
     int isError = 0;
@@ -174,31 +178,36 @@ void addHistoryData(GtkWidget* button, gpointer data)
         newHistory->kontrol = kontrolDate;
 
         // Isi Tindakan
-        newHistory->tindakanID = TindakanToID(addHistoryParams->patientParams->allTindakanData, tindakan);
+        strcpy(newHistory->tindakan, tindakan);
 
         // Isi Biaya
-        newHistory->biaya = idToBiaya(addHistoryParams->patientParams->allTindakanData, newHistory->tindakanID);
+        newHistory->biaya = TindakanToBiaya(addHistoryParams->patientParams->allTindakanData, tindakan);
 
 
         // Print SIngle History
-        // printHistory(newHistory);
+        printHistory(newHistory);
 
         Patient** tempData = malloc(sizeof(Patient*));
         *tempData = NULL; // Initialize the result pointer to NULL
 
         // Add History to allPatientData
+        printf("Add History\n");
         addHistory(&patient->history, newHistory);
 
         // Copy allPatientData to tempData
+        printf("Copy Data\n");
         copyPatient(*addHistoryParams->patientParams->allPatientData, tempData);
 
+        printf("Free Data\n");
         freePatientList(*addHistoryParams->patientParams->operatedData);
         *addHistoryParams->patientParams->operatedData = *tempData;
 
         // Update Table
+        printf("Update Table\n");
         addHistoryToTable(addHistoryParams->patientParams->table, *addHistoryParams->patientParams->operatedData, addHistoryParams->patientParams->allTindakanData);
 
         // Show updated table
+        printf("Show Table\n");
         gtk_widget_show_all(addHistoryParams->patientParams->table);
 
         // Close the window

@@ -458,7 +458,7 @@ void printPatient(Patient *head) {
  * @param kontrol: Date kontrol
  * @param biaya: int biaya
  */
-History* createHistory(Date tanggal, char idPasien[], char diagnosis[], char tindakan, Date kontrol, int biaya) {
+History* createHistory(Date tanggal, char idPasien[], char diagnosis[], char tindakan[], Date kontrol, int biaya) {
     History *newHistory = (History*) malloc(sizeof(History));
     newHistory->tanggal = tanggal;
     strcpy(newHistory->idPasien, idPasien);
@@ -613,58 +613,6 @@ void printPatientList(Patient *head) {
 }
 
 
-
-/**
- * @brief Main function buat uji coba
- */
-int debugging() {
-    // Create the parent nodes
-    Patient *nodeA = createPatient("A", "Alamat A", "Kota A", "Tempat Lahir A", createDate(1, 1, 2000), 20, 123456, "ID_A");
-    Patient *nodeB = createPatient("B", "Alamat B", "Kota B", "Tempat Lahir B", createDate(1, 1, 2000), 20, 123456, "ID_B");
-
-    // Create the child nodes for node B
-    Date dateB1 = createDate(15, 9, 2021);
-    Date kontrolB1 = createDate(20, 9, 2021);
-    History *nodeB1 = createHistory(dateB1, "ID_B", "Diagnosis B1", 2, kontrolB1, 100000);
-    
-    Date dateB2 = createDate(10, 10, 2020);
-    Date kontrolB2 = createDate(15, 10, 2020);
-    History *nodeB2 = createHistory(dateB2, "ID_B", "Diagnosis B2", 3, kontrolB2, 25000);
-
-    // Create the child nodes for node A
-    Date dateA1 = createDate(1, 10, 2020);
-    Date kontrolA1 = createDate(5, 10, 2020);
-    History *nodeA1 = createHistory(dateA1, "ID_A", "Diagnosis A1", 0, kontrolA1, 15000);
-    
-    Date dateA2 = createDate(1, 11, 2018);
-    Date kontrolA2 = createDate(5, 11, 2018);
-    History *nodeA2 = createHistory(dateA2, "ID_A", "Diagnosis A2", 1, kontrolA2, 125000);
-
-    // Connect the child nodes to the parent nodes
-    nodeA->history = nodeA1;
-    nodeA1->next = nodeA2;
-
-    nodeB->history = nodeB1;
-    nodeB1->next = nodeB2;
-
-    // Connect the parent nodes
-    nodeA->next = nodeB;
-    nodeB->next = NULL;
-
-    // Print the linked list
-    printf("Before sorting:\n");
-    printPatient(nodeA);
-
-    // Sort the history
-    sortHistory(nodeA);
-
-    // Print the linked list
-    printf("After sorting:\n");
-    printPatient(nodeA);
-
-    return 0;
-}
-
 /**
  * @brief Copy patient data
  * @param headSoure: pointer of patient source of copy
@@ -766,6 +714,7 @@ int idToBiaya(Tindakan *head, int id) {
     return 0;
 }
 
+
 int TindakanToID(Tindakan *head, char tindakan[]) {
     Tindakan *currentTindakan = head;
     while (currentTindakan != NULL) {
@@ -775,6 +724,17 @@ int TindakanToID(Tindakan *head, char tindakan[]) {
         currentTindakan = currentTindakan->next;
     }
     return -1;
+}
+
+int TindakanToBiaya(Tindakan *head, char tindakan[]) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (strcmp(currentTindakan->Tindakan, tindakan) == 0) {
+            return currentTindakan->biaya;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return 0;
 }
 
 int isTindakanExist(Tindakan *head, char tindakan[]) {
@@ -807,7 +767,7 @@ int isTindakanExist(Tindakan *head, char tindakan[]) {
  * @param tindakan: string tindakan
  * @param kontrol: Date kontrol
  */
-MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], int tindakan, Date kontrol) {
+MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], char tindakan[], Date kontrol) {
     MedicalCheckup *newMedicalCheckup = (MedicalCheckup*) malloc(sizeof(MedicalCheckup));
     strcpy(newMedicalCheckup->idPasien, idPasien);
     strcpy(newMedicalCheckup->namaLengkap, namaLengkap);

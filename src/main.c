@@ -56,6 +56,10 @@ int main(int argc, char **argv) {
     gtk_init(&argc, &argv);
     // Initialize main window
     // print pointer allPatientData
+
+    // Print Node
+    //printPatientList(*allPatientData);
+    // printTindakan(*allTindakanList);
     
     activate(operatedData, allPatientData, *allTindakanList);
     // Start the GTK main loop

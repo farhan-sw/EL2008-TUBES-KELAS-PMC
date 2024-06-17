@@ -132,7 +132,7 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                 memset(biaya, 0, sizeof(biaya));
                 
                 convertDateToString(currentHistory->tanggal, tanggal);
-                strcpy(tindakan, currentHistory->tindakan)
+                strcpy(tindakan, currentHistory->tindakan);
                 convertDateToString(currentHistory->kontrol, kontrol);
                 sprintf(biaya, "%d", currentHistory->biaya);
 
