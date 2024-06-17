@@ -83,8 +83,7 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
                     GtkWidget* label3 = gtk_label_new(history->idPasien);
                     GtkWidget* label4 = gtk_label_new(history->diagnosis);
 
-                    idToTindakan(allTindakanList, history->tindakanID, tindakan_text, &biaya);
-                    GtkWidget* label5 = gtk_label_new(tindakan_text);
+                    GtkWidget* label5 = gtk_label_new(history->tindakan);
 
                     convertDateToString(history->kontrol, kontrol_text);
                     GtkWidget* label6 = gtk_label_new(kontrol_text);
@@ -119,9 +118,7 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
 
                     GtkWidget* label3 = gtk_label_new(history->idPasien);
                     GtkWidget* label4 = gtk_label_new(history->diagnosis);
-
-                    idToTindakan(allTindakanList, history->tindakanID, tindakan_text, &biaya);
-                    GtkWidget* label5 = gtk_label_new(tindakan_text);
+                    GtkWidget* label5 = gtk_label_new(history->tindakan);
 
                     convertDateToString(history->kontrol, kontrol_text);
                     GtkWidget* label6 = gtk_label_new(kontrol_text);

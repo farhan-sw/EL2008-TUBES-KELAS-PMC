@@ -28,7 +28,7 @@ typedef struct History {
     Date tanggal;
     char idPasien[20];
     char diagnosis[50];
-    int tindakanID;
+    char tindakan[50];
     Date kontrol;
     int biaya;
     struct History *next;
@@ -59,7 +59,7 @@ typedef struct MedicalCheckup {
     char idPasien[20];
     char namaLengkap[50];
     char diagnosis[50];
-    int tindakanID;
+    char tindakan[50];
     Date kontrol;
 
     struct MedicalCheckup *next;
@@ -154,7 +154,7 @@ typedef struct EditMedicalCheckupFormPointer{
     GtkWidget *idPasien;
     GtkWidget *namaLengkap;
     GtkWidget *diagnosis;
-    GtkWidget *tindakanID;
+    GtkWidget *tindakan;
     GtkWidget *kontrol;
     MedicalCheckup* medicalCheckup;
     GtkWidget *window;

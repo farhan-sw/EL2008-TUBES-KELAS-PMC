@@ -44,7 +44,7 @@ char* findIdPatient(Patient *head, char idPasien[]);
 Patient* findPatient(Patient *head, char idPasien[]);
 char* createPatientID(Patient* allPatientData);
 
-History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya);
+History* createHistory(Date tanggal, char idPasien[], char diagnosis[], char tindakan[], Date kontrol, int biaya);
 void addHistory(History **head, History *newHistory);
 // Delete Single History
 void deleteHistory(History **head, Date tanggal);
@@ -59,7 +59,7 @@ int idToBiaya(Tindakan *head, int id);
 int TindakanToID(Tindakan *head, char tindakan[]);
 int isTindakanExist(Tindakan *head, char tindakan[]);
 
-MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], int tindakanID, Date kontrol);
+MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], char tindakan[], Date kontrol);
 void addMedicalCheckup(MedicalCheckup **head, MedicalCheckup *newMedicalCheckup);
 void printMedicalCheckup(MedicalCheckup *head);
 void sortMedicalCheckup(MedicalCheckup *head);
