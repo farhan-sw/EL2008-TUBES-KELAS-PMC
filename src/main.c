@@ -49,7 +49,6 @@ int main(int argc, char **argv) {
 
     // test excel
     saveData(*allPatientData, *allTindakanList, "DataPMC20232024", session);
-    
 
     // GTK3 RUNNER
 

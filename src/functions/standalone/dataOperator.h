@@ -26,6 +26,7 @@ void addPatient(Patient **head, Patient *newPatient);
 void addHistory(History **head, History *newHistory);
 void printPatient(Patient *head);
 Patient* findPatient(Patient *head, char idPasien[]);
+char* createPatientID(Patient* allPatientData);
 
 History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya);
 void addHistory(History **head, History *newHistory);

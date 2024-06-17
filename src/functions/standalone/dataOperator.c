@@ -275,14 +275,47 @@ int isOnlyNumber(char str[]) {
     return 1;
 }
 
-// // Membuat ID Pasien baru yang unik
-// unsigned int patientCounter = 1230123;
+// Membuat ID Pasien baru yang unik
+// Format ID Pasien: "P-XXXX" dimana XXXX adalah nomor urut KX 1230123
 
-// void createIDPatient(char *idPasien) {
-//     // Format ID pasien: "KX " diikuti dengan nomor urut pasien
-//     sprintf(idPatient, "KX %07u", patientCounter);
-//     patientCounter++;  // Increment untuk pasien berikutnya
-// }
+char* createPatientID(Patient* allPatientData){
+    int largest = 0;
+    int temp;
+    char* afterSpace = NULL;
+    Patient* curentPatient = allPatientData;
+
+    while(curentPatient != NULL){
+
+        afterSpace = NULL;
+
+        // Langkah 2 & 3: Loop untuk menemukan spasi pertama
+        for(char* p = curentPatient->idPasien; *p; ++p) {
+            if(*p == ' ') {
+                // Langkah 4: Set pointer ke karakter setelah spasi
+                afterSpace = p + 1;
+                break; // Langkah 5: Keluar dari loop setelah menemukan spasi pertama
+            }
+        }
+
+        // Pastikan afterSpace tidak NULL sebelum menggunakan atoi
+        if(afterSpace) {
+            // Langkah 6: Konversi substring menjadi integer
+            temp = atoi(afterSpace);
+        }
+
+        if(temp > largest){
+            largest = temp;
+        }
+        // Pindah ke pasien berikutnya
+        curentPatient = curentPatient->next;
+    }
+
+    // Langkah 7: Membuat ID baru
+    char* newID = (char*) malloc(100 * sizeof(char));
+    sprintf(newID, "KX %d", largest + 1);
+    return newID;
+}
+
 
 // Fungsi untuk membuat node patient baru
 

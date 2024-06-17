@@ -166,6 +166,8 @@ void addPatientData(GtkWidget* button, gpointer data) {
 
     if (isError == 0){
         // Create the new patient
+        char* id = createPatientID(*params->patientParams->allPatientData);
+
         Patient* newPatient = malloc(sizeof(Patient));
         strcpy(newPatient->namaLengkap, gtk_entry_get_text(GTK_ENTRY(params->newPatientFormPointer->namaLengkap)));
         strcpy(newPatient->alamat, gtk_entry_get_text(GTK_ENTRY(params->newPatientFormPointer->alamat)));
@@ -174,9 +176,9 @@ void addPatientData(GtkWidget* button, gpointer data) {
         newPatient->tanggalLahir = convertStringToDate(tanggalLahir);
         newPatient->umur = hitungUmur(newPatient->tanggalLahir);
         newPatient->noBPJS = atoi(gtk_entry_get_text(GTK_ENTRY(params->newPatientFormPointer->noBPJS)));
+        strcpy(newPatient->idPasien, id);
         newPatient->history = NULL; 
         newPatient->next = NULL;
-        strcpy(newPatient->idPasien, "0");
 
         // Add the new patient to the list
         addPatient(params->patientParams->allPatientData, newPatient);
