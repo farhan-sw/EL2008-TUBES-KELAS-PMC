@@ -25,6 +25,22 @@ void copyPatient(Patient *headSource, Patient **product);
 void addPatient(Patient **head, Patient *newPatient);
 void addHistory(History **head, History *newHistory);
 void printPatient(Patient *head);
+
+/**
+ * @brief Fungsi untuk mengecek apakah idPasien sudah ada di linked list
+ * @param head Pointer ke head linked list
+ * @param idPasien ID Pasien yang akan dicek
+ * @return 1 jika idPasien sudah ada, 0 jika belum ada
+ */
+int isIdPatientExist(Patient *head, char idPasien[]);
+/**
+ * @brief Fungsi untuk mengembalikan string dari ID Pasien
+ * @param head Pointer ke head linked list
+ * @param idPasien ID Pasien yang akan dicari
+ * @return Pointer ke string ID Pasien
+ */
+char* findIdPatient(Patient *head, char idPasien[]);
+
 Patient* findPatient(Patient *head, char idPasien[]);
 
 History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya);
@@ -40,6 +56,7 @@ void printTindakan(Tindakan *head);
 void idToTindakan(Tindakan *head, int id, char *tindakan, int *biaya);
 int idToBiaya(Tindakan *head, int id);
 int TindakanToID(Tindakan *head, char tindakan[]);
+int isTindakanExist(Tindakan *head, char tindakan[]);
 
 MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], int tindakanID, Date kontrol);
 void addMedicalCheckup(MedicalCheckup **head, MedicalCheckup *newMedicalCheckup);

@@ -336,6 +336,28 @@ void addHistory(History **head, History *newHistory) {
     }
 }
 
+int isIdPatientExist(Patient *head, char idPasien[]) {
+    Patient *currentPatient = head;
+    while (currentPatient != NULL) {
+        if (strcmp(currentPatient->idPasien, idPasien) == 0) {
+            return 1;
+        }
+        currentPatient = currentPatient->next;
+    }
+    return 0;
+}
+
+char* findIdPatient(Patient *head, char idPasien[]) {
+    Patient *currentPatient = head;
+    while (currentPatient != NULL) {
+        if (strcmp(currentPatient->idPasien, idPasien) == 0) {
+            return currentPatient->idPasien;
+        }
+        currentPatient = currentPatient->next;
+    }
+    return NULL;
+}
+
 Patient* findPatient(Patient *head, char idPasien[]) {
     Patient *currentPatient = head;
     while (currentPatient != NULL) {
@@ -720,6 +742,23 @@ int TindakanToID(Tindakan *head, char tindakan[]) {
         currentTindakan = currentTindakan->next;
     }
     return -1;
+}
+
+int isTindakanExist(Tindakan *head, char tindakan[]) {
+    Tindakan *currentTindakan = head;
+
+    // JIka char kosong, return 0
+    if (strcmp(tindakan, "") == 0) {
+        return 0;
+    }
+
+    while (currentTindakan != NULL) {
+        if (strcmp(currentTindakan->Tindakan, tindakan) == 0) {
+            return 1;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return 0;
 }
 
 

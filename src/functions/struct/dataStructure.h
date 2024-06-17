@@ -64,6 +64,8 @@ typedef struct MedicalCheckup {
 
     struct MedicalCheckup *next;
 } MedicalCheckup;
+
+
 // =================================== END BAGIAN MEDICAL CHECKUP =======================================
 
 
@@ -120,6 +122,46 @@ typedef struct EditPatientFormPointer{
     Patient** operatedData;
     Patient** allPatientData;
 } EditPatientFormPointer;
+
+
+
+typedef struct HistoryParams{
+    GtkWidget *table;
+    MedicalCheckup** operatedData;
+    MedicalCheckup** allMedicalCheckupData;
+    Tindakan* allTindakanData;
+} HistoryParams;
+
+
+typedef struct NewHistoryFormPointer{
+    GtkWidget *tanggal;
+    GtkWidget *idPasien;
+    GtkWidget *namaLengkap;
+    GtkWidget *diagnosis;
+    GtkWidget *tindakan;
+    GtkWidget *kontrol;
+} NewHistoryFormPointer;
+
+
+typedef struct AddHistoryParams{
+    PatientParams* patientParams;
+    GtkWidget *window;
+    NewHistoryFormPointer* newHistoryFormPointer;
+} AddHistoryParams;
+
+
+typedef struct EditMedicalCheckupFormPointer{
+    GtkWidget *idPasien;
+    GtkWidget *namaLengkap;
+    GtkWidget *diagnosis;
+    GtkWidget *tindakanID;
+    GtkWidget *kontrol;
+    MedicalCheckup* medicalCheckup;
+    GtkWidget *window;
+    GtkWidget *table;
+    MedicalCheckup** operatedData;
+    MedicalCheckup** allMedicalCheckupData;
+} EditMedicalCheckupFormPointer;
 // =================================== END BAGIAN PATIENT =======================================
 
 
