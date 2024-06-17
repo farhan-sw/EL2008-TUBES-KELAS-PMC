@@ -130,7 +130,23 @@ void addHistoryToTable(GtkWidget* table, Patient* patientList, Tindakan* allTind
 // Callback function for search box
 void on_searchMedRecordBox_changed(GtkSearchEntry* entry, gpointer user_data)
 {
+    const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
+    char *mutableText = g_strdup(text);
+    PatientParams* params = (PatientParams*) user_data;
 
+    // Search the data
+    searchMedicalRecord(*params->allPatientData, params->operatedData, mutableText);
+
+    // Update the table
+    addHistoryToTable(params->table, *params->operatedData, params->allTindakanData);
+
+    // Show the updated table
+    gtk_widget_show_all(params->table);
+
+    char logMessage[100];
+    sprintf(logMessage, "Search query: %s", mutableText);
+    Logger(1, logMessage);
+    g_free(mutableText);
 }
 
 void addHistoryData(GtkWidget* button, gpointer data)
@@ -154,8 +170,6 @@ void addHistoryData(GtkWidget* button, gpointer data)
     int isIDExist = isIdPatientExist(*addHistoryParams->patientParams->operatedData, idPasien);
     
     // // Validasi TIndakan ada
-    // printf("Tindakan: %s\n", tindakan);
-    // printf("Tindakan Exist: %d\n", isTindakanExist(addHistoryParams->patientParams->allTindakanData, tindakan));
     int istindakanExist = isTindakanExist(addHistoryParams->patientParams->allTindakanData, tindakan);
     
     
@@ -420,30 +434,6 @@ void buildMedicalRecordTab(GtkWidget* medicalRecordsTab, Patient** operatedData,
     // Create the table
     GtkWidget* tableMedRec = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(scrollableMedRec), tableMedRec);
-
-    // // Add table headers
-    // GtkWidget* header1MedRec = gtk_label_new("No");
-    // GtkWidget* header2MedRec = gtk_label_new("Tanggal");
-    // GtkWidget* header3MedRec = gtk_label_new("ID Pasien");
-    // GtkWidget* header4MedRec = gtk_label_new("Diagnosis");
-    // GtkWidget* header5MedRec = gtk_label_new("Tindakan");
-    // GtkWidget* header6MedRec = gtk_label_new("Kontrol");
-    // GtkWidget* header7MedRec = gtk_label_new("Biaya");
-    
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header1MedRec, 0, 0, 1, 1);
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header2MedRec, 1, 0, 1, 1);
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header3MedRec, 2, 0, 1, 1);
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header4MedRec, 3, 0, 1, 1);
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header5MedRec, 4, 0, 1, 1);
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header6MedRec, 5, 0, 1, 1);
-    // gtk_grid_attach(GTK_GRID(tableMedRec), header7MedRec, 6, 0, 1, 1);
-
-    // // Set the width of header
-    // gtk_widget_set_size_request(header4MedRec, 200, -1);
-    // gtk_widget_set_size_request(header5MedRec, 200, -1);
-
-    // // tambahkan margin kiri pada tabel
-    // gtk_widget_set_margin_start(header1MedRec, 10);
 
     // Input data rekam medis dari patientList
     addHistoryToTable(tableMedRec, patientList, allTindakanList);
