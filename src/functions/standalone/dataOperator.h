@@ -48,6 +48,7 @@ History* createHistory(Date tanggal, char idPasien[], char diagnosis[], char tin
 void addHistory(History **head, History *newHistory);
 // Delete Single History
 void deleteHistory(History **head, Date tanggal);
+void deleteHistorybyIndex(History **head, int index);
 void printHistory(History *history);
 void sortHistory(Patient *head);
 

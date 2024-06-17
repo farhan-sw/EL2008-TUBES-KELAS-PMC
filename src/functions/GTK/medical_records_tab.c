@@ -377,8 +377,44 @@ void on_editHistoryData_button_clicked(GtkWidget* button, gpointer data)
     Patient** allPatientData = PatientParameter->allPatientData;
     GtkWidget* table = PatientParameter->table;
 
-    // Edit data in the table
-    // addHistoryToTable(table, *operatedData, *allPatientData);
+    printf("Delete Data\n");
+
+    // Cari berapa data yang dicentang
+    int count = 0;
+    int row = 0;
+    int action = 1;
+    GtkWidget* checkbox;
+    while(action){
+        printf("count: %d\n", count);
+        checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, row+1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+            if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                count++;
+            }
+            row++;
+        }else{
+            action = 0;
+            break;
+        }
+    }
+
+    // Jika tidak ada data yang dicentang
+    if(count == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk dihapus");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    } else {
+        // Buat dialog konfirmasi
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Apakah Anda yakin ingin menghapus data pasien yang dipilih?");
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        if(response == GTK_RESPONSE_YES){
+            // Hapus data yang dicentang dari paling bawah
+            printf("edit data\n");
+            
+        }
+    }
 }
 
 // Callback function for "Delete Data" button
@@ -389,8 +425,83 @@ void on_deleteHistoryData_button_clicked(GtkWidget* button, gpointer data)
     Patient** allPatientData = PatientParameter->allPatientData;
     GtkWidget* table = PatientParameter->table;
 
-    // Delete data in the table
-    // addHistoryToTable(table, *operatedData, *allPatientData);
+    // Cari berapa data yang dicentang
+    int count = 0;
+    int row = 0;
+    int action = 1;
+    GtkWidget* checkbox;
+    while(action){
+        checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, row+1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+            if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                count++;
+            }
+            row++;
+        }else{
+            action = 0;
+            break;
+        }
+    }
+
+    // Jika tidak ada data yang dicentang
+    if(count == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk dihapus");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    } else {
+        // Buat dialog konfirmasi
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Apakah Anda yakin ingin menghapus data pasien yang dipilih?");
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        if(response == GTK_RESPONSE_YES){
+            // deteksi data yang dicentang dari bawah
+            int indeks = 0;
+            char* idPasien;
+            GtkWidget* label;
+            Patient* patientTemp;
+            for (int i = row; i > 0; i--) {
+                indeks = 0;
+                checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, i);
+                if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+                    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                        // Hapus data
+                        // Cari data yang dicentang
+                        label = gtk_grid_get_child_at(GTK_GRID(table), 0, i);
+                        if (label != NULL && GTK_IS_LABEL(label)) {
+                            // dapatkan id pasien
+                            idPasien = (char*)gtk_label_get_text(GTK_LABEL(gtk_grid_get_child_at(GTK_GRID(table), 2, i)));
+                            while(i-indeks >= 0 && strcmp(gtk_label_get_text(GTK_LABEL(gtk_grid_get_child_at(GTK_GRID(table), 2, i-indeks))), idPasien) == 0){
+                                indeks++;
+                            }
+                            // Hapus data
+                            // Cari pasien
+                            patientTemp = findPatient(*allPatientData, idPasien);
+                            // Hapus history
+                            deleteHistorybyIndex(&patientTemp->history, indeks);
+                        }
+                    }
+                }
+            }
+
+            Patient** tempData = malloc(sizeof(Patient*));
+            *tempData = NULL; // Initialize the result pointer to NULL
+
+            // Copy allPatientData to tempData
+            copyPatient(*allPatientData, tempData);
+
+            freePatientList(*operatedData);
+
+            *operatedData = *tempData;
+
+            // Update Table
+            addHistoryToTable(table, *operatedData, PatientParameter->allTindakanData);
+
+            // Show updated table
+            gtk_widget_show_all(table);
+
+        }
+    }
 }
 
 // Function to build the medical record tab (Callable from main.c)
