@@ -174,7 +174,6 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
     Date tanggal;
     char diagnosis[50];
     Date kontrol;
-    int id_tindakan;
     Patient* currentPatient = *patientList;
 
     while (xlsxioread_sheet_next_row(sheet_rekam_medis)) {
@@ -202,7 +201,6 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
             case 4:
                 // Print Tindakan
                 strcpy(tindakan, cell_data);
-                id_tindakan = TindakanToID(*tindakanList, tindakan);
                 break;
 
             case 5:
@@ -212,7 +210,7 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
 
             case 6:
                 // Baca Biaya berdsaarakan tindakan
-                biaya = idToBiaya(*tindakanList, id_tindakan);
+                biaya = TindakanToBiaya(*tindakanList, tindakan);
                 break;
             
             default:
@@ -223,7 +221,7 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
         }
 
         // buat node rekam medis
-        History* newHistory = createHistory(tanggal, idPasien, diagnosis, id_tindakan, kontrol, biaya);
+        History* newHistory = createHistory(tanggal, idPasien, diagnosis, tindakan, kontrol, biaya);
 
         // Cari pasien berdasarkan id
         currentPatient = findPatient(*patientList, idPasien);

@@ -82,8 +82,7 @@ void saveData(Patient* allPatientData, Tindakan* allTindakanList , char filename
             worksheet_write_string(worksheet2, i+1, 1, tempString, NULL);
             worksheet_write_string(worksheet2, i+1, 2, currentHistory->idPasien, NULL);
             worksheet_write_string(worksheet2, i+1, 3, currentHistory->diagnosis, NULL);
-            idToTindakan(allTindakanList, currentHistory->tindakanID, tempString, &currentHistory->biaya);
-            worksheet_write_string(worksheet2, i+1, 4, tempString, NULL);
+            worksheet_write_string(worksheet2, i+1, 4, currentHistory->tindakan, NULL);
             convertDateToString(currentHistory->kontrol, tempString);
             worksheet_write_string(worksheet2, i+1, 5, tempString, NULL);
             worksheet_write_number(worksheet2, i+1, 6, currentHistory->biaya, NULL);

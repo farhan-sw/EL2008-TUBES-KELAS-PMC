@@ -434,7 +434,7 @@ void printPatient(Patient *head) {
             printf("\n");
             printf("  ID Pasien: %s\n", currentHistory->idPasien);
             printf("  Diagnosis: %s\n", currentHistory->diagnosis);
-            printf("  Tindakan (ID): %d\n", currentHistory->tindakanID);
+            printf("  Tindakan : %s\n", currentHistory->tindakan);
             printf("  Kontrol: ");
             printDate(currentHistory->kontrol);
             printf("\n");
@@ -454,16 +454,16 @@ void printPatient(Patient *head) {
  * @param tanggal: Date tanggal
  * @param idPasien: char ID pasien
  * @param diagnosis: char diagnosis
- * @param tindakanID: int tindakan ID
+ * @param tindakan: string tindakan
  * @param kontrol: Date kontrol
  * @param biaya: int biaya
  */
-History* createHistory(Date tanggal, char idPasien[], char diagnosis[], int tindakanID, Date kontrol, int biaya) {
+History* createHistory(Date tanggal, char idPasien[], char diagnosis[], char tindakan[], Date kontrol, int biaya) {
     History *newHistory = (History*) malloc(sizeof(History));
     newHistory->tanggal = tanggal;
     strcpy(newHistory->idPasien, idPasien);
     strcpy(newHistory->diagnosis, diagnosis);
-    newHistory->tindakanID = tindakanID;
+    strcpy(newHistory->tindakan, tindakan);
     newHistory->kontrol = kontrol;
     newHistory->biaya = biaya;
     newHistory->next = NULL;
@@ -503,7 +503,7 @@ void printHistory(History *history) {
     printDate(history->tanggal);
     printf("ID Pasien: %s\n", history->idPasien);
     printf("Diagnosis: %s\n", history->diagnosis);
-    printf("Tindakan (ID): %d\n", history->tindakanID);
+    printf("Tindakan: %d\n", history->tindakan);
     printf("Kontrol: ");
     printDate(history->kontrol);
     printf("Biaya: %d\n", history->biaya);
@@ -613,58 +613,6 @@ void printPatientList(Patient *head) {
 }
 
 
-
-/**
- * @brief Main function buat uji coba
- */
-int debugging() {
-    // Create the parent nodes
-    Patient *nodeA = createPatient("A", "Alamat A", "Kota A", "Tempat Lahir A", createDate(1, 1, 2000), 20, 123456, "ID_A");
-    Patient *nodeB = createPatient("B", "Alamat B", "Kota B", "Tempat Lahir B", createDate(1, 1, 2000), 20, 123456, "ID_B");
-
-    // Create the child nodes for node B
-    Date dateB1 = createDate(15, 9, 2021);
-    Date kontrolB1 = createDate(20, 9, 2021);
-    History *nodeB1 = createHistory(dateB1, "ID_B", "Diagnosis B1", 2, kontrolB1, 100000);
-    
-    Date dateB2 = createDate(10, 10, 2020);
-    Date kontrolB2 = createDate(15, 10, 2020);
-    History *nodeB2 = createHistory(dateB2, "ID_B", "Diagnosis B2", 3, kontrolB2, 25000);
-
-    // Create the child nodes for node A
-    Date dateA1 = createDate(1, 10, 2020);
-    Date kontrolA1 = createDate(5, 10, 2020);
-    History *nodeA1 = createHistory(dateA1, "ID_A", "Diagnosis A1", 0, kontrolA1, 15000);
-    
-    Date dateA2 = createDate(1, 11, 2018);
-    Date kontrolA2 = createDate(5, 11, 2018);
-    History *nodeA2 = createHistory(dateA2, "ID_A", "Diagnosis A2", 1, kontrolA2, 125000);
-
-    // Connect the child nodes to the parent nodes
-    nodeA->history = nodeA1;
-    nodeA1->next = nodeA2;
-
-    nodeB->history = nodeB1;
-    nodeB1->next = nodeB2;
-
-    // Connect the parent nodes
-    nodeA->next = nodeB;
-    nodeB->next = NULL;
-
-    // Print the linked list
-    printf("Before sorting:\n");
-    printPatient(nodeA);
-
-    // Sort the history
-    sortHistory(nodeA);
-
-    // Print the linked list
-    printf("After sorting:\n");
-    printPatient(nodeA);
-
-    return 0;
-}
-
 /**
  * @brief Copy patient data
  * @param headSoure: pointer of patient source of copy
@@ -677,7 +625,7 @@ void copyPatient(Patient *headSource, Patient **product){
         addPatient(product, newPatient);
         History *currentHistory = currentPatient->history;
         while (currentHistory != NULL) {
-            History *newHistory = createHistory(currentHistory->tanggal, currentHistory->idPasien, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol, currentHistory->biaya);
+            History *newHistory = createHistory(currentHistory->tanggal, currentHistory->idPasien, currentHistory->diagnosis, currentHistory->tindakan, currentHistory->kontrol, currentHistory->biaya);
             addHistory(&newPatient->history, newHistory);
             currentHistory = currentHistory->next;
         }
@@ -695,7 +643,7 @@ void printPatientHistory(Patient *head){
         printDate(currentHistory->tanggal);
         printf("ID Pasien: %s\n", currentHistory->idPasien);
         printf("Diagnosis: %s\n", currentHistory->diagnosis);
-        printf("Tindakan (ID): %d\n", currentHistory->tindakanID);
+        printf("Tindakan: %s\n", currentHistory->tindakan);
         printf("Kontrol: ");
         printDate(currentHistory->kontrol);
         printf("Biaya: %d\n", currentHistory->biaya);
@@ -766,6 +714,7 @@ int idToBiaya(Tindakan *head, int id) {
     return 0;
 }
 
+
 int TindakanToID(Tindakan *head, char tindakan[]) {
     Tindakan *currentTindakan = head;
     while (currentTindakan != NULL) {
@@ -775,6 +724,17 @@ int TindakanToID(Tindakan *head, char tindakan[]) {
         currentTindakan = currentTindakan->next;
     }
     return -1;
+}
+
+int TindakanToBiaya(Tindakan *head, char tindakan[]) {
+    Tindakan *currentTindakan = head;
+    while (currentTindakan != NULL) {
+        if (strcmp(currentTindakan->Tindakan, tindakan) == 0) {
+            return currentTindakan->biaya;
+        }
+        currentTindakan = currentTindakan->next;
+    }
+    return 0;
 }
 
 int isTindakanExist(Tindakan *head, char tindakan[]) {
@@ -804,15 +764,15 @@ int isTindakanExist(Tindakan *head, char tindakan[]) {
  * @param idPasien: char ID pasien
  * @param namaLengkap: char nama lengkap
  * @param diagnosis: char diagnosis
- * @param tindakanID: int tindakan ID
+ * @param tindakan: string tindakan
  * @param kontrol: Date kontrol
  */
-MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], int tindakanID, Date kontrol) {
+MedicalCheckup* createMedicalCheckup(char idPasien[], char namaLengkap[], char diagnosis[], char tindakan[], Date kontrol) {
     MedicalCheckup *newMedicalCheckup = (MedicalCheckup*) malloc(sizeof(MedicalCheckup));
     strcpy(newMedicalCheckup->idPasien, idPasien);
     strcpy(newMedicalCheckup->namaLengkap, namaLengkap);
     strcpy(newMedicalCheckup->diagnosis, diagnosis);
-    newMedicalCheckup->tindakanID = tindakanID;
+    strcpy(newMedicalCheckup->tindakan, tindakan);
     newMedicalCheckup->kontrol = kontrol;
     newMedicalCheckup->next = NULL;
     return newMedicalCheckup;
@@ -837,7 +797,7 @@ void printMedicalCheckup(MedicalCheckup *head) {
         printf("ID Pasien: %s\n", currentMedicalCheckup->idPasien);
         printf("Nama Lengkap: %s\n", currentMedicalCheckup->namaLengkap);
         printf("Diagnosis: %s\n", currentMedicalCheckup->diagnosis);
-        printf("Tindakan (ID): %d\n", currentMedicalCheckup->tindakanID);
+        printf("Tindakan: %d\n", currentMedicalCheckup->tindakan);
         printf("Kontrol: ");
         printDate(currentMedicalCheckup->kontrol);
         currentMedicalCheckup = currentMedicalCheckup->next;
@@ -882,7 +842,7 @@ void loadMedicalCheckup(MedicalCheckup **head, Patient *patientHead) {
         while (currentHistory != NULL) {
             // Print kontrol date
             if (currentHistory->kontrol.year >= currentDate.year && currentHistory->kontrol.month >= currentDate.month && currentHistory->kontrol.day >= currentDate.day) {
-                MedicalCheckup *newMedicalCheckup = createMedicalCheckup(currentHistory->idPasien, currentPatient->namaLengkap, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol);
+                MedicalCheckup *newMedicalCheckup = createMedicalCheckup(currentHistory->idPasien, currentPatient->namaLengkap, currentHistory->diagnosis, currentHistory->tindakan, currentHistory->kontrol);
                 addMedicalCheckup(head, newMedicalCheckup);
             }
             currentHistory = currentHistory->next;

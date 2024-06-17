@@ -82,7 +82,7 @@ void searchPatient(Patient *head, Patient **output, char keyword[]){
                 // copy historynya
                 History* currentHistory = currentPatient->history;
                 while (currentHistory != NULL) {
-                    History* newHistory = createHistory(currentHistory->tanggal, currentHistory->idPasien, currentHistory->diagnosis, currentHistory->tindakanID, currentHistory->kontrol, currentHistory->biaya);
+                    History* newHistory = createHistory(currentHistory->tanggal, currentHistory->idPasien, currentHistory->diagnosis, currentHistory->tindakan, currentHistory->kontrol, currentHistory->biaya);
                     addHistory(&newPatient->history, newHistory);
                     currentHistory = currentHistory->next;
                 }
@@ -114,7 +114,7 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
         Patient *currentPatient = head;
         History *currentHistory = NULL;
         char tanggal[20];
-        char tindakanID[5];
+        char tindakan[50];
         char kontrol[20];
         char biaya[10];
 
@@ -127,12 +127,12 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                 // kosongkan variabel
                 copyData = 0;
                 memset(tanggal, 0, sizeof(tanggal));
-                memset(tindakanID, 0, sizeof(tindakanID));
+                memset(tindakan, 0, sizeof(tindakan));
                 memset(kontrol, 0, sizeof(kontrol));
                 memset(biaya, 0, sizeof(biaya));
                 
                 convertDateToString(currentHistory->tanggal, tanggal);
-                sprintf(tindakanID, "%d", currentHistory->tindakanID);
+                strcpy(tindakan, currentHistory->tindakan);
                 convertDateToString(currentHistory->kontrol, kontrol);
                 sprintf(biaya, "%d", currentHistory->biaya);
 
@@ -146,7 +146,7 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                     copyData = 1;
                 } else if (strstr(diagnosisLower, keywordLower) != NULL) {
                     copyData = 1;
-                } else if (strstr(tindakanID, keywordLower) != NULL) {
+                } else if (strstr(tindakan, keywordLower) != NULL) {
                     copyData = 1;
                 } else if (strstr(kontrolLower, keywordLower) != NULL) {
                     copyData = 1;
@@ -160,7 +160,7 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                     // copy historynya
                     History* currentHistorytemp = currentPatient->history;
                     while (currentHistorytemp != NULL) {
-                        History* newHistory = createHistory(currentHistorytemp->tanggal, currentHistorytemp->idPasien, currentHistorytemp->diagnosis, currentHistorytemp->tindakanID, currentHistorytemp->kontrol, currentHistorytemp->biaya);
+                        History* newHistory = createHistory(currentHistorytemp->tanggal, currentHistorytemp->idPasien, currentHistorytemp->diagnosis, currentHistorytemp->tindakan, currentHistorytemp->kontrol, currentHistorytemp->biaya);
                         addHistory(&newPatient->history, newHistory);
                         currentHistorytemp = currentHistorytemp->next;
                     }
