@@ -8,5 +8,6 @@
 
 // declarasikan bahwa ada variable bernama session
 void saveData(Patient* allPatientData, char filename[]);
+void testExcel();
 
 #endif // SAVEDATA_H

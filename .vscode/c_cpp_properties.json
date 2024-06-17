@@ -6,7 +6,9 @@
                 "${workspaceFolder}/**",
                 "C:/msys64/mingw64/include/gtk-3.0",
                 "C:\\msys64\\mingw64\\include\\**",
-                "C:\\msys64\\mingw64\\lib\\**"
+                "C:\\msys64\\mingw64\\lib\\**",
+                "C:\\msys64\\usr\\lib\\**",
+                "C:\\msys64\\usr\\include\\**"
             ],
             "compilerPath": "C:/msys64/mingw64/bin/gcc.exe",
             "cStandard": "${default}",
