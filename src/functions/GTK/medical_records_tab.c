@@ -185,29 +185,24 @@ void addHistoryData(GtkWidget* button, gpointer data)
 
 
         // Print SIngle History
-        printHistory(newHistory);
+        // printHistory(newHistory);
 
         Patient** tempData = malloc(sizeof(Patient*));
         *tempData = NULL; // Initialize the result pointer to NULL
 
         // Add History to allPatientData
-        printf("Add History\n");
         addHistory(&patient->history, newHistory);
 
         // Copy allPatientData to tempData
-        printf("Copy Data\n");
         copyPatient(*addHistoryParams->patientParams->allPatientData, tempData);
 
-        printf("Free Data\n");
         freePatientList(*addHistoryParams->patientParams->operatedData);
         *addHistoryParams->patientParams->operatedData = *tempData;
 
         // Update Table
-        printf("Update Table\n");
         addHistoryToTable(addHistoryParams->patientParams->table, *addHistoryParams->patientParams->operatedData, addHistoryParams->patientParams->allTindakanData);
 
         // Show updated table
-        printf("Show Table\n");
         gtk_widget_show_all(addHistoryParams->patientParams->table);
 
         // Close the window
