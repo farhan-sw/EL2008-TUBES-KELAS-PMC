@@ -498,6 +498,38 @@ void deleteHistory(History **head, Date tanggal) {
     free(currentHistory);
 }
 
+void deleteHistorybyIndex(History **head, int index) {
+    History *currentHistory = *head;
+    History *prevHistory = NULL;
+    int i = 0;
+
+    // Jika history yang ingin dihapus adalah head
+    if (currentHistory != NULL && i == index-1) {
+        *head = currentHistory->next;
+        free(currentHistory);
+        return;
+    }
+
+    // Mencari history yang ingin dihapus
+    while (currentHistory != NULL && i != index-1) {
+        prevHistory = currentHistory;
+        currentHistory = currentHistory->next;
+        i++;
+    }
+
+    // Jika history tidak ditemukan
+    if (currentHistory == NULL) {
+        char* message = (char*) malloc(100 * sizeof(char));
+        sprintf(message, "History dengan index %d tidak ditemukan", index-1);
+        Logger(4, message);
+        return;
+    }
+
+    // Menghapus history
+    prevHistory->next = currentHistory->next;
+    free(currentHistory);
+}
+
 void printHistory(History *history) {
     printf("Tanggal: ");
     printDate(history->tanggal);

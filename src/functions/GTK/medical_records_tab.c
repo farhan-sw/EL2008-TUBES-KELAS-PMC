@@ -370,15 +370,310 @@ void on_addHistoryData_button_clicked(GtkWidget* button, gpointer data)
 }
 
 // Callback function for "Edit Data" button
+
+void saveEditHistoryData(GtkWidget* button, gpointer data) {
+    // Dapatkan data form
+    editHistoryFormPointer* params = (editHistoryFormPointer*)data;
+
+    // Dapatkan data history
+    History* history = params->history;
+
+    // Dapatkan data dari entry
+    char* tanggal = strdup(gtk_entry_get_text(GTK_ENTRY(params->tanggal)));
+    char* kontrol = strdup(gtk_entry_get_text(GTK_ENTRY(params->kontrol)));
+    char* diagnosis = strdup(gtk_entry_get_text(GTK_ENTRY(params->diagnosis)));
+    char* idPasien = strdup(gtk_entry_get_text(GTK_ENTRY(params->idPasien)));
+    char* tindakan = strdup(gtk_entry_get_text(GTK_ENTRY(params->tindakan)));
+
+    // Validasi Tanggal
+    int tanggalValid = stringDateFormatVerify(tanggal);
+    int kontrolValid = stringDateFormatVerify(kontrol);
+
+    // Validasi ID ada
+    int isIDExist = isIdPatientExist(*params->allPatientData, idPasien);
+
+    // Validasi Tindakan ada
+    int istindakanExist = isTindakanExist(params->allTindakanData, tindakan);
+
+    // Cek Validasi Semua jawaban haru berisi
+    int isError = 0;
+    if(strcmp(tanggal, "") == 0){
+        isError = 1;
+    } else if (strcmp(idPasien, "") == 0){
+        isError = 2;
+    } else if (strcmp(diagnosis, "") == 0){
+        isError = 3;
+    } else if (strcmp(tindakan, "") == 0){
+        isError = 4;
+    } else if (strcmp(kontrol, "") == 0){
+        isError = 5;
+    } else if (isIDExist == 0){
+        isError = 6;
+    } else if (istindakanExist == 0){
+        isError = 7;
+    } else if (tanggalValid == 0){
+        isError = 8;
+    } else if (kontrolValid == 0){
+        isError = 9;
+    }
+
+    // Jika tidak ada error
+    if(isError == 0){
+
+        // Isi ID Pasien
+        strcpy(history->idPasien, idPasien);
+
+        // Isi Diagnosis
+        strcpy(history->diagnosis, diagnosis);
+
+        // Isi Tanggal
+        Date tanggalDate;
+        tanggalDate = convertStringToDate(tanggal);
+        history->tanggal = tanggalDate;
+
+        // Isi Kontrol
+        Date kontrolDate;
+        kontrolDate = convertStringToDate(kontrol);
+        history->kontrol = kontrolDate;
+
+        // Isi Tindakan
+        strcpy(history->tindakan, tindakan);
+
+        // Isi Biaya
+        history->biaya = TindakanToBiaya(params->allTindakanData, tindakan);
+
+        Patient** tempData = malloc(sizeof(Patient*));
+        *tempData = NULL; // Initialize the result pointer to NULL
+
+        // Copy allPatientData to tempData
+        copyPatient(*params->allPatientData, tempData);
+
+        freePatientList(*params->operatedData);
+
+        *params->operatedData = *tempData;
+
+        // Update Table
+        addHistoryToTable(params->table, *params->operatedData, params->allTindakanData);
+
+        // Show updated table
+        gtk_widget_show_all(params->table);
+
+        // Close the window
+        gtk_widget_destroy(params->window);
+    } else {
+        // Show error message
+        GtkWidget* dialog = gtk_message_dialog_new(GTK_WINDOW(params->window), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "Error: ");
+        switch (isError)
+        {
+        case 1:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Tanggal tidak boleh kosong");
+            break;
+        case 2:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "ID Pasien tidak boleh kosong");
+            break;
+        case 3:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Diagnosis tidak boleh kosong");
+            break;
+        case 4:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Tindakan tidak boleh kosong");
+            break;
+        case 5:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Kontrol tidak boleh kosong");
+            break;
+        case 6:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "ID Pasien tidak ditemukan");
+            break;
+        case 7:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Tindakan tidak ditemukan");
+            break;
+        case 8:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Format tanggal kedatangan salah");
+            break;
+        case 9:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Format tanggal kontrol salah");
+            break;
+        default:
+            break;
+
+        }
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
+
+    // Free the duplicated strings
+    free(tanggal);
+    free(kontrol);
+    free(diagnosis);
+    free(idPasien);
+    free(tindakan);
+}
+
+void cancelEditHistoryData(GtkWidget* button, gpointer data){
+    // dapatkan data window
+    GtkWidget* window = (GtkWidget*)data;
+    // Hancurkan window
+    gtk_widget_destroy(window);
+}
+
+void edit_history_dialog_box(Patient** allPatientData, Patient** operatedData, Tindakan* allTindakanData, Patient* target, int indeks, GtkWidget* table){
+
+    // Cari data history yang akan diedit
+    History* historyTarget = target->history;
+    for (int i = 0; i < indeks; i++) {
+        historyTarget = historyTarget->next;
+    }
+
+    // Create New Window
+    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Edit Medical Record");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 400);
+
+
+    // Create Main Container
+    GtkWidget* mainContainer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_add(GTK_CONTAINER(window), mainContainer);
+
+    // Create Input Field
+    GtkWidget* tanggalLabel = gtk_label_new("Tanggal");
+    GtkWidget* tanggalEntry = gtk_entry_new();
+    GtkWidget* idPasienLabel = gtk_label_new("ID Pasien");
+    GtkWidget* idPasienEntry = gtk_entry_new();
+    GtkWidget* diagnosisLabel = gtk_label_new("Diagnosis");
+    GtkWidget* diagnosisEntry = gtk_entry_new();
+    GtkWidget* tindakanLabel = gtk_label_new("Tindakan");
+    GtkWidget* tindakanEntry = gtk_entry_new();
+    GtkWidget* kontrolLabel = gtk_label_new("Kontrol");
+    GtkWidget* kontrolEntry = gtk_entry_new();
+
+    // Masukkan data ke entry
+    char tanggalData[20];
+    char tanggalKontrol[20];
+    convertDateToString(historyTarget->tanggal, tanggalData);
+    convertDateToString(historyTarget->kontrol, tanggalKontrol);
+    gtk_entry_set_text(GTK_ENTRY(tanggalEntry), tanggalData);
+    gtk_entry_set_text(GTK_ENTRY(idPasienEntry), historyTarget->idPasien);
+    gtk_entry_set_text(GTK_ENTRY(diagnosisEntry), historyTarget->diagnosis);
+    gtk_entry_set_text(GTK_ENTRY(tindakanEntry), historyTarget->tindakan);
+    gtk_entry_set_text(GTK_ENTRY(kontrolEntry), tanggalKontrol);
+
+    // Style Label
+    gtk_widget_set_halign(tanggalLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_halign(idPasienLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_halign(diagnosisLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_halign(tindakanLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_halign(kontrolLabel, GTK_ALIGN_CENTER);
+
+    // set margin top tanggal label
+    gtk_widget_set_margin_top(tanggalLabel, 20);
+
+    // Create confirmation button
+    GtkWidget* confirmButton = gtk_button_new_with_label("Save");
+    GtkWidget* cancelButton = gtk_button_new_with_label("Cancel");
+
+    // Create the parameter for the add button
+    editHistoryFormPointer* editHistoryFormPointer = malloc(sizeof(*editHistoryFormPointer));
+    editHistoryFormPointer->tanggal = tanggalEntry;
+    editHistoryFormPointer->idPasien = idPasienEntry;
+    editHistoryFormPointer->diagnosis = diagnosisEntry;
+    editHistoryFormPointer->tindakan = tindakanEntry;
+    editHistoryFormPointer->kontrol = kontrolEntry;
+    editHistoryFormPointer->window = window;
+    editHistoryFormPointer->history = historyTarget;
+    editHistoryFormPointer->table = table;
+    editHistoryFormPointer->operatedData = operatedData;
+    editHistoryFormPointer->allPatientData = allPatientData;
+    editHistoryFormPointer->allTindakanData = allTindakanData;
+
+    // Add the callback function for the save button
+    g_signal_connect(confirmButton, "clicked", G_CALLBACK(saveEditHistoryData), editHistoryFormPointer);
+    g_signal_connect(cancelButton, "clicked", G_CALLBACK(cancelEditHistoryData), window);
+
+    // Create the container for the button
+    GtkWidget* buttonContainer = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+
+    // Add widget to container
+    gtk_box_pack_start(GTK_BOX(mainContainer), tanggalLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), tanggalEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), idPasienLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), idPasienEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), diagnosisLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), diagnosisEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), tindakanLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), tindakanEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), kontrolLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), kontrolEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainContainer), buttonContainer, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(buttonContainer), confirmButton, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(buttonContainer), cancelButton, TRUE, TRUE, 0);
+
+    // Show all widget
+    gtk_widget_show_all(window);
+}
+
+
 void on_editHistoryData_button_clicked(GtkWidget* button, gpointer data)
 {
     PatientParams* PatientParameter = (PatientParams*)data;
     Patient** operatedData = PatientParameter->operatedData;
     Patient** allPatientData = PatientParameter->allPatientData;
+    Tindakan* allTindakanData = PatientParameter->allTindakanData;
     GtkWidget* table = PatientParameter->table;
 
-    // Edit data in the table
-    // addHistoryToTable(table, *operatedData, *allPatientData);
+    // Cari berapa data yang dicentang
+    int count = 0;
+    int row = 0;
+    int action = 1;
+    GtkWidget* checkbox;
+    while(action){
+        checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, row+1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+            if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                count++;
+            }
+            row++;
+        }else{
+            action = 0;
+            break;
+        }
+    }
+
+    // Jika tidak ada data yang dicentang
+    if(count == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk diedit");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    } else {
+        // deteksi data yang dicentang dari bawah
+        int indeks = 0;
+        char* idPasien;
+        GtkWidget* label;
+        Patient* patientTemp;
+        for (int i = row; i > 0; i--) {
+            indeks = 0;
+            checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, i);
+            if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+                if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                    // Hapus data
+                    // Cari data yang dicentang
+                    label = gtk_grid_get_child_at(GTK_GRID(table), 0, i);
+                    if (label != NULL && GTK_IS_LABEL(label)) {
+                        // dapatkan id pasien
+                        idPasien = (char*)gtk_label_get_text(GTK_LABEL(gtk_grid_get_child_at(GTK_GRID(table), 2, i)));
+                        while(i-indeks >= 0 && strcmp(gtk_label_get_text(GTK_LABEL(gtk_grid_get_child_at(GTK_GRID(table), 2, i-indeks))), idPasien) == 0){
+                            indeks++;
+                        }
+                        // Hapus data
+                        // Cari pasien
+                        patientTemp = findPatient(*allPatientData, idPasien);
+                        // Hapus history
+                        edit_history_dialog_box(allPatientData, operatedData, allTindakanData, patientTemp, indeks-1, table);
+
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Callback function for "Delete Data" button
@@ -389,8 +684,83 @@ void on_deleteHistoryData_button_clicked(GtkWidget* button, gpointer data)
     Patient** allPatientData = PatientParameter->allPatientData;
     GtkWidget* table = PatientParameter->table;
 
-    // Delete data in the table
-    // addHistoryToTable(table, *operatedData, *allPatientData);
+    // Cari berapa data yang dicentang
+    int count = 0;
+    int row = 0;
+    int action = 1;
+    GtkWidget* checkbox;
+    while(action){
+        checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, row+1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+            if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                count++;
+            }
+            row++;
+        }else{
+            action = 0;
+            break;
+        }
+    }
+
+    // Jika tidak ada data yang dicentang
+    if(count == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk dihapus");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    } else {
+        // Buat dialog konfirmasi
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Apakah Anda yakin ingin menghapus data pasien yang dipilih?");
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        if(response == GTK_RESPONSE_YES){
+            // deteksi data yang dicentang dari bawah
+            int indeks = 0;
+            char* idPasien;
+            GtkWidget* label;
+            Patient* patientTemp;
+            for (int i = row; i > 0; i--) {
+                indeks = 0;
+                checkbox = gtk_grid_get_child_at(GTK_GRID(table), 7, i);
+                if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)) {
+                    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))){
+                        // Hapus data
+                        // Cari data yang dicentang
+                        label = gtk_grid_get_child_at(GTK_GRID(table), 0, i);
+                        if (label != NULL && GTK_IS_LABEL(label)) {
+                            // dapatkan id pasien
+                            idPasien = (char*)gtk_label_get_text(GTK_LABEL(gtk_grid_get_child_at(GTK_GRID(table), 2, i)));
+                            while(i-indeks >= 0 && strcmp(gtk_label_get_text(GTK_LABEL(gtk_grid_get_child_at(GTK_GRID(table), 2, i-indeks))), idPasien) == 0){
+                                indeks++;
+                            }
+                            // Hapus data
+                            // Cari pasien
+                            patientTemp = findPatient(*allPatientData, idPasien);
+                            // Hapus history
+                            deleteHistorybyIndex(&patientTemp->history, indeks);
+                        }
+                    }
+                }
+            }
+
+            Patient** tempData = malloc(sizeof(Patient*));
+            *tempData = NULL; // Initialize the result pointer to NULL
+
+            // Copy allPatientData to tempData
+            copyPatient(*allPatientData, tempData);
+
+            freePatientList(*operatedData);
+
+            *operatedData = *tempData;
+
+            // Update Table
+            addHistoryToTable(table, *operatedData, PatientParameter->allTindakanData);
+
+            // Show updated table
+            gtk_widget_show_all(table);
+
+        }
+    }
 }
 
 // Function to build the medical record tab (Callable from main.c)
