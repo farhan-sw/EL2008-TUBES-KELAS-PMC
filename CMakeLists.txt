@@ -21,6 +21,9 @@ include_directories(/mingw64/include)
 find_package(xlsxio REQUIRED)
 include_directories(${XLSXIO_INCLUDE_DIRS})
 
+link_directories(/mingw64/lib)
+include_directories(/mingw64/include)
+
 # Set the output directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
@@ -40,6 +43,9 @@ add_executable(HealthAdmin ${PROJECT_SOURCE_DIR}/src/main.c ${SOURCES})
 target_link_libraries(HealthAdmin ${LIBRARIES} ${XLSXIO_LIBRARIES})
 target_link_libraries(HealthAdmin xlsxio_read)
 target_link_libraries(HealthAdmin xlsxio_write)
+target_link_libraries(HealthAdmin xlsxwriter)
+target_link_libraries(HealthAdmin zip)
+target_link_libraries(HealthAdmin z)
 
 # Messages
 message(STATUS "GTK include directories: ${GTK3_INCLUDE_DIRS}")

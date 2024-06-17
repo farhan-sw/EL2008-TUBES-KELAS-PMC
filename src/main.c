@@ -9,6 +9,7 @@
 #include "dataOperator.h"
 #include "loader.h"
 #include "search.h"
+#include "saveData.h"
 
 char session[50];
 
@@ -47,12 +48,9 @@ int main(int argc, char **argv) {
     copyPatient(*allPatientData, operatedData);
     printf("Pointer allPatientList: %p\n", allPatientData);
 
-    // // test search 
-    // Patient* result = NULL;
-    // searchPatient(*allPatientData, &result, "Tulungagung");
-
-    // printf("Hasil pencarian: \n");
-    // printPatientList(result);
+    // test excel
+    testExcel();
+    
 
     // GTK3 RUNNER
 
