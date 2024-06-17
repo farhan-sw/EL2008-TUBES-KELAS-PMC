@@ -178,16 +178,25 @@ typedef struct EditMedicalCheckupFormPointer{
 
 
 #define MAX_REPORT 10
+
+typedef struct AnalyticsPointer{
+    GtkWidget *startYear;
+    GtkWidget *endYear;
+} AnalyticsPointer;
 typedef struct AnalyticsParam {
     int startYear;
     int endYear;
-    GtkWidget* vbox;
     YearlyReport yearlyReports[MAX_REPORT]; // Misalnya, untuk 5 tahun
     int reportCount;
     Patient** operatedData;
     Patient** allPatientData;
     Tindakan* allTindakanData;
+    GtkWidget *vbox;
+    AnalyticsPointer* analyticsPointer;
 } AnalyticsParam;
+
+
+
 
 // =================================== END BAGIAN PATIENT =======================================
 

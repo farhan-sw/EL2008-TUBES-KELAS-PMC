@@ -1,8 +1,12 @@
-#include <gtk/gtk.h>
-#include <stdlib.h>
-#include <string.h>
-#include "dataStructure.h"
-#include "dataOperator.h"
+#include   <gtk/gtk.h>
+#include   <stdio.h>
+#include   <stdlib.h>
+#include   <string.h>
+#include   <time.h>
+#include   "dataStructure.h"
+#include   "search.h"
+#include   "logger.h"
+#include   "dataOperator.h"
 
 #define ANALYSIS_LABEL_WIDTH 250
 
@@ -169,18 +173,35 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
     }
 }
 
-void RefreshAnalyticsButtonHandler(GtkWidget* widget, gpointer data) {
+void SubmitAnalyticsButtonHandler(GtkWidget* widget, gpointer data) {
     AnalyticsParam* param = (AnalyticsParam*)data;
 
-    // Contoh: Asumsi rentang tahun di-hardcode
-    param->startYear = 2022;
-    param->endYear = 2024;
+    // Get the start year and end year from the input fields
+    char* startYearText = strdup(gtk_entry_get_text(GTK_ENTRY(param->analyticsPointer->startYear)));
+    char* endYearText = strdup(gtk_entry_get_text(GTK_ENTRY(param->analyticsPointer->endYear)));
 
-    printf("Refresh Analytics Button Clicked\n");
-    printf("Start Year: %d End Year: %d\n", param->startYear, param->endYear);
+    // Convert the text to integer
+    int startYear = atoi(startYearText);
+    int endYear = atoi(endYearText);
 
+    // Check if the input is valid
+    if (startYear > endYear) {
+        GtkWidget* dialog = gtk_message_dialog_new(GTK_WINDOW(param->vbox), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Invalid year range");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
+    // Check selisih cuman boleh dibawah 10 tahun
+    if (endYear - startYear > 10) {
+        GtkWidget* dialog = gtk_message_dialog_new(GTK_WINDOW(param->vbox), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Year range must be less than 10 years");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
+    // Update Tabel
     // Clear previous content
-    printf("Destroying previous content\n");
     GList* children = gtk_container_get_children(GTK_CONTAINER(param->vbox));
     for (GList* iter = children; iter != NULL; iter = g_list_next(iter)) {
         gtk_widget_destroy(GTK_WIDGET(iter->data));
@@ -188,14 +209,96 @@ void RefreshAnalyticsButtonHandler(GtkWidget* widget, gpointer data) {
     g_list_free(children);
 
     // Recalculate reports for the selected year range
-    printf("Recalculating reports\n");
-    calculateReports(param->allPatientData, param->allTindakanData, param->yearlyReports, &param->reportCount, param->startYear, param->endYear);
+    calculateReports(param->allPatientData, param->allTindakanData, param->yearlyReports, &param->reportCount, startYear, endYear);
 
     // Display updated reports
-    printf("Displaying reports\n");
     displayReportsInTable(param->vbox, param->yearlyReports, param->reportCount);
 
     // Refresh the window
+    // Show all the widgets
+    gtk_widget_show_all(param->vbox);
+
+    // Free the memory
+    free(startYearText);
+    free(endYearText);
+    free(param->analyticsPointer);
+    free(param);
+}
+    
+
+void RefreshAnalyticsButtonHandler(GtkWidget* widget, gpointer data) {
+    AnalyticsParam* param = (AnalyticsParam*)data;
+
+    // Create New WIndow
+    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Select Year Range");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+
+    
+
+    // Create Main Box
+    GtkWidget* mainBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_add(GTK_CONTAINER(window), mainBox);
+
+    // VCreate Input FIeld
+    GtkWidget* startYearLabel = gtk_label_new("Start Year");
+    GtkWidget* startYearEntry = gtk_entry_new();
+    GtkWidget* endYearLabel = gtk_label_new("End Year");
+    GtkWidget* endYearEntry = gtk_entry_new();
+
+    // Styling Label
+    gtk_widget_set_halign(startYearLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_halign(endYearLabel, GTK_ALIGN_CENTER);
+
+    // Create SUbmit Button
+    GtkWidget* submitButtonAnalytics = gtk_button_new_with_label("Submit");
+    gtk_widget_set_margin_bottom (submitButtonAnalytics, 10);
+
+    GtkStyleContext *context_analytics_add = gtk_widget_get_style_context(submitButtonAnalytics);
+    gtk_style_context_add_class(context_analytics_add, "add-data-button-dialog");
+
+    // Create Pointer for Submit Button
+    AnalyticsPointer* submitParam = malloc(sizeof(AnalyticsPointer));
+    submitParam->startYear = startYearEntry;
+    submitParam->endYear = endYearEntry;
+
+    // Create Param for Submit Button
+    AnalyticsParam* addYearParam = malloc(sizeof(AnalyticsParam));
+    addYearParam->allPatientData = param->allPatientData;
+    addYearParam->allTindakanData = param->allTindakanData;
+    addYearParam->vbox = param->vbox;
+    addYearParam->reportCount = param->reportCount;
+    memccpy(addYearParam->yearlyReports, param->yearlyReports, sizeof(YearlyReport), param->reportCount);
+    addYearParam->analyticsPointer = submitParam;
+
+
+    g_signal_connect(submitButtonAnalytics, "clicked", G_CALLBACK(SubmitAnalyticsButtonHandler), addYearParam);
+
+    // Clear previous content
+    GList* children = gtk_container_get_children(GTK_CONTAINER(param->vbox));
+    for (GList* iter = children; iter != NULL; iter = g_list_next(iter)) {
+        gtk_widget_destroy(GTK_WIDGET(iter->data));
+    }
+    g_list_free(children);
+
+    // Recalculate reports for the selected year range
+    calculateReports(param->allPatientData, param->allTindakanData, param->yearlyReports, &param->reportCount, param->startYear, param->endYear);
+
+    // Display updated reports
+    displayReportsInTable(param->vbox, param->yearlyReports, param->reportCount);
+
+    // Add the input fields and button to the main container
+    gtk_box_pack_start(GTK_BOX(mainBox), startYearLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), startYearEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), endYearLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), endYearEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), submitButtonAnalytics, FALSE, FALSE, 0);
+
+
+    // Refresh the window
+    // Show all the widgets
+    gtk_widget_show_all(window);
     gtk_widget_show_all(param->vbox);
 
     
@@ -207,8 +310,17 @@ void buildAnalyticsTab(GtkWidget* financeTab, Patient** operatedData, Patient** 
     gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
     gtk_box_pack_start(GTK_BOX(financeTab), toolbar, FALSE, FALSE, 0);
 
-    GtkToolItem* refreshButton = gtk_tool_button_new(NULL, "Select Year Range");
+    // GtkToolItem* refreshButton = gtk_tool_button_new(NULL, "Select Year Range");
+    // gtk_toolbar_insert(GTK_TOOLBAR(toolbar), refreshButton, -1);
+
+    // Create the "Add Data" button
+    GtkToolItem *refreshButton = gtk_tool_button_new(NULL, "Set Dates");
+    GtkWidget *addPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(refreshButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *RefreshContext = gtk_widget_get_style_context(addPatientDataButtonWidget);
+    gtk_style_context_add_class(RefreshContext, "add-data-patient-button");
+    // ALightment ke center
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), refreshButton, -1);
+    
 
     // Allocate and initialize AnalyticsParam
     AnalyticsParam* param = malloc(sizeof(AnalyticsParam));
