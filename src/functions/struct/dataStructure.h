@@ -17,6 +17,8 @@ typedef struct Date {
 
 
 
+
+
 // =================================== BAGIAN HISTORY =======================================
 /**
  * @brief History struct
@@ -87,6 +89,7 @@ typedef struct PatientParams{
     GtkWidget *table;
     Patient** operatedData;
     Patient** allPatientData;
+    Tindakan* allTindakanData;
 } PatientParams;
 
 typedef struct NewPatientFormPointer{
@@ -118,5 +121,19 @@ typedef struct EditPatientFormPointer{
     Patient** allPatientData;
 } EditPatientFormPointer;
 // =================================== END BAGIAN PATIENT =======================================
+
+
+// buat dateParams dan addDateParams
+typedef struct DatePointer{
+    GtkWidget *startDate;
+    GtkWidget *endDate;
+} DatePointer;
+
+typedef struct AddDateParams{
+    PatientParams* patientParams;
+    DatePointer* datePointer;
+    GtkWidget *window;
+} AddDateParams;
+
 
 #endif /* DATASTRUCTURE_H */
