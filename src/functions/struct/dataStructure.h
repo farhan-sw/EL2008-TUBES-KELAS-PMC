@@ -16,6 +16,11 @@ typedef struct YearlyReport {
     int diseaseCount;
 } YearlyReport;
 
+typedef struct DiseaseCount {
+    int index;
+    int count;
+} DiseaseCount;
+
 
 
 /**

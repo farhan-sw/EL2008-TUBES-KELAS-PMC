@@ -81,7 +81,6 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
         gtk_widget_set_size_request(gtk_grid_get_child_at(GTK_GRID(grid), 2, 0), ANALYSIS_LABEL_WIDTH, -1);
 
         // Isi data bulanan
-        // Isi data bulanan
         for (int j = 0; j < 12; j++) {
             char month_text[20];
             sprintf(month_text, "Month %d", j + 1);
@@ -94,11 +93,6 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
             gtk_grid_attach(GTK_GRID(grid), label_patients, 1, j + 1, 1, 1);
 
             // Sort diseases by count (descending order)
-            // Create a list to store disease indices and counts
-            struct DiseaseCount {
-                int index;
-                int count;
-            };
 
             struct DiseaseCount diseaseCounts[report->diseaseCount];
 
@@ -147,6 +141,70 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
             GtkStyleContext* context_diseases = gtk_widget_get_style_context(diseases_frame);
             gtk_style_context_add_class(context_diseases, "diseases-frame");
         }
+
+        // Tambahkan informasi rekap diagnosa tahunan di bawah analisis penyakit bulanan
+        GtkWidget* yearly_analysis_grid = gtk_grid_new();
+        gtk_box_pack_start(GTK_BOX(vbox), yearly_analysis_grid, FALSE, FALSE, 20);
+
+                // Header analisis tahunan
+        GtkWidget* annual_analysis_label = gtk_label_new("Rekap Diagnosa Tahunan");
+        gtk_box_pack_start(GTK_BOX(vbox), annual_analysis_label, FALSE, FALSE, 5);
+        gtk_widget_set_halign(annual_analysis_label, GTK_ALIGN_CENTER);
+
+        // CSS untuk header analisis tahunan
+        GtkStyleContext *context_annual_analysis_header = gtk_widget_get_style_context(annual_analysis_label);
+        gtk_style_context_add_class(context_annual_analysis_header, "annual-analysis-header");
+
+        // Tabel rekap diagnosa tahunan
+        GtkWidget* annual_disease_grid = gtk_grid_new();
+        gtk_box_pack_start(GTK_BOX(vbox), annual_disease_grid, FALSE, FALSE, 20);
+
+        // Sorting yearly diseases by count (descending order)
+        DiseaseCount yearlyDiseaseCountsSorted[report->diseaseCount];
+        for (int k = 0; k < report->diseaseCount; k++) {
+            yearlyDiseaseCountsSorted[k].index = k;
+            yearlyDiseaseCountsSorted[k].count = 0;
+            for (int j = 0; j < 12; j++) {
+                yearlyDiseaseCountsSorted[k].count += report->monthlyDiseases[j][k];
+            }
+        }
+
+        // Sort yearlyDiseaseCountsSorted array based on count (descending)
+        for (int m = 0; m < report->diseaseCount - 1; m++) {
+            for (int n = m + 1; n < report->diseaseCount; n++) {
+                if (yearlyDiseaseCountsSorted[m].count < yearlyDiseaseCountsSorted[n].count) {
+                    DiseaseCount temp = yearlyDiseaseCountsSorted[m];
+                    yearlyDiseaseCountsSorted[m] = yearlyDiseaseCountsSorted[n];
+                    yearlyDiseaseCountsSorted[n] = temp;
+                }
+            }
+        }
+
+        // Header untuk tabel penyakit tahunan
+        gtk_grid_attach(GTK_GRID(annual_disease_grid), gtk_label_new("Penyakit"), 0, 0, 1, 1);
+        gtk_grid_attach(GTK_GRID(annual_disease_grid), gtk_label_new("Jumlah"), 1, 0, 1, 1);
+
+        // Isi tabel penyakit tahunan
+        for (int l = 0; l < report->diseaseCount; l++) {
+            int idx = yearlyDiseaseCountsSorted[l].index;
+            int count = yearlyDiseaseCountsSorted[l].count;
+
+            if (count > 0) {
+                GtkWidget* label_disease = gtk_label_new(report->diseases[idx]);
+                gtk_grid_attach(GTK_GRID(annual_disease_grid), label_disease, 0, l + 1, 1, 1);
+
+                char disease_count_text[20];
+                sprintf(disease_count_text, "%d", count);
+                GtkWidget* label_disease_count = gtk_label_new(disease_count_text);
+                gtk_grid_attach(GTK_GRID(annual_disease_grid), label_disease_count, 1, l + 1, 1, 1);
+            }
+        }
+
+        // Set properties for annual_disease_grid
+        gtk_widget_set_hexpand(annual_disease_grid, TRUE);
+        gtk_widget_set_halign(annual_disease_grid, GTK_ALIGN_FILL);
+        gtk_grid_set_row_spacing(GTK_GRID(annual_disease_grid), 5);
+        gtk_grid_set_column_spacing(GTK_GRID(annual_disease_grid), 250);
 
 
         // Header analisis pendapatan
@@ -250,11 +308,10 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
         // CSS for income frame
         GtkStyleContext* context_income = gtk_widget_get_style_context(income_frame);
         gtk_style_context_add_class(context_income, "income-frame");
-
-        
-    }   
-    
+    }
 }
+
+
 
 
 void SubmitAnalyticsButtonHandler(GtkWidget* widget, gpointer data) {
