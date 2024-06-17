@@ -61,7 +61,7 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
 
     // Dapatkan Date sekarang
     Date currentDate = getCurrentDate();
-    setDate(&currentDate, 1, 7, 2023);           // Untuk testing
+    // setDate(&currentDate, 1, 7, 2023);           // Untuk testing
 
     Patient* patientList = *operatedData;
     char label1_text[10];
@@ -71,16 +71,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
     char tindakan_text[50];
     int biaya;
     int i = 1;
-
-    printf("Start Algorithm\n");
-    // Print compare date between emptyDate
-    printf("Compare Date Start Date: %d End Date: %d\n", compareDate(startDate, emptyDate), compareDate(endDate, emptyDate));
-
-    if(compareDate(startDate, emptyDate) == 0 && compareDate(endDate, emptyDate) == 0) {
-        printf("Start Date and End Date is empty\n");
-    } else {
-        setDate(&currentDate, 1, 7, 2023);
-    }
 
     while (patientList != NULL) {
         History* history = patientList->history;
@@ -103,9 +93,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
 
                     convertDateToString(history->kontrol, kontrol_text);
                     GtkWidget* label6 = gtk_label_new(kontrol_text);
-
-                    // sprintf(biaya_text, "Rp %d", biaya);
-                    // GtkWidget* label7 = gtk_label_new(biaya_text);
                     
                     GtkWidget* checkbox = gtk_check_button_new();
 
@@ -116,7 +103,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
                     gtk_widget_set_halign(label4, GTK_ALIGN_START);
                     gtk_widget_set_halign(label5, GTK_ALIGN_START);
                     gtk_widget_set_halign(label6, GTK_ALIGN_START);
-                    // gtk_widget_set_halign(label7, GTK_ALIGN_START);
 
                     gtk_grid_attach(GTK_GRID(table), label1, 0, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), label2, 1, i, 1, 1);
@@ -124,7 +110,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
                     gtk_grid_attach(GTK_GRID(table), label4, 3, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), label5, 4, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), label6, 5, i, 1, 1);
-                    // gtk_grid_attach(GTK_GRID(table), label7, 6, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), checkbox, 7, i, 1, 1);
                     
                     i++;
@@ -145,9 +130,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
 
                     convertDateToString(history->kontrol, kontrol_text);
                     GtkWidget* label6 = gtk_label_new(kontrol_text);
-
-                    // sprintf(biaya_text, "Rp %d", biaya);
-                    // GtkWidget* label7 = gtk_label_new(biaya_text);
                     
                     GtkWidget* checkbox = gtk_check_button_new();
 
@@ -158,7 +140,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
                     gtk_widget_set_halign(label4, GTK_ALIGN_START);
                     gtk_widget_set_halign(label5, GTK_ALIGN_START);
                     gtk_widget_set_halign(label6, GTK_ALIGN_START);
-                    // gtk_widget_set_halign(label7, GTK_ALIGN_START);
 
                     gtk_grid_attach(GTK_GRID(table), label1, 0, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), label2, 1, i, 1, 1);
@@ -166,7 +147,6 @@ void addDataMedCheckToTable(GtkWidget* table, Patient** operatedData, Tindakan* 
                     gtk_grid_attach(GTK_GRID(table), label4, 3, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), label5, 4, i, 1, 1);
                     gtk_grid_attach(GTK_GRID(table), label6, 5, i, 1, 1);
-                    // gtk_grid_attach(GTK_GRID(table), label7, 6, i, 1);
                     gtk_grid_attach(GTK_GRID(table), checkbox, 7, i, 1, 1);
                     
                     i++;
@@ -247,12 +227,10 @@ void RefreshMedCheckButtonHandler(GtkWidget* button, gpointer data)
 {   
     // Get the patient list
     PatientParams* params = (PatientParams*) data;
-
-    //uji tampilkan nama pertama pada data pasien
-    // printf("Nama Pasien Pertama: %s\n", (*operatedData)->namaLengkap);
+    
     // Create the new window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Add Patient Data");
+    gtk_window_set_title(GTK_WINDOW(window), "Set Date Range");
     gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
 
     // Create the main container
@@ -313,11 +291,11 @@ void buildMedicalCheckUpTab(GtkWidget* userDataTab, Patient** operatedData, Pati
     gtk_box_pack_start(GTK_BOX(userDataTab), medCheckToolbar, FALSE, FALSE, 0);
 
     // Create the "Add Data" button
-    GtkToolItem *addPatientDataButton = gtk_tool_button_new(NULL, "Refresh");
-    GtkWidget *addPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(addPatientDataButton)); // Ambil widget internal dari GtkToolButton
-    GtkStyleContext *addPatientContext = gtk_widget_get_style_context(addPatientDataButtonWidget);
-    gtk_style_context_add_class(addPatientContext, "add-data-patient-button");
-    gtk_toolbar_insert(GTK_TOOLBAR(medCheckToolbar), addPatientDataButton, -1);
+    GtkToolItem *refreshButton = gtk_tool_button_new(NULL, "Set Dates");
+    GtkWidget *addPatientDataButtonWidget = gtk_bin_get_child(GTK_BIN(refreshButton)); // Ambil widget internal dari GtkToolButton
+    GtkStyleContext *RefreshContext = gtk_widget_get_style_context(addPatientDataButtonWidget);
+    gtk_style_context_add_class(RefreshContext, "add-data-patient-button");
+    gtk_toolbar_insert(GTK_TOOLBAR(medCheckToolbar), refreshButton, -1);
 
     // PATIENT DATA DISPLAY
     // Create the scrollable table
@@ -347,5 +325,5 @@ void buildMedicalCheckUpTab(GtkWidget* userDataTab, Patient** operatedData, Pati
     PatientParameter->allTindakanData = tindakanList;
 
     // linking semua data ke dalam parameter
-    g_signal_connect(addPatientDataButton, "clicked", G_CALLBACK(RefreshMedCheckButtonHandler), PatientParameter);
+    g_signal_connect(refreshButton, "clicked", G_CALLBACK(RefreshMedCheckButtonHandler), PatientParameter);
 }
