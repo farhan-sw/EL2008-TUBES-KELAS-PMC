@@ -47,6 +47,30 @@ void addHistoryToTable(GtkWidget* table, Patient* patientList, Tindakan* allTind
     // Clear the table
     clearMedicalHistoryDataTable(table);
 
+    // Add table headers
+    GtkWidget* header1MedRec = gtk_label_new("No");
+    GtkWidget* header2MedRec = gtk_label_new("Tanggal");
+    GtkWidget* header3MedRec = gtk_label_new("ID Pasien");
+    GtkWidget* header4MedRec = gtk_label_new("Diagnosis");
+    GtkWidget* header5MedRec = gtk_label_new("Tindakan");
+    GtkWidget* header6MedRec = gtk_label_new("Kontrol");
+    GtkWidget* header7MedRec = gtk_label_new("Biaya");
+    
+    gtk_grid_attach(GTK_GRID(table), header1MedRec, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header2MedRec, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header3MedRec, 2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header4MedRec, 3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header5MedRec, 4, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header6MedRec, 5, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(table), header7MedRec, 6, 0, 1, 1);
+
+    // Set the width of header
+    gtk_widget_set_size_request(header4MedRec, 200, -1);
+    gtk_widget_set_size_request(header5MedRec, 200, -1);
+
+    // tambahkan margin kiri pada tabel
+    gtk_widget_set_margin_start(header1MedRec, 10);
+
     int i = 1;
 
     // Penampung Sementara
@@ -397,29 +421,29 @@ void buildMedicalRecordTab(GtkWidget* medicalRecordsTab, Patient** operatedData,
     GtkWidget* tableMedRec = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(scrollableMedRec), tableMedRec);
 
-    // Add table headers
-    GtkWidget* header1MedRec = gtk_label_new("No");
-    GtkWidget* header2MedRec = gtk_label_new("Tanggal");
-    GtkWidget* header3MedRec = gtk_label_new("ID Pasien");
-    GtkWidget* header4MedRec = gtk_label_new("Diagnosis");
-    GtkWidget* header5MedRec = gtk_label_new("Tindakan");
-    GtkWidget* header6MedRec = gtk_label_new("Kontrol");
-    GtkWidget* header7MedRec = gtk_label_new("Biaya");
+    // // Add table headers
+    // GtkWidget* header1MedRec = gtk_label_new("No");
+    // GtkWidget* header2MedRec = gtk_label_new("Tanggal");
+    // GtkWidget* header3MedRec = gtk_label_new("ID Pasien");
+    // GtkWidget* header4MedRec = gtk_label_new("Diagnosis");
+    // GtkWidget* header5MedRec = gtk_label_new("Tindakan");
+    // GtkWidget* header6MedRec = gtk_label_new("Kontrol");
+    // GtkWidget* header7MedRec = gtk_label_new("Biaya");
     
-    gtk_grid_attach(GTK_GRID(tableMedRec), header1MedRec, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(tableMedRec), header2MedRec, 1, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(tableMedRec), header3MedRec, 2, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(tableMedRec), header4MedRec, 3, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(tableMedRec), header5MedRec, 4, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(tableMedRec), header6MedRec, 5, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(tableMedRec), header7MedRec, 6, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header1MedRec, 0, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header2MedRec, 1, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header3MedRec, 2, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header4MedRec, 3, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header5MedRec, 4, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header6MedRec, 5, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(tableMedRec), header7MedRec, 6, 0, 1, 1);
 
-    // Set the width of header
-    gtk_widget_set_size_request(header4MedRec, 200, -1);
-    gtk_widget_set_size_request(header5MedRec, 200, -1);
+    // // Set the width of header
+    // gtk_widget_set_size_request(header4MedRec, 200, -1);
+    // gtk_widget_set_size_request(header5MedRec, 200, -1);
 
-    // tambahkan margin kiri pada tabel
-    gtk_widget_set_margin_start(header1MedRec, 10);
+    // // tambahkan margin kiri pada tabel
+    // gtk_widget_set_margin_start(header1MedRec, 10);
 
     // Input data rekam medis dari patientList
     addHistoryToTable(tableMedRec, patientList, allTindakanList);
