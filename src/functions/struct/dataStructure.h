@@ -154,6 +154,21 @@ typedef struct NewHistoryFormPointer{
     GtkWidget *kontrol;
 } NewHistoryFormPointer;
 
+typedef struct editHistoryFormPointer{
+    GtkWidget *tanggal;
+    GtkWidget *idPasien;
+    GtkWidget *namaLengkap;
+    GtkWidget *diagnosis;
+    GtkWidget *tindakan;
+    GtkWidget *kontrol;
+    GtkWidget *window;
+    GtkWidget *table;
+    Patient** operatedData;
+    Patient** allPatientData;
+    Tindakan* allTindakanData;
+    History* history;
+} editHistoryFormPointer;
+
 
 typedef struct AddHistoryParams{
     PatientParams* patientParams;
