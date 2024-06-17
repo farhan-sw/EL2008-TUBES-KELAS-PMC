@@ -84,6 +84,11 @@ Date excelSerialToDate(int serial) {
     return date;
 }
 
+/**
+ * @brief Verify the date format
+ * @param tanggal: char tanggal
+ * @return 1 if date is valid, 0 if date is empty, -1 if date is not possible
+ */
 int stringDateFormatVerify(char tanggal[]) {
     if (strcmp(tanggal, "") == 0 || strlen(tanggal) == 0) {
         return 0;
