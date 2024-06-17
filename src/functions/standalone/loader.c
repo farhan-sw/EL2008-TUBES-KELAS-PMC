@@ -69,7 +69,6 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
         itterasi = 0;
         while ((cell_data = xlsxioread_sheet_next_cell(sheet_data_pasien)) != NULL) {
             // Process the cell data
-            // printf("%s\t", cell_data);
             switch (itterasi)
             {
             case 1:
@@ -110,7 +109,7 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
 
             itterasi++;
         }
-        // printf("\n");
+
         // buat node pasien
 
         // Hitung umur berdasarkan tanggal lahir dan waktu sekarang
@@ -160,7 +159,6 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
 
             itterasi++;
         }
-        // printf("\n");
         // buat node tindakan
         Tindakan* newTindakan = createTindakan(tindakan, biaya, tindakanID);
         // tambahkan node tindakan ke dalam linked list
@@ -191,35 +189,29 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
             {
             case 1:
                 // Baca Tanggal
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 tanggal = convertStringToDate(cell_data);
                 break;
             case 2:
                 // salin id pasien
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 strcpy(idPasien, cell_data);
                 break;
             case 3:
                 // Salin data diagnosa
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 strcpy(diagnosis, cell_data);
                 break;
             case 4:
                 // Print Tindakan
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 strcpy(tindakan, cell_data);
                 id_tindakan = TindakanToID(*tindakanList, tindakan);
                 break;
 
             case 5:
                 // Baca Tanggal kontrol
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 kontrol = convertStringToDate(cell_data);
                 break;
 
             case 6:
                 // Baca Biaya berdsaarakan tindakan
-                //printf("Iterasi ke %d Cell data %s\n", itterasi, cell_data);
                 biaya = idToBiaya(*tindakanList, id_tindakan);
                 break;
             
@@ -229,7 +221,7 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
 
             itterasi++;
         }
-        // printf("\n");
+
         // buat node rekam medis
         History* newHistory = createHistory(tanggal, idPasien, diagnosis, id_tindakan, kontrol, biaya);
 
@@ -248,7 +240,6 @@ void loadData(Patient** patientList, Tindakan** tindakanList, char* filename) {
     xlsxioread_close(xlsxioread);
     Logger(1, "Data loaded successfully");
 
-    printf("Pointer patientList di Loader: %p\n", patientList);
 }
 
 
