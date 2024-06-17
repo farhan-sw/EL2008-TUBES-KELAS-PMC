@@ -159,7 +159,6 @@ void addHistoryData(GtkWidget* button, gpointer data)
     char* diagnosis = strdup(gtk_entry_get_text(GTK_ENTRY(addHistoryParams->newHistoryFormPointer->diagnosis)));
     char* idPasien = strdup(gtk_entry_get_text(GTK_ENTRY(addHistoryParams->newHistoryFormPointer->idPasien)));
     char* tindakan = strdup(gtk_entry_get_text(GTK_ENTRY(addHistoryParams->newHistoryFormPointer->tindakan)));
-    
 
     // Validasi Tanggal
     int tanggalValid = stringDateFormatVerify(tanggal);
@@ -171,7 +170,6 @@ void addHistoryData(GtkWidget* button, gpointer data)
     
     // // Validasi TIndakan ada
     int istindakanExist = isTindakanExist(addHistoryParams->patientParams->allTindakanData, tindakan);
-    
     
     // Cek Validasi Semua jawaban haru berisi
     int isError = 0;
@@ -189,7 +187,12 @@ void addHistoryData(GtkWidget* button, gpointer data)
         isError = 6;
     } else if (istindakanExist == 0){
         isError = 7;
+    } else if (tanggalValid == 0){
+        isError = 8;
+    } else if (kontrolValid == 0){
+        isError = 9;
     }
+
 
     // Jika tidak ada error
     if(isError == 0){
@@ -221,7 +224,8 @@ void addHistoryData(GtkWidget* button, gpointer data)
         // Isi Biaya
         newHistory->biaya = TindakanToBiaya(addHistoryParams->patientParams->allTindakanData, tindakan);
 
-
+        newHistory->next = NULL;
+        
         // Print SIngle History
         // printHistory(newHistory);
 
@@ -235,6 +239,7 @@ void addHistoryData(GtkWidget* button, gpointer data)
         copyPatient(*addHistoryParams->patientParams->allPatientData, tempData);
 
         freePatientList(*addHistoryParams->patientParams->operatedData);
+
         *addHistoryParams->patientParams->operatedData = *tempData;
 
         // Update Table
@@ -272,6 +277,12 @@ void addHistoryData(GtkWidget* button, gpointer data)
             break;
         case 7:
             gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Tindakan tidak ditemukan");
+            break;
+        case 8:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Format tanggal kedatangan salah");
+            break;
+        case 9:
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Format tanggal kontrol salah");
             break;
         default:
             break;
