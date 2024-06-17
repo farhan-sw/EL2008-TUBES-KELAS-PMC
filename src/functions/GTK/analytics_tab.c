@@ -53,7 +53,6 @@ void calculateReports(Patient** allPatients, Tindakan* allTindakanList, YearlyRe
     }
 }
 
-// Fungsi untuk menampilkan laporan dalam tabel GTK
 void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int reportCount) {
     for (int i = 0; i < reportCount; i++) {
         YearlyReport* report = &yearlyReports[i];
@@ -65,10 +64,9 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
         gtk_box_pack_start(GTK_BOX(vbox), label_year, FALSE, FALSE, 5);
         gtk_widget_set_halign(label_year, GTK_ALIGN_CENTER);
 
-        // Beri CSS untuk header tahun
+        // CSS untuk header tahun
         GtkStyleContext *context = gtk_widget_get_style_context(label_year);
         gtk_style_context_add_class(context, "analysis-year-header");
-        
 
         // Header bulan, pasien, penyakit
         GtkWidget* grid = gtk_grid_new();
@@ -77,11 +75,12 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
         gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Diseases"), 2, 0, 1, 1);
         gtk_box_pack_start(GTK_BOX(vbox), grid, FALSE, FALSE, 5);
 
-        // Set header width height and alignment
+        // Set lebar dan alignment untuk header
         gtk_widget_set_size_request(gtk_grid_get_child_at(GTK_GRID(grid), 0, 0), ANALYSIS_LABEL_WIDTH, -1);
         gtk_widget_set_size_request(gtk_grid_get_child_at(GTK_GRID(grid), 1, 0), ANALYSIS_LABEL_WIDTH, -1);
         gtk_widget_set_size_request(gtk_grid_get_child_at(GTK_GRID(grid), 2, 0), ANALYSIS_LABEL_WIDTH, -1);
 
+        // Isi data bulanan
         // Isi data bulanan
         for (int j = 0; j < 12; j++) {
             char month_text[20];
@@ -94,40 +93,75 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
             GtkWidget* label_patients = gtk_label_new(patients_text);
             gtk_grid_attach(GTK_GRID(grid), label_patients, 1, j + 1, 1, 1);
 
-            GtkWidget* diseases_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+            // Sort diseases by count (descending order)
+            // Create a list to store disease indices and counts
+            struct DiseaseCount {
+                int index;
+                int count;
+            };
+
+            struct DiseaseCount diseaseCounts[report->diseaseCount];
+
             for (int k = 0; k < report->diseaseCount; k++) {
-                if (report->monthlyDiseases[j][k] > 0) {
+                diseaseCounts[k].index = k;
+                diseaseCounts[k].count = report->monthlyDiseases[j][k];
+            }
+
+            // Sort diseaseCounts array based on count (descending)
+            for (int m = 0; m < report->diseaseCount - 1; m++) {
+                for (int n = m + 1; n < report->diseaseCount; n++) {
+                    if (diseaseCounts[m].count < diseaseCounts[n].count) {
+                        struct DiseaseCount temp = diseaseCounts[m];
+                        diseaseCounts[m] = diseaseCounts[n];
+                        diseaseCounts[n] = temp;
+                    }
+                }
+            }
+
+            // Create diseases_box and add disease labels in sorted order
+            GtkWidget* diseases_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+            for (int l = 0; l < report->diseaseCount; l++) {
+                int idx = diseaseCounts[l].index;
+                int count = diseaseCounts[l].count;
+
+                if (count > 0) {
                     char disease_text[50];
-                    sprintf(disease_text, "%s: %d", report->diseases[k], report->monthlyDiseases[j][k]);
+                    sprintf(disease_text, "%s: %d", report->diseases[idx], count);
                     GtkWidget* label_disease = gtk_label_new(disease_text);
                     gtk_box_pack_start(GTK_BOX(diseases_box), label_disease, FALSE, FALSE, 2);
                 }
             }
-            gtk_grid_attach(GTK_GRID(grid), diseases_box, 2, j + 1, 1, 1);
 
-            // Set data width height and alignment
+            // Enclose diseases_box in diseases_frame
+            GtkWidget* diseases_frame = gtk_frame_new(NULL);
+            gtk_frame_set_shadow_type(GTK_FRAME(diseases_frame), GTK_SHADOW_ETCHED_IN); // Add sunken border
+            gtk_container_add(GTK_CONTAINER(diseases_frame), diseases_box);
+            gtk_grid_attach(GTK_GRID(grid), diseases_frame, 2, j + 1, 1, 1);
+
+            // Set lebar dan alignment untuk data
             gtk_widget_set_size_request(label_month, ANALYSIS_LABEL_WIDTH, -1);
             gtk_widget_set_size_request(label_patients, ANALYSIS_LABEL_WIDTH, -1);
-            gtk_widget_set_size_request(diseases_box, ANALYSIS_LABEL_WIDTH, -1);
+            gtk_widget_set_size_request(diseases_frame, ANALYSIS_LABEL_WIDTH, -1);
 
+            // CSS for diseases frame
+            GtkStyleContext* context_diseases = gtk_widget_get_style_context(diseases_frame);
+            gtk_style_context_add_class(context_diseases, "diseases-frame");
         }
+
 
         // Header analisis pendapatan
         GtkWidget* analysis_label = gtk_label_new("ANALISIS PENDAPATAN");
         gtk_box_pack_start(GTK_BOX(vbox), analysis_label, FALSE, FALSE, 5);
         gtk_widget_set_halign(analysis_label, GTK_ALIGN_CENTER);
 
-        // Beri CSS untuk header analisis pendapatan
-        GtkStyleContext *context_year_header = gtk_widget_get_style_context(analysis_label);
-        gtk_style_context_add_class(context_year_header, "analysis-income-header");
-
+        // CSS untuk header analisis pendapatan
+        GtkStyleContext *context_income_header = gtk_widget_get_style_context(analysis_label);
+        gtk_style_context_add_class(context_income_header, "analysis-income-header");
 
         // Tabel analisis pendapatan
         GtkWidget* income_frame = gtk_frame_new(NULL);
+        gtk_frame_set_shadow_type(GTK_FRAME(income_frame), GTK_SHADOW_ETCHED_IN); // Add sunken border
         gtk_box_pack_start(GTK_BOX(vbox), income_frame, FALSE, FALSE, 20);
-
-        gtk_frame_set_label_align(GTK_FRAME(income_frame), 0.5, 0.5);
-        gtk_frame_set_shadow_type(GTK_FRAME(income_frame), GTK_SHADOW_ETCHED_OUT);
 
         GtkWidget* income_grid = gtk_grid_new();
         gtk_container_add(GTK_CONTAINER(income_frame), income_grid);
@@ -193,36 +227,35 @@ void displayReportsInTable(GtkWidget* vbox, YearlyReport* yearlyReports, int rep
         GtkWidget* separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
         gtk_box_pack_start(GTK_BOX(vbox), separator, FALSE, FALSE, 10);
 
-        // Set grid properties
+        // Set properties for grids and frames
         gtk_widget_set_hexpand(grid, TRUE);
         gtk_widget_set_halign(grid, GTK_ALIGN_FILL);
         gtk_grid_set_row_spacing(GTK_GRID(grid), 5);
         gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
 
-        // Set income grid properties
         gtk_widget_set_hexpand(income_grid, TRUE);
         gtk_widget_set_halign(income_grid, GTK_ALIGN_FILL);
         gtk_grid_set_row_spacing(GTK_GRID(income_grid), 5);
 
-        // Set income summary grid properties
         gtk_widget_set_hexpand(income_summary_grid, TRUE);
         gtk_widget_set_halign(income_summary_grid, GTK_ALIGN_FILL);
         gtk_grid_set_row_spacing(GTK_GRID(income_summary_grid), 5);
         gtk_grid_set_column_spacing(GTK_GRID(income_summary_grid), 20);
-
-        // Set separator properties
         gtk_widget_set_hexpand(separator, TRUE);
         gtk_widget_set_halign(separator, GTK_ALIGN_FILL);
 
-        // Set width height and alignment
+        // Set width height and alignment for year label
         gtk_widget_set_size_request(label_year, ANALYSIS_LABEL_WIDTH, -1);
 
+        // CSS for income frame
         GtkStyleContext* context_income = gtk_widget_get_style_context(income_frame);
         gtk_style_context_add_class(context_income, "income-frame");
 
-
-    }
+        
+    }   
+    
 }
+
 
 void SubmitAnalyticsButtonHandler(GtkWidget* widget, gpointer data) {
     AnalyticsParam* param = (AnalyticsParam*)data;

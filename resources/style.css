@@ -79,6 +79,14 @@
     border-width: 2px;
     border-style: solid;
     border-color: #ccc;
-    padding: 10px;
+    padding: 5px;
     margin: 10px;
 }
+
+.diseases-frame {
+    border: 1px solid #ccc;
+    padding: 2px;
+}
+
+
+
