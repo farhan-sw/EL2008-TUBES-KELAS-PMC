@@ -3,6 +3,7 @@
 #include "./medical_records_tab.c"
 #include "./medical_checkup_tab.c"
 #include "./finance_tab.c"
+#include "./analytics_tab.c"
 #include "./about_tab.c"
 
 
@@ -47,10 +48,15 @@ static void activate(Patient** operatedData, Patient** allPatientData, Tindakan*
     GtkWidget* financeTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), financeTab, gtk_label_new("Finance"));
 
+    // Create the analytics tab
+    GtkWidget* analyticsTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), analyticsTab, gtk_label_new("Analytics"));
+
     // Create the About Tab
     GtkWidget* aboutTab = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), aboutTab, gtk_label_new("About"));
-    if(userDataTab == NULL || medicalCheckUpTab == NULL || medicalRecordsTab == NULL || financeTab == NULL || aboutTab == NULL){
+
+    if(userDataTab == NULL || medicalCheckUpTab == NULL || medicalRecordsTab == NULL || financeTab == NULL || aboutTab == NULL || analyticsTab == NULL){
         Logger(3, "Failed to initialize tabs");
     } else {
         Logger(2, "Tabs initialized successfully");
@@ -67,6 +73,9 @@ static void activate(Patient** operatedData, Patient** allPatientData, Tindakan*
 
     // Build Medical Check-Up Tab
     buildMedicalCheckUpTab(medicalCheckUpTab, operatedData, allPatientData, tindakanList);
+
+    // Build Analytics Tab
+    buildAnalyticsTab(analyticsTab, operatedData, allPatientData, tindakanList);
 
     // Show all widgets
     gtk_widget_show_all(window);

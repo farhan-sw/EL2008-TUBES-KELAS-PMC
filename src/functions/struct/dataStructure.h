@@ -6,6 +6,18 @@
 #include <string.h>
 #include <gtk/gtk.h>
 
+
+typedef struct YearlyReport {
+    int year;
+    float monthlyIncome[12];
+    int monthlyPatients[12];
+    int monthlyDiseases[12][50]; // Asumsi maksimum 50 jenis penyakit
+    char diseases[50][50];       // Nama penyakit
+    int diseaseCount;
+} YearlyReport;
+
+
+
 /**
  * @brief Date struct
  */
@@ -162,6 +174,21 @@ typedef struct EditMedicalCheckupFormPointer{
     MedicalCheckup** operatedData;
     MedicalCheckup** allMedicalCheckupData;
 } EditMedicalCheckupFormPointer;
+
+
+
+#define MAX_REPORT 10
+typedef struct AnalyticsParam {
+    int startYear;
+    int endYear;
+    GtkWidget* vbox;
+    YearlyReport yearlyReports[MAX_REPORT]; // Misalnya, untuk 5 tahun
+    int reportCount;
+    Patient** operatedData;
+    Patient** allPatientData;
+    Tindakan* allTindakanData;
+} AnalyticsParam;
+
 // =================================== END BAGIAN PATIENT =======================================
 
 
