@@ -29,7 +29,6 @@ void searchPatient(Patient *head, Patient **output, char keyword[]){
     if (strcmp(keyword, "") == 0){
         // printf("keyword kosong\n");
         copyPatient(head, result);
-        return;
     } else {
         // ubah keyword menjadi lowercase
         char* keywordLower = toLowercase(keyword);
@@ -106,7 +105,6 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
     if (strcmp(keyword, "") == 0){
         // printf("keyword kosong\n");
         copyPatient(head, result);
-        return;
     } else {
         // ubah keyword menjadi lowercase
         char* keywordLower = toLowercase(keyword);
@@ -120,9 +118,13 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
 
 
         int copyData = 0;
+        int iterasi = 0;
+        int iterasiHistory = 0;
         while (currentPatient != NULL) {
+            
             currentHistory = currentPatient->history;
             
+            iterasiHistory = 0;
             while(currentHistory != NULL){
                 // kosongkan variabel
                 copyData = 0;
@@ -140,13 +142,14 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                 char* tanggalLower = toLowercase(tanggal);
                 char* kontrolLower = toLowercase(kontrol);
                 char* diagnosisLower = toLowercase(currentHistory->diagnosis);
+                char* tindakanLower = toLowercase(tindakan);
 
                 // cek apakah keyword ada di history
                 if (strstr(tanggalLower, keywordLower) != NULL) {
                     copyData = 1;
                 } else if (strstr(diagnosisLower, keywordLower) != NULL) {
                     copyData = 1;
-                } else if (strstr(tindakan, keywordLower) != NULL) {
+                } else if (strstr(tindakanLower, keywordLower) != NULL) {
                     copyData = 1;
                 } else if (strstr(kontrolLower, keywordLower) != NULL) {
                     copyData = 1;
@@ -156,6 +159,7 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
 
                 if(copyData == 1){
                     // buat node baru dan tambahkan ke result
+                    // printf("Data milik %s cocok\n", currentPatient->namaLengkap);
                     Patient* newPatient = createPatient(currentPatient->namaLengkap, currentPatient->alamat, currentPatient->kota, currentPatient->tempatLahir, currentPatient->tanggalLahir, currentPatient->umur, currentPatient->noBPJS, currentPatient->idPasien);
                     // copy historynya
                     History* currentHistorytemp = currentPatient->history;
@@ -167,10 +171,12 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                     addPatient(result, newPatient);
                     break;
                 }
-
+                iterasiHistory++;
+                currentHistory = currentHistory->next;
             }
 
             currentPatient = currentPatient->next;
+            iterasi++;
         }
     }
     // kosongkan result dengan bebaskan memorinya
