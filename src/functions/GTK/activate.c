@@ -60,7 +60,7 @@ static void activate(Patient** operatedData, Patient** allPatientData, Tindakan*
     buildPatientDataTab(userDataTab, operatedData, allPatientData);
 
     // Build the Medical Records tab, implemented in medical_records_tab.c
-    buildMedicalRecordTab(medicalRecordsTab, patientList, tindakanList);
+    buildMedicalRecordTab(medicalRecordsTab, operatedData, allPatientData, tindakanList);
 
     // Build Finance Tab
     buildFinanceTab(financeTab, tindakanList);     
