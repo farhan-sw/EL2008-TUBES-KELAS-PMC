@@ -115,6 +115,7 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
         char tindakan[50];
         char kontrol[20];
         char biaya[10];
+        char ID[20];
 
 
         int copyData = 0;
@@ -132,17 +133,20 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                 memset(tindakan, 0, sizeof(tindakan));
                 memset(kontrol, 0, sizeof(kontrol));
                 memset(biaya, 0, sizeof(biaya));
+                memset(ID, 0, sizeof(ID));
                 
                 convertDateToString(currentHistory->tanggal, tanggal);
                 strcpy(tindakan, currentHistory->tindakan);
                 convertDateToString(currentHistory->kontrol, kontrol);
                 sprintf(biaya, "%d", currentHistory->biaya);
+                strcpy(ID, currentHistory->idPasien);
 
                 // ubah data menjadi lowercase
                 char* tanggalLower = toLowercase(tanggal);
                 char* kontrolLower = toLowercase(kontrol);
                 char* diagnosisLower = toLowercase(currentHistory->diagnosis);
                 char* tindakanLower = toLowercase(tindakan);
+                char* idLower = toLowercase(ID);
 
                 // cek apakah keyword ada di history
                 if (strstr(tanggalLower, keywordLower) != NULL) {
@@ -154,6 +158,8 @@ void searchMedicalRecord(Patient *head, Patient **output, char keyword[]){
                 } else if (strstr(kontrolLower, keywordLower) != NULL) {
                     copyData = 1;
                 } else if (strstr(biaya, keywordLower) != NULL) {
+                    copyData = 1;
+                } else if (strstr(idLower, keywordLower) != NULL) {
                     copyData = 1;
                 }
 
