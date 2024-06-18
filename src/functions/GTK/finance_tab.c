@@ -198,6 +198,73 @@ void editDataFinanceButtonHandler(GtkWidget* button, gpointer data) {
 void deleteDataFinanceButtonHandler(GtkWidget* button, gpointer data) {
     FinancialTabParams* FinanceParams = (FinancialTabParams*) data;
 
+    // cari berapa data yang di check
+    int count = 0;
+    Tindakan* current = *(FinanceParams->allTindakanData);
+
+    int row = 0;
+
+    GtkWidget* checkbox;
+
+    while(current != NULL){
+        checkbox = gtk_grid_get_child_at(GTK_GRID(FinanceParams->table), 3, row+1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)){
+            if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                count++;
+            }
+        }
+        current = current->next;
+        row++;
+    }
+
+    if(count == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk dihapus");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    } else {
+        // tampilkan dialog konfirmasi
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Apakah Anda yakin ingin menghapus data pasien yang dipilih?");
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+
+        if (response == GTK_RESPONSE_YES) {
+            // hapus data yang dipilih
+            current = *(FinanceParams->allTindakanData);
+            Tindakan* prev = NULL;
+            row = 0;
+            while(current != NULL){
+                checkbox = gtk_grid_get_child_at(GTK_GRID(FinanceParams->table), 3, row+1);
+                if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)){
+                    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                        if (prev == NULL) {
+                            *(FinanceParams->allTindakanData) = current->next;
+                            free(current);
+                            current = *(FinanceParams->allTindakanData);
+                        } else {
+                            prev->next = current->next;
+                            free(current);
+                            current = prev->next;
+                        }
+                    } else {
+                        prev = current;
+                        current = current->next;
+                    }
+                }
+                row++;
+            }
+
+            // Update the table
+            addTindakanToTable(FinanceParams->table, *(FinanceParams->allTindakanData));
+            gtk_widget_show_all(FinanceParams->table);
+
+            // Show success message
+            GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "Data berhasil dihapus");
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
+    }
+
     printf("Delete Data Button Clicked\n");
 }
 
