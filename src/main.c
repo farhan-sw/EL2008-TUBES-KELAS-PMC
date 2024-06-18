@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     //printPatientList(*allPatientData);
     // printTindakan(*allTindakanList);
     
-    activate(operatedData, allPatientData, *allTindakanList);
+    activate(operatedData, allPatientData, allTindakanList);
     // Start the GTK main loop
     Logger(1, "Initializing GTK window");
     gtk_main();

@@ -195,7 +195,17 @@ typedef struct EditMedicalCheckupFormPointer{
     MedicalCheckup** allMedicalCheckupData;
 } EditMedicalCheckupFormPointer;
 
+typedef struct FinancialTabParams{
+    GtkWidget *table;
+    Tindakan** allTindakanData;
+} FinancialTabParams;
 
+typedef struct TindakanFormPointer{
+    GtkWidget *tindakan;
+    GtkWidget *biaya;
+    GtkWidget *window;
+    FinancialTabParams* financialTabParams;
+} TindakanFormPointer;
 
 #define MAX_REPORT 10
 
