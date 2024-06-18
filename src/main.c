@@ -46,9 +46,7 @@ int main(int argc, char **argv) {
 
     loadData(allPatientData, allTindakanList, filename);
     copyPatient(*allPatientData, operatedData);
-
-    // test excel
-    saveData(*allPatientData, *allTindakanList, "DataPMC20232024", session);
+    
 
     // GTK3 RUNNER
 
@@ -67,8 +65,7 @@ int main(int argc, char **argv) {
     gtk_main();
 
     // Seve Data
-    // // test excel
-    // saveData(*allPatientData, *allTindakanList, "DataPMC20232024", session);
+    saveData(*allPatientData, *allTindakanList, "DataPMC20232024", session);
 
     // Pembersihan memori
     Logger(1, "Terminating Application, Cleaning up memory");
