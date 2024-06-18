@@ -207,6 +207,15 @@ typedef struct TindakanFormPointer{
     FinancialTabParams* financialTabParams;
 } TindakanFormPointer;
 
+typedef struct editTindakanFormPointer{
+    GtkWidget *tindakan;
+    GtkWidget *biaya;
+    GtkWidget *window;
+    GtkWidget *table;
+    Tindakan* targetTindakan;
+    Tindakan* allTindakanData;
+} editTindakanFormPointer;
+
 #define MAX_REPORT 10
 
 typedef struct AnalyticsPointer{

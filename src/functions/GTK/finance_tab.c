@@ -78,6 +78,18 @@ void addDatahandler(GtkWidget* button, gpointer data) {
         }
     }
 
+    int isExist = 0;
+    // cek apakah nama layanan sudah ada di list
+    Tindakan* current = tindakanList;
+    while (current != NULL) {
+        if (strcmp(current->Tindakan, layanan) == 0) {
+            isExist = 1;
+            printf("ditemukan kesamaan antara %s dan %s\n", current->Tindakan, layanan);
+            break;
+        }
+        current = current->next;
+    }
+
     // cek error
     int error = 0;
     if (strlen(layanan) == 0) {
@@ -86,6 +98,8 @@ void addDatahandler(GtkWidget* button, gpointer data) {
         error = 2;
     } else if (isNumber == 0) {
         error = 3;
+    } else if (isExist == 1) {
+        error = 4;
     }
 
     if (error == 0){
@@ -126,6 +140,8 @@ void addDatahandler(GtkWidget* button, gpointer data) {
             gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Harga tidak boleh kosong");
         } else if (error == 3) {
             gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Harga harus berupa angka");
+        } else if (error == 4) {
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Layanan sudah ada di list");
         }
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
@@ -137,7 +153,6 @@ void addDatahandler(GtkWidget* button, gpointer data) {
 void addDataFinanceButtonHandler(GtkWidget* button, gpointer data) {
     FinancialTabParams* FinanceParams = (FinancialTabParams*) data;
 
-    printf("Add Data Button Clicked\n");
     // Create the new window
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Add Pricelist Data");
@@ -188,10 +203,197 @@ void addDataFinanceButtonHandler(GtkWidget* button, gpointer data) {
 }
 
 // Callback function for "Edit Data" button
+
+void saveEditFinanceHandler(GtkWidget* button, gpointer data) {
+    editTindakanFormPointer* params = (editTindakanFormPointer*) data;
+
+    // Get the input values
+    const char* layanan = strdup(gtk_entry_get_text(GTK_ENTRY(params->tindakan)));
+    const char* harga = strdup(gtk_entry_get_text(GTK_ENTRY(params->biaya)));
+
+    // cek apakah harga hanya angka
+    int isNumber = 1;
+    for (int i = 0; i < strlen(harga); i++) {
+        if (harga[i] < '0' || harga[i] > '9') {
+            isNumber = 0;
+            break;
+        }
+    }
+
+    int isExist = -1;
+    // cek apakah nama layanan sudah ada di list
+    Tindakan* current = params->allTindakanData;
+    while (current != NULL) {
+        if (strcmp(current->Tindakan, layanan) == 0) {
+            isExist++;
+        }
+        current = current->next;
+    }
+
+    // cek error
+    int error = 0;
+    if (strlen(layanan) == 0) {
+        error = 1;
+    } else if (strlen(harga) == 0) {
+        error = 2;
+    } else if (isNumber == 0) {
+        error = 3;
+    } else if (isExist>0) {
+        error = 4;
+    }
+
+    if (error == 0){
+
+        // Update the Tindakan
+        strcpy(params->targetTindakan->Tindakan, layanan);
+        params->targetTindakan->biaya = atoi(harga);
+
+        // Update the table
+        addTindakanToTable(params->table, params->allTindakanData);
+        gtk_widget_show_all(params->table);
+
+        // Close the window
+        gtk_widget_destroy(params->window);
+
+    } else {
+        // Show error message
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Error: ");
+        if (error == 1) {
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Layanan tidak boleh kosong");
+        } else if (error == 2) {
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Harga tidak boleh kosong");
+        } else if (error == 3) {
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Harga harus berupa angka");
+        } else if (error == 4) {
+            gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "Layanan sudah ada di list");
+        }
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    
+    }
+
+}
+
+void cancelEditFinanceHandler(GtkWidget* button, gpointer data) {
+    GtkWidget* window = (GtkWidget*) data;
+    gtk_widget_destroy(window);
+}
+
+void editFinannceDataEditor(GtkWidget* table, Tindakan* target, Tindakan* allTindakanData){
+    // Create the new window
+    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Edit Pricelist Data");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 200);
+
+    // Create the main container
+    GtkWidget* mainBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_add(GTK_CONTAINER(window), mainBox);
+
+    // Create the input fields
+    GtkWidget* layananLabel = gtk_label_new("Layanan");
+    GtkWidget* layananEntry = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(layananEntry), target->Tindakan);
+    GtkWidget* hargaLabel = gtk_label_new("Biaya:");
+    GtkWidget* hargaEntry = gtk_entry_new();
+    char harga_text[20];
+    sprintf(harga_text, "%d", target->biaya);
+    gtk_entry_set_text(GTK_ENTRY(hargaEntry), harga_text);
+
+    // Styling label
+    gtk_widget_set_margin_top(layananLabel, 20);
+
+    // Create the add button
+    GtkWidget* confirmButton = gtk_button_new_with_label("Save");
+    GtkWidget* cancelButton = gtk_button_new_with_label("Cancel");
+
+    // Set button size
+    gtk_widget_set_size_request(confirmButton, 100, 30);
+    gtk_widget_set_size_request(cancelButton, 100, 30);
+
+    // Create a horizontal box to hold the buttons
+    GtkWidget* buttonBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_set_homogeneous(GTK_BOX(buttonBox), TRUE);
+    gtk_box_pack_start(GTK_BOX(buttonBox), confirmButton, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(buttonBox), cancelButton, TRUE, TRUE, 0);
+
+     // menambahkan margin
+    gtk_widget_set_margin_bottom(buttonBox, 20);
+    gtk_widget_set_margin_top(buttonBox, 20);
+    gtk_widget_set_margin_start(buttonBox, 20);
+    gtk_widget_set_margin_end(buttonBox, 20);
+
+    // tambahkan tabel
+    gtk_box_pack_start(GTK_BOX(mainBox), layananLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), layananEntry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), hargaLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mainBox), hargaEntry, FALSE, FALSE, 0);
+    // Add the button box to the main container
+    gtk_box_pack_start(GTK_BOX(mainBox), buttonBox, FALSE, FALSE, 0);
+
+    
+
+    //buat params
+    editTindakanFormPointer* params = malloc(sizeof(editTindakanFormPointer));
+    params->tindakan = layananEntry;
+    params->biaya = hargaEntry;
+    params->window = window;
+    params->table = table;
+    params->targetTindakan = target;
+    params->allTindakanData = allTindakanData;
+
+    // Connect the button to the callback function
+    g_signal_connect(confirmButton, "clicked", G_CALLBACK(saveEditFinanceHandler), params);
+    g_signal_connect(cancelButton, "clicked", G_CALLBACK(cancelEditFinanceHandler), window);
+
+     // Show all the widgets
+    gtk_widget_show_all(window);
+}
+
 void editDataFinanceButtonHandler(GtkWidget* button, gpointer data) {
     FinancialTabParams* FinanceParams = (FinancialTabParams*) data;
 
-    printf("Edit Data Button Clicked\n");
+    // cari berapa data yang di check
+    int count = 0;
+    Tindakan* current = *(FinanceParams->allTindakanData);
+
+    int row = 0;
+
+    GtkWidget* checkbox;
+
+    while(current != NULL){
+        checkbox = gtk_grid_get_child_at(GTK_GRID(FinanceParams->table), 3, row+1);
+        if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)){
+            if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                count++;
+            }
+        }
+        current = current->next;
+        row++;
+    }
+
+    if(count == 0){
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Tidak ada data yang dipilih untuk diedit");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    } else {
+        // hapus data yang dipilih
+        current = *(FinanceParams->allTindakanData);
+        row = 0;
+        while(current != NULL){
+            checkbox = gtk_grid_get_child_at(GTK_GRID(FinanceParams->table), 3, row+1);
+            if (checkbox != NULL && GTK_IS_TOGGLE_BUTTON(checkbox)){
+                if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox))) {
+                    editFinannceDataEditor(FinanceParams->table, current, *(FinanceParams->allTindakanData));
+                }
+                current = current->next;
+            }
+            row++;
+        }
+        // Update the table
+        // addTindakanToTable(FinanceParams->table, *(FinanceParams->allTindakanData));
+        // gtk_widget_show_all(FinanceParams->table);
+    };
 }
 
 // Callback function for "Delete Data" button
@@ -264,8 +466,6 @@ void deleteDataFinanceButtonHandler(GtkWidget* button, gpointer data) {
             gtk_widget_destroy(dialog);
         }
     }
-
-    printf("Delete Data Button Clicked\n");
 }
 
 
